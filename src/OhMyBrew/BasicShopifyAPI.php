@@ -309,14 +309,25 @@ class BasicShopifyAPI
     public function request(string $type, string $path, array $params = null)
     {
         // Create the request, pass the access token and optional parameters
-        $response = $this->client->request(
-            $type,
-            $this->getBaseUrl() . $path,
-            [
-                'headers' => ['X-Shopify-Access-Token' => $this->accessToken],
-                'json' => $params
-            ]
-        );
+        if (strtoupper($type) === 'GET') {
+            $paramString = $params === null ? '' : '?' . http_build_query($params);
+            $response = $this->client->request(
+                $type,
+                $this->getBaseUrl() . $path . $paramString,
+                [
+                    'headers' => ['X-Shopify-Access-Token' => $this->accessToken]
+                ]
+            );
+        } else {
+            $response = $this->client->request(
+                $type,
+                $this->getBaseUrl() . $path,
+                [
+                    'headers' => ['X-Shopify-Access-Token' => $this->accessToken],
+                    'json' => $params
+                ]
+            );
+        }
 
         // Grab the API call limit header returned from Shopify
         $calls = explode('/', $response->getHeader('http_x_shopify_shop_api_call_limit')[0]);
