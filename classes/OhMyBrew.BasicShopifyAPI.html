@@ -144,19 +144,19 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1167105349"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-693493061"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1167105349" class="accordion-body collapse in">
+            <div id="namespace-693493061" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-346644732"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1630770077"></a>
                                 <a href="../namespaces/OhMyBrew.html" style="margin-left: 30px; padding-left: 0">OhMyBrew</a>
             </div>
-            <div id="namespace-346644732" class="accordion-body collapse ">
+            <div id="namespace-1630770077" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -218,6 +218,9 @@
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_setApiKey" class="">setApiKey()</a><br />
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_setApiSecret" class="">setApiSecret()</a><br />
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_setApiPassword" class="">setApiPassword()</a><br />
+                                                                    <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_enableRateLimiting" class="">enableRateLimiting()</a><br />
+                                                                    <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_disableRateLimiting" class="">disableRateLimiting()</a><br />
+                                                                    <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_isRateLimitingEnabled" class="">isRateLimitingEnabled()</a><br />
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_setSession" class="">setSession()</a><br />
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_withSession" class="">withSession()</a><br />
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#method_getAuthUrl" class="">getAuthUrl()</a><br />
@@ -248,6 +251,10 @@
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#property_apiSecret" class="">$apiSecret</a><br />
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#property_private" class="">$private</a><br />
                                                                     <a href="../classes/OhMyBrew.BasicShopifyAPI.html#property_apiCallLimits" class="">$apiCallLimits</a><br />
+                                                                    <a href="../classes/OhMyBrew.BasicShopifyAPI.html#property_rateLimitingEnabled" class="">$rateLimitingEnabled</a><br />
+                                                                    <a href="../classes/OhMyBrew.BasicShopifyAPI.html#property_rateLimitCycle" class="">$rateLimitCycle</a><br />
+                                                                    <a href="../classes/OhMyBrew.BasicShopifyAPI.html#property_rateLimitCycleBuffer" class="">$rateLimitCycleBuffer</a><br />
+                                                                    <a href="../classes/OhMyBrew.BasicShopifyAPI.html#property_requestTimestamp" class="">$requestTimestamp</a><br />
                                                             </section>
                             <section class="span4">
                                 <em>N/A</em>
@@ -479,6 +486,102 @@
 
                                 <h4>Type</h4>
                 array
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_rateLimitingEnabled" name="property_rateLimitingEnabled" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$rateLimitingEnabled</h3>
+                <pre class="signature">$rateLimitingEnabled : boolean</pre>
+                <p><em>If rate limiting is enabled.</em></p>
+                
+
+                                <h4>Type</h4>
+                boolean
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_rateLimitCycle" name="property_rateLimitCycle" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$rateLimitCycle</h3>
+                <pre class="signature">$rateLimitCycle : integer</pre>
+                <p><em>The rate limiting cycle (in ms).</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_rateLimitCycleBuffer" name="property_rateLimitCycleBuffer" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$rateLimitCycleBuffer</h3>
+                <pre class="signature">$rateLimitCycleBuffer : integer</pre>
+                <p><em>The rate limiting cycle buffer (in ms).</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_requestTimestamp" name="property_requestTimestamp" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$requestTimestamp</h3>
+                <pre class="signature">$requestTimestamp : integer</pre>
+                <p><em>Request timestamp for every new call.</em></p>
+                <p>Used for rate limiting.</p>
+
+                                <h4>Type</h4>
+                integer
                                             </article>
         </div>
         <aside class="span4 detailsbar">
@@ -849,6 +952,103 @@
                 
                                     <h4>Returns</h4>
                     self
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_enableRateLimiting" name="method_enableRateLimiting" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">enableRateLimiting()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">enableRateLimiting(integer|null  <span class="argument">$cycle = null</span>, integer|null  <span class="argument">$buffer = null</span>) : self</pre>
+                <p><em>Set the rate limiting state to enabled.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer|null</td>
+                                <td>$cycle </td>
+                                <td><p>The rate limiting cycle (in ms, default 500ms).</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>integer|null</td>
+                                <td>$buffer </td>
+                                <td><p>The rate limiting cycle buffer (in ms, default 100ms).</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    self
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_disableRateLimiting" name="method_disableRateLimiting" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">disableRateLimiting()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">disableRateLimiting() : self</pre>
+                <p><em>Set the rate limiting state to disabled.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    self
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_isRateLimitingEnabled" name="method_isRateLimitingEnabled" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">isRateLimitingEnabled()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">isRateLimitingEnabled() : boolean</pre>
+                <p><em>Determines if rate limiting is enabled.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
                                     				
                             </article>
         </div>
@@ -1335,7 +1535,7 @@ It must match the redirect_uri in your app settings.</p></td>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on August 26th, 2018 at 15:05.
+                    on November 2nd, 2018 at 01:05.
                 </section>
             </section>
         </section>
