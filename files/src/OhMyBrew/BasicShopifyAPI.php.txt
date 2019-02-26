@@ -5,6 +5,12 @@ namespace OhMyBrew;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -65,7 +71,50 @@ class BasicShopifyAPI
      *
      * @var array
      */
-    protected $apiCallLimits;
+    protected $apiCallLimits = [
+        'rest'  => [
+            'left'  => 0,
+            'made'  => 0,
+            'limit' => 40,
+        ],
+        'graph' => [
+            'left'          => 0,
+            'made'          => 0,
+            'limit'         => 1000,
+            'restoreRate'   => 50,
+            'requestedCost' => 0,
+            'actualCost'    => 0,
+        ],
+    ];
+
+    /**
+     * If rate limiting is enabled.
+     *
+     * @var bool
+     */
+    protected $rateLimitingEnabled = false;
+
+    /**
+     * The rate limiting cycle (in ms).
+     *
+     * @var int
+     */
+    protected $rateLimitCycle = 0.5 * 1000;
+
+    /**
+     * The rate limiting cycle buffer (in ms).
+     *
+     * @var int
+     */
+    protected $rateLimitCycleBuffer = 0.1 * 1000;
+
+    /**
+     * Request timestamp for every new call.
+     * Used for rate limiting.
+     *
+     * @var int
+     */
+    protected $requestTimestamp;
 
     /**
      * Constructor.
@@ -79,25 +128,12 @@ class BasicShopifyAPI
         // Set if app is private or public
         $this->private = $private;
 
-        // Create a default Guzzle client
-        $this->client = new Client();
+        // Create the stack and assign the middleware which attempts to fix redirects
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::mapRequest([$this, 'adjustRequestUri']));
 
-        // Create default placeholder
-        $this->apiCallLimits = [
-            'rest'  => [
-                'left'  => 0,
-                'made'  => 0,
-                'limit' => 40,
-            ],
-            'graph' => [
-                'left'          => 0,
-                'made'          => 0,
-                'limit'         => 1000,
-                'restoreRate'   => 50,
-                'requestedCost' => 0,
-                'actualCost'    => 0,
-            ],
-        ];
+        // Create a default Guzzle client with our stack
+        $this->client = new Client(['handler' => $stack]);
 
         return $this;
     }
@@ -224,6 +260,51 @@ class BasicShopifyAPI
         $this->apiPassword = $apiPassword;
 
         return $this;
+    }
+
+    /**
+     * Set the rate limiting state to enabled.
+     *
+     * @param int|null $cycle  The rate limiting cycle (in ms, default 500ms).
+     * @param int|null $buffer The rate limiting cycle buffer (in ms, default 100ms).
+     *
+     * @return self
+     */
+    public function enableRateLimiting(int $cycle = null, int $buffer = null)
+    {
+        $this->rateLimitingEnabled = true;
+
+        if (!is_null($cycle)) {
+            $this->rateLimitCycle = $cycle;
+        }
+
+        if (!is_null($cycle)) {
+            $this->rateLimitCycleBuffer = $buffer;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the rate limiting state to disabled.
+     *
+     * @return self
+     */
+    public function disableRateLimiting()
+    {
+        $this->rateLimitingEnabled = false;
+
+        return $this;
+    }
+
+    /**
+     * Determines if rate limiting is enabled.
+     *
+     * @return bool
+     */
+    public function isRateLimitingEnabled()
+    {
+        return $this->rateLimitingEnabled === true;
     }
 
     /**
@@ -395,6 +476,20 @@ class BasicShopifyAPI
     }
 
     /**
+     * Returns/builds the REST URI to use.
+     *
+     * @return \Guzzle\Psr7\Uri
+     */
+    public function getRestUri()
+    {
+        if ($this->private) {
+            return new Uri("https://{$this->apiKey}:{$this->apiPassword}@{$this->shop}");
+        }
+
+        return new Uri("https://{$this->shop}");
+    }
+
+    /**
      * Runs a request to the Shopify API.
      *
      * @param string $query     The GraphQL query
@@ -426,6 +521,10 @@ class BasicShopifyAPI
             $request['variables'] = $variables;
         }
 
+        // Update the timestamp of the request
+        $tmpTimestamp = $this->requestTimestamp;
+        $this->requestTimestamp = microtime(true);
+
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
             'POST',
@@ -456,9 +555,10 @@ class BasicShopifyAPI
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
-            'response' => $response,
-            'body'     => property_exists($body, 'data') ? $body->data : $body->errors,
-            'errors'   => property_exists($body, 'errors'),
+            'response'   => $response,
+            'body'       => property_exists($body, 'errors') ? $body->errors : $body->data,
+            'errors'     => property_exists($body, 'errors'),
+            'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
         ];
     }
 
@@ -484,34 +584,100 @@ class BasicShopifyAPI
         }
 
         // Build the request parameters for Guzzle
-        $guzzleParams = [];
+        $guzzleParams = [
+            'headers'         => [
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ];
         $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
+
         if (!$this->private) {
             $guzzleParams['headers'] = ['X-Shopify-Access-Token' => $this->accessToken];
         }
 
-        // Create the request, pass the access token and optional parameters
-        if ($this->private) {
-            $uri = "https://{$this->apiKey}:{$this->apiPassword}@{$this->shop}{$path}";
-        } else {
-            $uri = "https://{$this->shop}{$path}";
+        // Check the rate limit before firing the request
+        if ($this->isRateLimitingEnabled() && $this->requestTimestamp) {
+            // Calculate in milliseconds the duration the API call took
+            $duration = round(microtime(true) - $this->requestTimestamp, 3) * 1000;
+            $waitTime = ($this->rateLimitCycle - $duration) + $this->rateLimitCycleBuffer;
+
+            if ($waitTime > 0) {
+                // Do the sleep for X mircoseconds (convert from milliseconds)
+                usleep($waitTime * 1000);
+            }
         }
 
-        $response = $this->client->request($type, $uri, $guzzleParams);
+        // Update the timestamp of the request
+        $tmpTimestamp = $this->requestTimestamp;
+        $this->requestTimestamp = microtime(true);
+
+        $errors = false;
+
+        try {
+            // Build URI and try the request
+            $uri = $this->getRestUri()->withPath($path);
+            $response = $this->client->request($type, $uri, $guzzleParams);
+        } catch (Exception $e) {
+            if ($e instanceof ClientException || $e instanceof ServerException) {
+                // 400 or 500 level error
+                $response = $e->getResponse();
+
+                $errors = (object) [
+                    'status'    => $response->getStatusCode(),
+                    'body'      => $this->jsonDecode($response->getBody()),
+                    'exception' => $e,
+                ];
+            } else {
+                // Else, rethrow
+                throw $e;
+            }
+        }
 
         // Grab the API call limit header returned from Shopify
-        $calls = explode('/', $response->getHeader('http_x_shopify_shop_api_call_limit')[0]);
-        $this->apiCallLimits['rest'] = [
-            'left'  => (int) $calls[1] - $calls[0],
-            'made'  => (int) $calls[0],
-            'limit' => (int) $calls[1],
-        ];
+        $callLimitHeader = $response->getHeader('http_x_shopify_shop_api_call_limit');
+        if ($callLimitHeader) {
+            $calls = explode('/', $callLimitHeader[0]);
+            $this->apiCallLimits['rest'] = [
+                'left'  => (int) $calls[1] - $calls[0],
+                'made'  => (int) $calls[0],
+                'limit' => (int) $calls[1],
+            ];
+        }
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
-            'response' => $response,
-            'body'     => $this->jsonDecode($response->getBody()),
+            'response'   => $response,
+            'errors'     => $errors,
+            'body'       => $this->jsonDecode($response->getBody()),
+            'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
         ];
+    }
+
+    /**
+     * Fixes the redirect URI from Shopify location header.
+     *
+     * @param Request $request
+     *
+     * @return void
+     */
+    public function adjustRequestUri(Request $request)
+    {
+        // Check if private access is in use but the URI is not privately accessed
+        if ($this->private) {
+            // Get the request URI
+            $uri = (string) $request->getUri();
+
+            if (strstr($uri, '@') === false) {
+                // Return a modified request with fixed URI
+                return $request->withUri(
+                    $this->getRestUri()->withPath(parse_url($uri, PHP_URL_PATH))
+                );
+            }
+        }
+
+        // Nothing to do, use request passed in
+        return $request;
     }
 
     /**

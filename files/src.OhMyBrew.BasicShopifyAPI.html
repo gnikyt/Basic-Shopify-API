@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <meta charset="utf-8"/>
-    <title>API Documentation</title>
+    <title>my docs</title>
     <meta name="author" content=""/>
     <meta name="description" content=""/>
 
@@ -24,7 +24,7 @@
         <script type="text/javascript">
         function loadExternalCodeSnippets() {
             Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
-                var src = pre.getAttribute('data-src');
+                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
                 var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
                 var language = 'php';
 
@@ -83,7 +83,7 @@
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <i class="icon-ellipsis-vertical"></i>
             </a>
-            <a class="brand" href="../index.html">API Documentation</a>
+            <a class="brand" href="../index.html">my docs</a>
 
             <div class="nav-collapse">
                 <ul class="nav pull-right">
@@ -114,7 +114,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">3</span>
+                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">0</span>
                                 </a>
                             </li>
                             <li>
@@ -144,19 +144,19 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1827010674"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1687149560"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1827010674" class="accordion-body collapse in">
+            <div id="namespace-1687149560" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-807548722"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2036106523"></a>
                                 <a href="../namespaces/OhMyBrew.html" style="margin-left: 30px; padding-left: 0">OhMyBrew</a>
             </div>
-            <div id="namespace-807548722" class="accordion-body collapse ">
+            <div id="namespace-2036106523" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -186,7 +186,7 @@
                                                                     </nav>
 
                     <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
-                    <h1><small></small>BasicShopifyAPI.php</h1>
+                    <h1><small>src/OhMyBrew</small>BasicShopifyAPI.php</h1>
                     <p><em></em></p>
                     
 
@@ -203,8 +203,6 @@
 
                 <aside class="span4 detailsbar">
                     <dl>
-                                                    <dt>Package</dt>
-                            <dd><div class="namespace-wrapper">\Default</div></dd>
                         
                         
                     </dl>
@@ -227,7 +225,7 @@
             <h3 id="source-view-label"></h3>
         </div>
         <div class="modal-body">
-            <pre data-src="../files/BasicShopifyAPI.php.txt" class="language-php line-numbers"></pre>
+            <pre data-src="../files/src/OhMyBrew/BasicShopifyAPI.php.txt" class="language-php line-numbers"></pre>
         </div>
     </div>
 
@@ -268,7 +266,7 @@
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on August 26th, 2018 at 15:05.
+                    on February 26th, 2019 at 00:35.
                 </section>
             </section>
         </section>
