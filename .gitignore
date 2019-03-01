@@ -5,7 +5,9 @@ vendor/
 build/
 bin/
 tests/tmp/
+coverage/
 .phpunit.result*
+.htaccess
 
 # IDE and editor specific files #
 #################################
