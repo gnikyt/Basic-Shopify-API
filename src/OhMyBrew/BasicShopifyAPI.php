@@ -884,6 +884,18 @@ class BasicShopifyAPI
     {
         return strpos($uri, '/admin/oauth/authorize') === false && strpos($uri, '/admin/oauth/access_token') === false;
     }
+    
+    /**
+     * Determines if the request endpoint is /admin/oauth/access_scopes.json
+     *
+     * @param string $uri
+     *
+     * @return bool
+     */
+    protected function isAccessScopesRequest(string $uri)
+    {
+        return strpos($uri, '/admin/oauth/access_scopes.json') !== false;
+    }
 
     /**
      * Versions the API call with the set version.
@@ -894,7 +906,7 @@ class BasicShopifyAPI
      */
     protected function versionPath(string $uri)
     {
-        if ($this->version === null || preg_match(self::VERSION_PATTERN, $uri) || !$this->isAuthableRequest($uri)) {
+        if ($this->version === null || preg_match(self::VERSION_PATTERN, $uri) || $this->isAccessScopesRequest($uri)) {
             // No version set, or already versioned... nothing to do
             return $uri;
         }
