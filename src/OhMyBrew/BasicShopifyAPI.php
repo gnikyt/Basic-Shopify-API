@@ -718,27 +718,32 @@ class BasicShopifyAPI
                 $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
             }
 
-            env('SHOPIFY_SDK_DEBUG')
-                ?: \Log::info("Request: $type - $uri - ".print_r($guzzleParams, true));
+            !env('SHOPIFY_SDK_DEBUG')
+                ?: \Log::debug("Request: $type - $uri - ".print_r($guzzleParams, true));
 
             // Set the response
             $response = $this->client->request($type, $uri, $guzzleParams);
             $body = $response->getBody();
 
-            env('SHOPIFY_SDK_DEBUG')
-                ?: \Log::info("Response-Body: ".print_r($body, true));
+            !env('SHOPIFY_SDK_DEBUG')
+                ?: \Log::debug("Response-Status-Code:\n".$response->getStatusCode());
+            !env('SHOPIFY_SDK_DEBUG')
+                ?: \Log::debug("Response-Body:\n".$body->getContents());
+
 
         } catch (Exception $e) {
 
-            env('SHOPIFY_SDK_DEBUG') ?: \Log::error($e->getMessage());
+            \Log::error($e->getMessage());
 
             if ($e instanceof ClientException || $e instanceof ServerException) {
                 // 400 or 500 level error, set the response
                 $response = $e->getResponse();
                 $body = $response->getBody();
 
-                env('SHOPIFY_SDK_DEBUG')
-                    ?: \Log::warning("Exception-Response-Body: ".print_r($body, true));
+                !env('SHOPIFY_SDK_DEBUG')
+                    ?: \Log::debug("Response-Status-Code:\n".$response->getStatusCode());
+                !env('SHOPIFY_SDK_DEBUG')
+                    ?: \Log::debug("Exception-Response-Body:\n".$body->getContents());
 
                 // Build the error object
                 $errors = (object) [
@@ -747,8 +752,8 @@ class BasicShopifyAPI
                     'exception' => $e,
                 ];
             } else {
-                env('SHOPIFY_SDK_DEBUG')
-                    ?: \Log::warning("Exception-Response-Body: ".print_r($body, true));
+                !env('SHOPIFY_SDK_DEBUG')
+                    ?: \Log::debug("Exception-Response-Body:\n".$body->getContents());
                 // Else, rethrow
                 throw $e;
             }
