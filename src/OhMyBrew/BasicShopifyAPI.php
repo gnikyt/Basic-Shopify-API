@@ -2,16 +2,16 @@
 
 namespace OhMyBrew;
 
+use stdClass;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Uri;
-use stdClass;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -742,7 +742,7 @@ class BasicShopifyAPI
 
                 !env('SHOPIFY_SDK_DEBUG')
                     ?: \Log::debug("Response-Status-Code:\n".$response->getStatusCode());
-                !env('SHOPIFY_SDK_DEBUG')
+                !env('SHOPIFY_SDK_DEBUG') OR !$body
                     ?: \Log::debug("Exception-Response-Body:\n".$body->getContents());
 
                 // Build the error object
@@ -752,7 +752,7 @@ class BasicShopifyAPI
                     'exception' => $e,
                 ];
             } else {
-                !env('SHOPIFY_SDK_DEBUG')
+                !env('SHOPIFY_SDK_DEBUG') OR !$body
                     ?: \Log::debug("Exception-Response-Body:\n".$body->getContents());
                 // Else, rethrow
                 throw $e;
