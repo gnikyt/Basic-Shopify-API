@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\Test;
+namespace Osiset\Test;
 
 use Exception;
 use GuzzleHttp\Psr7\Response;
-use OhMyBrew\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI;
 
 class GraphApiTest extends BaseTest
 {

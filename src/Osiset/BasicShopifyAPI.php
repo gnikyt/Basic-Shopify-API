@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew;
+namespace Osiset;
 
 use Closure;
 use Exception;

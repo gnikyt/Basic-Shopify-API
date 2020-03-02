@@ -1,9 +1,9 @@
 # Basic Shopify API
 
-[![Build Status](https://travis-ci.org/ohmybrew/Basic-Shopify-API.svg?branch=master)](http://travis-ci.org/ohmybrew/Basic-Shopify-API)
-[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/Basic-Shopify-API/badge.svg?branch=master)](https://coveralls.io/github/ohmybrew/Basic-Shopify-API?branch=master)
+[![Build Status](https://travis-ci.org/osiset/Basic-Shopify-API.svg?branch=master)](http://travis-ci.org/osiset/Basic-Shopify-API)
+[![Coverage Status](https://coveralls.io/repos/github/osiset/Basic-Shopify-API/badge.svg?branch=master)](https://coveralls.io/github/osiset/Basic-Shopify-API?branch=master)
 [![StyleCI](https://styleci.io/repos/61004776/shield?branch=master)](https://styleci.io/repos/61004776)
-[![License](https://poser.pugx.org/ohmybrew/basic-shopify-api/license)](https://packagist.org/packages/ohmybrew/basic-shopify-api)
+[![License](https://poser.pugx.org/osiset/basic-shopify-api/license)](https://packagist.org/packages/osiset/basic-shopify-api)
 
 A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify, and basic rate limiting abilities. It contains helpful methods for generating a installation URL, an authorize URL (offline and per-user), HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
 
@@ -47,11 +47,11 @@ This library required PHP >= 7.
 
 The recommended way to install is [through composer](http://packagist.org).
 
-    $ composer require ohmybrew/basic-shopify-api
+    $ composer require osiset/basic-shopify-api
 
 ## Usage
 
-Add `use OhMyBrew\BasicShopifyAPI;` to your imports.
+Add `use Osiset\BasicShopifyAPI;` to your imports.
 
 ### Public API
 
@@ -464,8 +464,8 @@ $api->setLogger(... your logger instance ...);
 
 ## Documentation
 
-Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
+Code documentation is [available here](https://osiset.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
 
 ## LICENSE
 
-This project is released under the MIT [license](https://github.com/ohmybrew/Basic-Shopify-API/blob/master/LICENSE).
+This project is released under the MIT [license](https://github.com/osiset/Basic-Shopify-API/blob/master/LICENSE).

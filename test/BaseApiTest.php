@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\Test;
+namespace Osiset\Test;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
-use OhMyBrew\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI;
 use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionMethod;

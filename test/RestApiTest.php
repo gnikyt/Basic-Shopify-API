@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\Test;
+namespace Osiset\Test;
 
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use OhMyBrew\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI;
 use ReflectionClass;
 
 class RestApiTest extends BaseTest

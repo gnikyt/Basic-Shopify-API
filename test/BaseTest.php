@@ -1,12 +1,12 @@
 <?php
 
-namespace OhMyBrew\Test;
+namespace Osiset\Test;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use OhMyBrew\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI;
 use PHPUnit\Framework\TestCase;
 
 abstract class BaseTest extends TestCase
