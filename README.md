@@ -47,7 +47,7 @@ This library required PHP >= 7.
 
 The recommended way to install is [through composer](http://packagist.org).
 
-    $ composer require osiset/basic-shopify-api
+    composer require osiset/basic-shopify-api
 
 ## Usage
 
