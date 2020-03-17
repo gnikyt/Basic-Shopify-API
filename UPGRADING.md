@@ -1,5 +1,9 @@
 # Upgrading
 
+# v7.x.x -> v8.0.0
+
+No upgrading required.
+
 # v6.x.x -> v7.0.0
 
 No upgrading required.
