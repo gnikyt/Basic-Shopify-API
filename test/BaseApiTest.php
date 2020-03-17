@@ -134,24 +134,29 @@ class BaseApiTest extends BaseTest
         $isRestRequest->setAccessible(true);
         $isAuthableRequest = new ReflectionMethod($api, 'isAuthableRequest');
         $isAuthableRequest->setAccessible(true);
+        $isVersionableRequest = new ReflectionMethod($api, 'isVersionableRequest');
+        $isVersionableRequest->setAccessible(true);
 
         // REST
         $uri = $api->getBaseUri()->withPath('/admin/shop.json');
         $this->assertFalse($isGraphRequest->invoke($api, $uri));
         $this->assertTrue($isRestRequest->invoke($api, $uri));
         $this->assertTrue($isAuthableRequest->invoke($api, $uri));
+        $this->assertTrue($isVersionableRequest->invoke($api, $uri));
 
         // Graph
         $uri = $api->getBaseUri()->withPath('/admin/api/graphql.json');
         $this->assertTrue($isGraphRequest->invoke($api, $uri));
         $this->assertFalse($isRestRequest->invoke($api, $uri));
         $this->assertTrue($isAuthableRequest->invoke($api, $uri));
+        $this->assertTrue($isVersionableRequest->invoke($api, $uri));
 
         // Token
-        $uri = $api->getBaseUri()->withPath('/admin/oauth/access_token');
+        $uri = $api->getBaseUri()->withPath('/admin/oauth/access_scopes');
         $this->assertFalse($isGraphRequest->invoke($api, $uri));
         $this->assertTrue($isRestRequest->invoke($api, $uri));
-        $this->assertFalse($isAuthableRequest->invoke($api, $uri));
+        $this->assertTrue($isAuthableRequest->invoke($api, $uri));
+        $this->assertFalse($isVersionableRequest->invoke($api, $uri));
     }
 
     /**

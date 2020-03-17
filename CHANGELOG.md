@@ -4,6 +4,7 @@
 
 + Added return types to all functions.
 + Added async support for GraphQL via `graphAsync`.
++ Added support for call to `/admin/oauth/access_scopes.json`.
 
 # 6.1.2
 
