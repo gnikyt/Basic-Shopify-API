@@ -962,9 +962,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @param string $json The JSON body.
      *
-     * @return object The decoded JSON.
+     * @return stdClass The decoded JSON.
      */
-    protected function jsonDecode($json): object
+    protected function jsonDecode($json): stdClass
     {
         // From firebase/php-jwt
         if (!(defined('JSON_C_VERSION') && PHP_INT_SIZE > 4)) {
@@ -1115,7 +1115,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function updateGraphCallLimits($body): void
+    protected function updateGraphCallLimits(object $body): void
     {
         if (!property_exists($body, 'extensions') || !property_exists($body->extensions, 'cost')) {
             return;
