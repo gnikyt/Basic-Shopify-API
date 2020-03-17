@@ -39,6 +39,7 @@ jobs:
       run: composer run-script test
 
     - name: Upload coverage results
+      if: matrix.php-verions !== '7.1'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
