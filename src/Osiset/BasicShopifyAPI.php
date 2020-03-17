@@ -342,7 +342,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Sets the user (public apps).
      *
-     * @param object $user The user returned from the access request.
+     * @param stdClass $user The user returned from the access request.
      *
      * @return self
      */
@@ -688,9 +688,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
          *
          * @param ResponseInterface $resp The response object.
          *
-         * @return object
+         * @return stdClass
          */
-        $successFn = function (ResponseInterface $resp): object {
+        $successFn = function (ResponseInterface $resp): stdClass {
             // Grab the data result and extensions
             $body = $this->jsonDecode($resp->getBody());
             $tmpTimestamp = $this->updateGraphCallLimits($body);
@@ -742,7 +742,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @throws Exception
      *
-     * @return object|Promise An Object of the Guzzle response, and JSON-decoded body OR a promise.
+     * @return stdClass|Promise An Object of the Guzzle response, and JSON-decoded body OR a promise.
      */
     public function rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
     {
@@ -780,9 +780,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
          *
          * @param ResponseInterface $resp The response object.
          *
-         * @return object
+         * @return stdClass
          */
-        $successFn = function (ResponseInterface $resp) use ($uri, $type, $tmpTimestamp): object {
+        $successFn = function (ResponseInterface $resp) use ($uri, $type, $tmpTimestamp): stdClass {
             $body = $resp->getBody();
             $status = $resp->getStatusCode();
 
@@ -811,9 +811,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
          *
          * @param RequestException $e The request exception object.
          *
-         * @return object
+         * @return stdClass
          */
-        $errorFn = function (RequestException $e) use ($uri, $type, $tmpTimestamp): object {
+        $errorFn = function (RequestException $e) use ($uri, $type, $tmpTimestamp): stdClass {
             $resp = $e->getResponse();
             $body = $resp->getBody();
             $status = $resp->getStatusCode();
@@ -1142,9 +1142,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Processes the "Link" header.
      *
-     * @return object
+     * @return stdClass
      */
-    protected function extractLinkHeader(string $header): object
+    protected function extractLinkHeader(string $header): stdClass
     {
         $links = [
             'next'     => null,
