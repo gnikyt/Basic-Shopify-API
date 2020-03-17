@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# 7.0.0
+# 8.0.0
 
 + Added return types to all functions.
 + Added async support for GraphQL via `graphAsync`.
