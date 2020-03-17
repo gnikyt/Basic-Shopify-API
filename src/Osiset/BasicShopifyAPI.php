@@ -1111,11 +1111,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Updates the GraphQL API call limits from the response body.
      *
-     * @param object $body The GraphQL response body.
+     * @param stdClass $body The GraphQL response body.
      *
      * @return void
      */
-    protected function updateGraphCallLimits(object $body): void
+    protected function updateGraphCallLimits(stdClass $body): void
     {
         if (!property_exists($body, 'extensions') || !property_exists($body->extensions, 'cost')) {
             return;
