@@ -3,18 +3,19 @@
 namespace Osiset;
 
 use Closure;
-use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Uri;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use stdClass;
+use Exception;
+use Psr\Log\LogLevel;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use Psr\Log\LoggerInterface;
+use GuzzleHttp\Promise\Promise;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\RequestException;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -195,7 +196,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return bool
      */
-    public function isPrivate()
+    public function isPrivate(): bool
     {
         return $this->private === true;
     }
@@ -205,7 +206,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return bool
      */
-    public function isPublic()
+    public function isPublic(): bool
     {
         return !$this->isPrivate();
     }
@@ -217,21 +218,22 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return self
      */
-    public function setClient(Client $client)
+    public function setClient(Client $client): self
     {
         $this->client = $client;
-
         return $this;
     }
 
     /**
      * Sets the version of Shopify API to use.
      *
-     * @param string $version
+     * @param string $version The API version.
+     *
+     * @throws Exception if version does not match.
      *
      * @return self
      */
-    public function setVersion(string $version)
+    public function setVersion(string $version): self
     {
         if (!preg_match(self::VERSION_PATTERN, $version)) {
             // Invalid version string
@@ -239,16 +241,15 @@ class BasicShopifyAPI implements LoggerAwareInterface
         }
 
         $this->version = $version;
-
         return $this;
     }
 
     /**
      * Returns the current in-use API version.
      *
-     * @return string
+     * @return string|null
      */
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
@@ -260,19 +261,18 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return self
      */
-    public function setShop(string $shop)
+    public function setShop(string $shop): self
     {
         $this->shop = $shop;
-
         return $this;
     }
 
     /**
      * Gets the Shopify domain (*.myshopify.com) we're working with.
      *
-     * @return string
+     * @return string|null
      */
-    public function getShop()
+    public function getShop(): ?string
     {
         return $this->shop;
     }
@@ -284,19 +284,18 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return self
      */
-    public function setAccessToken(string $accessToken)
+    public function setAccessToken(string $accessToken): self
     {
         $this->accessToken = $accessToken;
-
         return $this;
     }
 
     /**
      * Gets the access token.
      *
-     * @return string
+     * @return string|null
      */
-    public function getAccessToken()
+    public function getAccessToken(): ?string
     {
         return $this->accessToken;
     }
@@ -304,65 +303,61 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Sets the API key for use with the Shopify API (public or private apps).
      *
-     * @param string $apiKey The API key
+     * @param string $apiKey The API key.
      *
      * @return self
      */
-    public function setApiKey(string $apiKey)
+    public function setApiKey(string $apiKey): self
     {
         $this->apiKey = $apiKey;
-
         return $this;
     }
 
     /**
      * Sets the API secret for use with the Shopify API (public apps).
      *
-     * @param string $apiSecret The API secret key
+     * @param string $apiSecret The API secret key.
      *
      * @return self
      */
-    public function setApiSecret(string $apiSecret)
+    public function setApiSecret(string $apiSecret): self
     {
         $this->apiSecret = $apiSecret;
-
         return $this;
     }
 
     /**
      * Sets the API password for use with the Shopify API (private apps).
      *
-     * @param string $apiPassword The API password
+     * @param string $apiPassword The API password.
      *
      * @return self
      */
-    public function setApiPassword(string $apiPassword)
+    public function setApiPassword(string $apiPassword): self
     {
         $this->apiPassword = $apiPassword;
-
         return $this;
     }
 
     /**
      * Sets the user (public apps).
      *
-     * @param stdClass $user The user returned from the access request.
+     * @param object $user The user returned from the access request.
      *
      * @return self
      */
-    public function setUser(stdClass $user)
+    public function setUser(stdClass $user): self
     {
         $this->user = $user;
-
         return $this;
     }
 
     /**
      * Gets the user.
      *
-     * @return stdClass
+     * @return object|null
      */
-    public function getUser()
+    public function getUser(): ?object
     {
         return $this->user;
     }
@@ -372,7 +367,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return bool
      */
-    public function hasUser()
+    public function hasUser(): bool
     {
         return $this->user !== null;
     }
@@ -385,7 +380,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return self
      */
-    public function enableRateLimiting(int $cycle = null, int $buffer = null)
+    public function enableRateLimiting(int $cycle = null, int $buffer = null): self
     {
         $this->rateLimitingEnabled = true;
 
@@ -405,10 +400,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return self
      */
-    public function disableRateLimiting()
+    public function disableRateLimiting(): self
     {
         $this->rateLimitingEnabled = false;
-
         return $this;
     }
 
@@ -417,7 +411,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return bool
      */
-    public function isRateLimitingEnabled()
+    public function isRateLimitingEnabled(): bool
     {
         return $this->rateLimitingEnabled === true;
     }
@@ -430,7 +424,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return self
      */
-    public function setSession(string $shop, string $accessToken)
+    public function setSession(string $shop, string $accessToken): self
     {
         $this->setShop($shop);
         $this->setAccessToken($accessToken);
@@ -445,9 +439,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
      * @param string  $accessToken The access token for API requests
      * @param Closure $closure     The closure to run isolated
      *
-     * @throws \Exception When closure is missing or not callable
+     * @throws Exception When closure is missing or not callable
      *
-     * @return self
+     * @return mixed
      */
     public function withSession(string $shop, string $accessToken, Closure $closure)
     {
@@ -463,9 +457,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Returns the base URI to use.
      *
-     * @return \Guzzle\Psr7\Uri
+     * @throws Exception for missing shop domain.
+     *
+     * @return Uri
      */
-    public function getBaseUri()
+    public function getBaseUri(): Uri
     {
         if ($this->shop === null) {
             // Shop is required
@@ -476,16 +472,18 @@ class BasicShopifyAPI implements LoggerAwareInterface
     }
 
     /**
-     * Gets the authentication URL for Shopify to allow the user to accept the app (for public apps).
+     * Gets the auth URL for Shopify to allow the user to accept the app (for public apps).
      *
-     * @param string|array $scopes      The API scopes as a comma seperated string or array
+     * @param string|array $scopes      The API scopes as a comma seperated string or array.
      * @param string       $redirectUri The valid redirect URI for after acceptance of the permissions.
      *                                  It must match the redirect_uri in your app settings.
      * @param string|null  $mode        The API access mode, offline or per-user.
      *
-     * @return string Formatted URL
+     * @throws Exception for missing API key.
+     *
+     * @return string Formatted URL.
      */
-    public function getAuthUrl($scopes, string $redirectUri, string $mode = 'offline')
+    public function getAuthUrl($scopes, string $redirectUri, string $mode = 'offline'): string
     {
         if ($this->apiKey === null) {
             throw new Exception('API key is missing');
@@ -500,12 +498,12 @@ class BasicShopifyAPI implements LoggerAwareInterface
             'scope'        => $scopes,
             'redirect_uri' => $redirectUri,
         ];
-
         if ($mode !== null && $mode !== 'offline') {
             $query['grant_options'] = [$mode];
         }
 
-        return (string) $this->getBaseUri()
+        return (string) $this
+            ->getBaseUri()
             ->withPath('/admin/oauth/authorize')
             ->withQuery(
                 preg_replace('/\%5B\d+\%5D/', '%5B%5D', http_build_query($query))
@@ -515,11 +513,13 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Verify the request is from Shopify using the HMAC signature (for public apps).
      *
-     * @param array $params The request parameters (ex. $_GET)
+     * @param array $params The request parameters (ex. $_GET).
      *
-     * @return bool If the HMAC is validated
+     * @throws Exception for missing API secret.
+     *
+     * @return bool If the HMAC is validated.
      */
-    public function verifyRequest(array $params)
+    public function verifyRequest(array $params): bool
     {
         if ($this->apiSecret === null) {
             // Secret is required
@@ -545,15 +545,15 @@ class BasicShopifyAPI implements LoggerAwareInterface
     }
 
     /**
-     * Gets the access object from a "code" supplied by Shopify request after successfull authentication (for public apps).
+     * Gets the access object from a "code" supplied by Shopify request after successfull auth (for public apps).
      *
-     * @param string $code The code from Shopify
+     * @param string $code The code from Shopify.
      *
-     * @throws \Exception When API secret is missing
+     * @throws Exception When API secret is missing.
      *
-     * @return array The access object
+     * @return object The access object.
      */
-    public function requestAccess(string $code)
+    public function requestAccess(string $code): object
     {
         if ($this->apiSecret === null || $this->apiKey === null) {
             // Key and secret required
@@ -575,20 +575,19 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
         // Decode the response body
         $body = json_decode($request->getBody());
-
         $this->log('RequestAccess response: '.json_encode($body));
 
         return $body;
     }
 
     /**
-     * Gets the access token from a "code" supplied by Shopify request after successfull authentication (for public apps).
+     * Gets the access token from a "code" supplied by Shopify request after successfull auth (for public apps).
      *
-     * @param string $code The code from Shopify
+     * @param string $code The code from Shopify.
      *
-     * @return string The access token
+     * @return string The access token.
      */
-    public function requestAccessToken(string $code)
+    public function requestAccessToken(string $code): string
     {
         return $this->requestAccess($code)->access_token;
     }
@@ -596,11 +595,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Gets the access object from a "code" and sets it to the instance (for public apps).
      *
-     * @param string $code The code from Shopify
+     * @param string $code The code from Shopify.
      *
      * @return void
      */
-    public function requestAndSetAccess(string $code)
+    public function requestAndSetAccess(string $code): void
     {
         $access = $this->requestAccess($code);
 
@@ -627,11 +626,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Returns the current API call limits.
      *
-     * @param string|null $key The key to grab (left, made, limit, etc)
+     * @param string|null $key The key to grab (left, made, limit, etc).
      *
-     * @throws \Exception When attempting to grab a key that doesn't exist
+     * @throws Exception When attempting to grab a key that doesn't exist.
      *
-     * @return array An array of the Guzzle response, and JSON-decoded body
+     * @return mixed Either whole array of call data or single key.
      */
     public function getApiCalls(string $type = 'rest', string $key = null)
     {
@@ -653,63 +652,97 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Runs a request to the Shopify API.
      *
-     * @param string $query     The GraphQL query
-     * @param array  $variables The optional variables for the query
+     * @param string $query     The GraphQL query.
+     * @param array  $variables The optional variables for the query.
+     * @param bool   $sync      Optionally wait for the request to finish.
      *
-     * @throws \Exception When missing api password is missing for private apps
-     * @throws \Exception When missing access key is missing for public apps
+     * @throws Exception When missing api password is missing for private apps.
+     * @throws Exception When missing access key is missing for public apps.
      *
-     * @return object An Object of the Guzzle response, and JSON-decoded body
+     * @return object|Promise An Object of the Guzzle response, and JSON-decoded body.
      */
-    public function graph(string $query, array $variables = [])
+    public function graph(string $query, array $variables = [], bool $sync = true): object
     {
+        // Request function
+        $requestFn = function (array $request) use ($sync) {
+            // Encode the request
+            $json = json_encode($request);
+            $this->log("Graph request: {$json}");
+
+            // Update the timestamp of the request
+            $this->updateRequestTime();
+
+            // Run the request
+            $fn = $sync ? 'request' : 'requestAsync';
+            return $this->client->{$fn}(
+                'POST',
+                $this->getBaseUri()->withPath(
+                    $this->versionPath('/admin/api/graphql.json')
+                ),
+                ['body' => $json]
+            );
+        };
+
+        /**
+         * Success function.
+         *
+         * @param ResponseInterface $resp The response object.
+         *
+         * @return object
+         */
+        $successFn = function (ResponseInterface $resp): object {
+            // Grab the data result and extensions
+            $body = $this->jsonDecode($resp->getBody());
+            $tmpTimestamp = $this->updateGraphCallLimits($body);
+            $this->log('Graph response: '.json_encode(property_exists($body, 'errors') ? $body->errors : $body->data));
+
+            // Return Guzzle response and JSON-decoded body
+            return (object) [
+                'response'   => $resp,
+                'body'       => property_exists($body, 'errors') ? $body->errors : $body->data,
+                'errors'     => property_exists($body, 'errors'),
+                'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
+            ];
+        };
+
         // Build the request
         $request = ['query' => $query];
         if (count($variables) > 0) {
             $request['variables'] = $variables;
         }
 
-        // Update the timestamp of the request
-        $this->updateRequestTime();
+        if ($sync === false) {
+            // Async request
+            $promise = $requestFn($request);
+            return $promise->then($successFn);
+        } else {
+            // Sync request (default)
+            return $successFn($requestFn($request));
+        }
+    }
 
-        // Create the request, pass the access token and optional parameters
-        $req = json_encode($request);
-        $response = $this->client->request(
-            'POST',
-            $this->getBaseUri()->withPath(
-                $this->versionPath('/admin/api/graphql.json')
-            ),
-            ['body' => $req]
-        );
-        $this->log("Graph request: {$req}");
-
-        // Grab the data result and extensions
-        $body = $this->jsonDecode($response->getBody());
-        $tmpTimestamp = $this->updateGraphCallLimits($body);
-
-        $this->log('Graph response: '.json_encode(property_exists($body, 'errors') ? $body->errors : $body->data));
-
-        // Return Guzzle response and JSON-decoded body
-        return (object) [
-            'response'   => $response,
-            'body'       => property_exists($body, 'errors') ? $body->errors : $body->data,
-            'errors'     => property_exists($body, 'errors'),
-            'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
-        ];
+    /**
+     * Runs a request to the Shopify API (async).
+     *
+     * @see graph
+     */
+    public function graphAsync(string $query, array $variables = []): Promise
+    {
+        return $this->graph($query, $variables, false);
     }
 
     /**
      * Runs a request to the Shopify API.
      *
-     * @param string     $type    The type of request... GET, POST, PUT, DELETE
-     * @param string     $path    The Shopify API path... /admin/xxxx/xxxx.json
-     * @param array|null $params  Optional parameters to send with the request
-     * @param array      $headers Optional headers to append to the request
-     * @param bool       $wait    Optionally wait for the request to finish.
+     * @param string     $type    The type of request... GET, POST, PUT, DELETE.
+     * @param string     $path    The Shopify API path... /admin/xxxx/xxxx.json.
+     * @param array|null $params  Optional parameters to send with the request.
+     * @param array      $headers Optional headers to append to the request.
+     * @param bool       $sync    Optionally wait for the request to finish.
      *
      * @throws Exception
      *
-     * @return object|Promise\Promise An Object of the Guzzle response, and JSON-decoded body OR a promise.
+     * @return object|Promise An Object of the Guzzle response, and JSON-decoded body OR a promise.
      */
     public function rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
     {
@@ -739,12 +772,17 @@ class BasicShopifyAPI implements LoggerAwareInterface
         // Request function
         $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
             $fn = $sync ? 'request' : 'requestAsync';
-
             return $this->client->{$fn}($type, $uri, $guzzleParams);
         };
 
-        // Success function
-        $successFn = function (ResponseInterface $resp) use ($uri, $type, $tmpTimestamp) {
+        /**
+         * Success function.
+         *
+         * @param ResponseInterface $resp The response object.
+         *
+         * @return object
+         */
+        $successFn = function (ResponseInterface $resp) use ($uri, $type, $tmpTimestamp): object {
             $body = $resp->getBody();
             $status = $resp->getStatusCode();
 
@@ -768,8 +806,14 @@ class BasicShopifyAPI implements LoggerAwareInterface
             ];
         };
 
-        // Error function
-        $errorFn = function (RequestException $e) use ($uri, $type, $tmpTimestamp) {
+        /**
+         * Error function.
+         *
+         * @param RequestException $e The request exception object.
+         *
+         * @return object
+         */
+        $errorFn = function (RequestException $e) use ($uri, $type, $tmpTimestamp): object {
             $resp = $e->getResponse();
             $body = $resp->getBody();
             $status = $resp->getStatusCode();
@@ -802,7 +846,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
         if ($sync === false) {
             // Async request
             $promise = $requestFn();
-
             return $promise->then($successFn, $errorFn);
         } else {
             // Sync request (default)
@@ -818,18 +861,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
      * Runs a request to the Shopify API (async).
      * Alias for `rest` with `sync` param set to `false`.
      *
-     * @param string     $type    The type of request... GET, POST, PUT, DELETE
-     * @param string     $path    The Shopify API path... /admin/xxxx/xxxx.json
-     * @param array|null $params  Optional parameters to send with the request
-     * @param array      $headers Optional headers to append to the request
-     *
-     * @throws Exception
-     *
      * @see rest
-     *
-     * @return object|Promise\Promise An Object of the Guzzle response, and JSON-decoded body OR a promise.
      */
-    public function restAsync(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
+    public function restAsync(string $type, string $path, array $params = null, array $headers = []): Promise
     {
         return $this->rest($type, $path, $params, $headers, false);
     }
@@ -838,11 +872,14 @@ class BasicShopifyAPI implements LoggerAwareInterface
      * Ensures we have the proper request for private and public calls.
      * Also modifies issues with redirects.
      *
-     * @param Request $request
+     * @param Request $request The request object.
+     *
+     * @throws Exception for missing API key or password for private apps.
+     * @throws Exception for missing access token on GraphQL calls.
      *
      * @return void
      */
-    public function authRequest(Request $request)
+    public function authRequest(Request $request): Request
     {
         // Get the request URI
         $uri = $request->getUri();
@@ -865,10 +902,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
                 }
 
                 // Public: Add the token header
-                return $request->withHeader(
-                    'X-Shopify-Access-Token',
-                    $this->accessToken
-                );
+                return $request->withHeader('X-Shopify-Access-Token', $this->accessToken);
             } else {
                 // Checks for Graph
                 if ($this->private && ($this->apiPassword === null && $this->accessToken === null)) {
@@ -893,13 +927,14 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Sets a logger instance on the object.
      *
-     * @param LoggerInterface $logger
+     * @param LoggerInterface $logger The logger instance.
      *
-     * @return void
+     * @return self
      */
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
+        return $this;
     }
 
     /**
@@ -910,7 +945,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return bool
      */
-    public function log(string $msg, string $level = LogLevel::DEBUG)
+    public function log(string $msg, string $level = LogLevel::DEBUG): bool
     {
         if ($this->logger === null) {
             // No logger, do nothing
@@ -919,18 +954,17 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
         // Call the logger by level and pass the message
         call_user_func([$this->logger, $level], self::LOG_KEY.' '.$msg);
-
         return true;
     }
 
     /**
      * Decodes the JSON body.
      *
-     * @param string $json The JSON body
+     * @param string $json The JSON body.
      *
-     * @return object The decoded JSON
+     * @return object The decoded JSON.
      */
-    protected function jsonDecode($json)
+    protected function jsonDecode($json): object
     {
         // From firebase/php-jwt
         if (!(defined('JSON_C_VERSION') && PHP_INT_SIZE > 4)) {
@@ -960,11 +994,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Determines if the request is to Graph API.
      *
-     * @param string $uri
+     * @param string $uri The request URI.
      *
      * @return bool
      */
-    protected function isGraphRequest(string $uri)
+    protected function isGraphRequest(string $uri): bool
     {
         return strpos($uri, 'graphql.json') !== false;
     }
@@ -972,11 +1006,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Determines if the request is to REST API.
      *
-     * @param string $uri
+     * @param string $uri The request URI.
      *
      * @return bool
      */
-    protected function isRestRequest(string $uri)
+    protected function isRestRequest(string $uri): bool
     {
         return $this->isGraphRequest($uri) === false;
     }
@@ -984,11 +1018,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Determines if the request requires auth headers.
      *
-     * @param string $uri
+     * @param string $uri The request URI.
      *
      * @return bool
      */
-    protected function isAuthableRequest(string $uri)
+    protected function isAuthableRequest(string $uri): bool
     {
         return preg_match('/\/admin\/oauth\/(authorize|access_token|access_scopes)/', $uri) === 0;
     }
@@ -996,11 +1030,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Versions the API call with the set version.
      *
-     * @param string $uri
+     * @param string $uri The request URI.
      *
      * @return string
      */
-    protected function versionPath(string $uri)
+    protected function versionPath(string $uri): string
     {
         if ($this->version === null || preg_match(self::VERSION_PATTERN, $uri) || !$this->isAuthableRequest($uri)) {
             // No version set, or already versioned... nothing to do
@@ -1021,7 +1055,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function handleRateLimiting()
+    protected function handleRateLimiting(): void
     {
         if (!$this->isRateLimitingEnabled() || !$this->requestTimestamp) {
             return;
@@ -1041,9 +1075,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Updates the request time.
      *
-     * @return float
+     * @return float|null
      */
-    protected function updateRequestTime()
+    protected function updateRequestTime(): ?float
     {
         $tmpTimestamp = $this->requestTimestamp;
         $this->requestTimestamp = microtime(true);
@@ -1058,7 +1092,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function updateRestCallLimits(ResponseInterface $resp)
+    protected function updateRestCallLimits(ResponseInterface $resp): void
     {
         // Grab the API call limit header returned from Shopify
         $callLimitHeader = $resp->getHeader('http_x_shopify_shop_api_call_limit');
@@ -1081,7 +1115,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function updateGraphCallLimits($body)
+    protected function updateGraphCallLimits($body): void
     {
         if (!property_exists($body, 'extensions') || !property_exists($body->extensions, 'cost')) {
             return;
@@ -1090,21 +1124,27 @@ class BasicShopifyAPI implements LoggerAwareInterface
         // Update the API call information
         $calls = $body->extensions->cost;
         $this->apiCallLimits['graph'] = [
-            'left'          => (int) $calls->throttleStatus->currentlyAvailable,
-            'made'          => (int) ($calls->throttleStatus->maximumAvailable - $calls->throttleStatus->currentlyAvailable),
-            'limit'         => (int) $calls->throttleStatus->maximumAvailable,
-            'restoreRate'   => (int) $calls->throttleStatus->restoreRate,
-            'requestedCost' => (int) $calls->requestedQueryCost,
-            'actualCost'    => (int) $calls->actualQueryCost,
+            'left'          => (int)
+                $calls->throttleStatus->currentlyAvailable,
+            'made'          => (int)
+                ($calls->throttleStatus->maximumAvailable - $calls->throttleStatus->currentlyAvailable),
+            'limit'         => (int)
+                $calls->throttleStatus->maximumAvailable,
+            'restoreRate'   => (int)
+                $calls->throttleStatus->restoreRate,
+            'requestedCost' => (int)
+                $calls->requestedQueryCost,
+            'actualCost'    => (int)
+                $calls->actualQueryCost,
         ];
     }
 
     /**
      * Processes the "Link" header.
      *
-     * @return string|null
+     * @return object
      */
-    protected function extractLinkHeader(string $header)
+    protected function extractLinkHeader(string $header): object
     {
         $links = [
             'next'     => null,

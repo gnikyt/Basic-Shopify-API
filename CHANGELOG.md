@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 7.0.0
+
++ Added return types to all functions.
++ Added async support for GraphQL via `graphAsync`.
+
 # 6.1.2
 
 + Fix for REST calls not properly building error object (#47).

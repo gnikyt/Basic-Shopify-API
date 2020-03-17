@@ -88,7 +88,7 @@ $promise->then(function ($result) {
 });
 ```
 
-#### GraphQL
+#### GraphQL (sync)
 
 For GraphQL calls, the shop domain and access token are required.
 
@@ -100,6 +100,23 @@ $api->setAccessToken('your token here');
 
 // Now run your requests...
 $api->graph(...);
+```
+
+#### GraphQL (async)
+
+For GraphQL calls, the shop domain and access token are required.
+
+```php
+$api = new BasicShopifyAPI();
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
+$api->setShop('your shop here');
+$api->setAccessToken('your token here');
+
+// Now run your requests...
+$promise = $api->graphAsync(...);
+$promise->then(function ($result) {
+  // ...
+});
 ```
 
 #### Getting access (offline)

@@ -184,6 +184,34 @@ class GraphApiTest extends BaseTest
     /**
      * @test
      *
+     * Ensure Async requests are working
+     */
+    public function itShouldRunAsyncRequests()
+    {
+        $responses = [
+            new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
+            ),
+        ];
+
+        $api = new BasicShopifyAPI();
+        $this->buildClient($api, $responses);
+
+        $api->setShop('example.myshopify.com');
+        $api->setAccessToken('!@#');
+
+        $promise = $api->graphAsync($this->query[0]);
+        $promise->then(function ($result) {
+            $this->assertEquals(true, is_object($result->body));
+        });
+        $promise->wait();
+    }
+
+    /**
+     * @test
+     *
      * Should process query with variables
      */
     public function itShouldProcessQueryWithVariables()
