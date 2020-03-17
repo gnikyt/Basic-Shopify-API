@@ -551,9 +551,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @throws Exception When API secret is missing.
      *
-     * @return object The access object.
+     * @return stdClass The access object.
      */
-    public function requestAccess(string $code): object
+    public function requestAccess(string $code): stdClass
     {
         if ($this->apiSecret === null || $this->apiKey === null) {
             // Key and secret required
