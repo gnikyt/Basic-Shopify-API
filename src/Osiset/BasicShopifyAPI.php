@@ -355,9 +355,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Gets the user.
      *
-     * @return object|null
+     * @return stdClass|null
      */
-    public function getUser(): ?object
+    public function getUser(): ?stdClass
     {
         return $this->user;
     }
@@ -659,9 +659,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
      * @throws Exception When missing api password is missing for private apps.
      * @throws Exception When missing access key is missing for public apps.
      *
-     * @return object|Promise An Object of the Guzzle response, and JSON-decoded body.
+     * @return stdClass|Promise An Object of the Guzzle response, and JSON-decoded body.
      */
-    public function graph(string $query, array $variables = [], bool $sync = true): object
+    public function graph(string $query, array $variables = [], bool $sync = true)
     {
         // Request function
         $requestFn = function (array $request) use ($sync) {
