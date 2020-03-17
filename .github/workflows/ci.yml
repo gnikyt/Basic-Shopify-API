@@ -24,11 +24,11 @@ jobs:
         coverage: xdebug
         tools: composer
 
-    - name: Validate composer setup
-      run: composer validate
-
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Validate composer setup
+      run: composer validate
 
     - name: Validate code style
       run: |

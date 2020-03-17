@@ -1,8 +1,7 @@
 # Basic Shopify API
 
-[![Build Status](https://travis-ci.org/osiset/Basic-Shopify-API.svg?branch=master)](http://travis-ci.org/osiset/Basic-Shopify-API)
-[![Coverage Status](https://coveralls.io/repos/github/osiset/Basic-Shopify-API/badge.svg?branch=master)](https://coveralls.io/github/osiset/Basic-Shopify-API?branch=master)
-[![StyleCI](https://styleci.io/repos/61004776/shield?branch=master)](https://styleci.io/repos/61004776)
+![Tests](https://github.com/osiset/Basic-Shopify-API/workflows/Package%20Test/badge.svg?branch=master)
+[![Coverage](https://coveralls.io/repos/github/osiset/Basic-Shopify-API/badge.svg?branch=master)](https://coveralls.io/github/osiset/Basic-Shopify-API?branch=master)
 [![License](https://poser.pugx.org/osiset/basic-shopify-api/license)](https://packagist.org/packages/osiset/basic-shopify-api)
 
 A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify, and basic rate limiting abilities. It contains helpful methods for generating a installation URL, an authorize URL (offline and per-user), HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
