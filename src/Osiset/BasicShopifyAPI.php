@@ -836,6 +836,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
             return (object) [
                 'errors'     => true,
                 'status'     => $status,
+                'response'   => $resp,
                 'body'       => $body,
                 'link'       => null,
                 'exception'  => $e,
