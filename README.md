@@ -282,6 +282,16 @@ $promise->then(function ($result) {
 });
 ```
 
+##### Passing additional request options
+
+If you'd like to pass additional request options to the Guzzle client created, pass them as the second argument of the constructor.
+
+```php
+$api = BasicShopifyApi(true, ['connect_timeout' => 3.0]);
+```
+
+In the above, the array in the second argument will be merged into the Guzzle client created.
+
 #### GraphQL
 
 Requests are made using Guzzle.
