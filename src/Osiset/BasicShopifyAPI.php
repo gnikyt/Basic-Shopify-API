@@ -166,11 +166,12 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Constructor.
      *
-     * @param bool $private If this is a private or public app
+     * @param bool  $private       If this is a private or public app.
+     * @param array $clientOptions Additional options to pass to the Guzzle client.
      *
      * @return self
      */
-    public function __construct(bool $private = false)
+    public function __construct(bool $private = false, array $options = [])
     {
         // Set if app is private or public
         $this->private = $private;
@@ -180,13 +181,18 @@ class BasicShopifyAPI implements LoggerAwareInterface
         $stack->push(Middleware::mapRequest([$this, 'authRequest']));
 
         // Create a default Guzzle client with our stack
-        $this->client = new Client([
-            'handler'  => $stack,
-            'headers'  => [
-                'Accept'       => 'application/json',
-                'Content-Type' => 'application/json',
-            ],
-        ]);
+        $this->client = new Client(
+            array_merge(
+                [
+                    'handler'  => $stack,
+                    'headers'  => [
+                        'Accept'       => 'application/json',
+                        'Content-Type' => 'application/json',
+                    ],
+                ],
+                $options
+            )
+        );
 
         return $this;
     }
@@ -815,33 +821,39 @@ class BasicShopifyAPI implements LoggerAwareInterface
          */
         $errorFn = function (RequestException $e) use ($uri, $type, $tmpTimestamp): stdClass {
             $resp = $e->getResponse();
-            $body = $resp->getBody();
-            $status = $resp->getStatusCode();
+            if ($resp) {
+                $body = $resp->getBody();
+                $status = $resp->getStatusCode();
 
-            $this->updateRestCallLimits($resp);
-            $this->log("[{$uri}:{$type}] {$status} Error: {$body}");
+                $this->updateRestCallLimits($resp);
+                $this->log("[{$uri}:{$type}] {$status} Error: {$body}");
 
-            // Build the error object
-            $body = $this->jsonDecode($body);
-            if ($body !== null) {
-                if (property_exists($body, 'errors')) {
-                    $body = $body->errors;
-                } elseif (property_exists($body, 'error')) {
-                    $body = $body->error;
-                } else {
-                    $body = null;
+                // Build the error object
+                $body = $this->jsonDecode($body);
+                if ($body !== null) {
+                    if (property_exists($body, 'errors')) {
+                        $body = $body->errors;
+                    } elseif (property_exists($body, 'error')) {
+                        $body = $body->error;
+                    } else {
+                        $body = null;
+                    }
                 }
+            } else {
+                $status = null;
+                $body = null;
+                $this->log("[{$uri}:{$type}] Unknown Error: {$e->getMessage()}");
             }
 
-            return (object) [
-                'errors'     => true,
-                'status'     => $status,
-                'response'   => $resp,
-                'body'       => $body,
-                'link'       => null,
-                'exception'  => $e,
-                'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
-            ];
+                return (object) [
+                    'errors'     => true,
+                    'status'     => $status,
+                    'response'   => $resp,
+                    'body'       => $body,
+                    'link'       => null,
+                    'exception'  => $e,
+                    'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
+                ];
         };
 
         if ($sync === false) {

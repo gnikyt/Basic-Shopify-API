@@ -2,11 +2,12 @@
 
 namespace Osiset\Test;
 
-use GuzzleHttp\Exception\RequestException;
+use ReflectionClass;
+use Osiset\BasicShopifyAPI;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Osiset\BasicShopifyAPI;
-use ReflectionClass;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 
 class RestApiTest extends BaseTest
 {
@@ -373,6 +374,39 @@ class RestApiTest extends BaseTest
         // Confirm
         $this->assertTrue($result->errors);
         $this->assertEquals($result->body, 'Not Found');
+    }
+
+    /**
+     * @test
+     *
+     * Should catch connection exception and handle it.
+     */
+    public function itShouldCatchConnectionException()
+    {
+        // Fake a bad response
+        $responses = [
+            new ConnectException(
+                null,
+                new Request('GET', 'test'),
+                null
+            ),
+        ];
+
+        $api = new BasicShopifyAPI(true);
+        $mock = $this->buildClient($api, $responses);
+
+        // Make the call
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setApiPassword('abc');
+
+        // Bad route
+        $result = $api->rest('GET', '/admin/shop-oops.json');
+
+        // Confirm
+        $this->assertTrue($result->errors);
+        $this->assertEquals(null, $result->body);
+        $this->assertInstanceOf(ConnectException::class, $result->exception);
     }
 
     /**
