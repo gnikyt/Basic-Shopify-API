@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 8.1.0
+
++ Added response to error callback function (#64)
++ Allow for additional client creation options (#65)
+
 # 8.0.0
 
 + Added return types to all functions.
