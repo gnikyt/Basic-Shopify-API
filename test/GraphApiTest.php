@@ -129,7 +129,9 @@ class GraphApiTest extends BaseTest
         $this->assertEquals(200, $request->response->getStatusCode());
         $this->assertEquals(false, $request->errors);
         $this->assertEquals(true, is_object($request->body));
+        $this->assertEquals(true, is_array($request->bodyArray));
         $this->assertEquals('gift-card', $request->body->shop->products->edges[0]->node->handle);
+        $this->assertEquals('gift-card', $request->bodyArray['shop']['products']['edges'][0]['node']['handle']);
         $this->assertEquals('!@#', $token_header);
 
         // Confirm limits have been updated

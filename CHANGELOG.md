@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 8.2.0
+
++ Added `bodyArray` to response object of rest and graph, this is the same as `body` except instead of a stdClass being returned, its an array.
+
 # 8.1.0
 
 + Added response to error callback function (#64)

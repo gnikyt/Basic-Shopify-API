@@ -127,7 +127,9 @@ class RestApiTest extends BaseTest
         $this->assertInstanceOf('GuzzleHttp\Psr7\Response', $request->response);
         $this->assertEquals(200, $request->response->getStatusCode());
         $this->assertEquals(true, is_object($request->body));
+        $this->assertEquals(true, is_array($request->bodyArray));
         $this->assertEquals('Apple Computers', $request->body->shop->name);
+        $this->assertEquals('Apple Computers', $request->bodyArray['shop']['name']);
         $this->assertEquals('limit=1&page=1', $data);
         $this->assertEquals('!@#', $token_header);
         $this->assertNull($request->link);

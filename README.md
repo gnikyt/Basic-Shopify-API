@@ -262,7 +262,8 @@ You can use the alias `restAsync` to skip setting `sync` to `false`.
 The return value for the request will be an object containing:
 
 + `response` the full Guzzle response object
-+ `body` the JSON decoded response body
++ `body` the JSON decoded response body (stdClass)
++ `bodyArray` the JSON decoded response body (array)
 
 *Note*: `request()` will alias to `rest()` as well.
 
@@ -273,7 +274,8 @@ The return value for the request will be a Guzzle promise which you can handle o
 The return value for the promise will be an object containing:
 
 + `response` the full Guzzle response object
-+ `body` the JSON decoded response body
++ `body` the JSON decoded response body (stdClass)
++ `bodyArray` the JSON decoded response body (array)
 
 ```php
 $promise = $api->restAsync(...);
@@ -306,7 +308,8 @@ $api->graph(string $query, array $variables = []);
 The return value for the request will be an object containing:
 
 + `response` the full Guzzle response object
-+ `body` the JSON decoded response body
++ `body` the JSON decoded response body (stdClass)
++ `bodyArray` the JSON decoded response body (array)
 + `errors` if there was errors or not
 
 Example query:
@@ -455,11 +458,13 @@ $api->setApiPassword('your password here');
 $api->withSession('some-shop.myshopify.com', 'token from database?', function() {
   $request = $this->rest('GET', '/admin/shop.json');
   echo $request->body->shop->name; // Some Shop
+  echo $request->bodyArray['shop']['name'];
 });
 
 $api->withSession('some-shop-two.myshopify.com', 'token from database?', function() {
   $request = $this->rest('GET', '/admin/shop.json');
   echo $request->body->shop->name; // Some Shop Two
+  echo $request->bodyArray['shop']['name'];
 });
 ```
 
@@ -487,6 +492,12 @@ This library accepts a PSR-compatible logger.
 ```php
 $api->setLogger(... your logger instance ...);
 ```
+
+## Roadmap
+
+Eventually I want to remove the single class. This library grew too quick to change in time.
+
+What's on the plan is to separate REST and Graph into its own classes, which inject into the base API class. As well, the response for REST and Graph calls will be an entity who can be accessed both as an object (stdClass) and array at the same time.
 
 ## Documentation
 

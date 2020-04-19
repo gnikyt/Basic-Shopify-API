@@ -698,14 +698,18 @@ class BasicShopifyAPI implements LoggerAwareInterface
          */
         $successFn = function (ResponseInterface $resp): stdClass {
             // Grab the data result and extensions
-            $body = $this->jsonDecode($resp->getBody());
+            $rawBody = $resp->getBody();
+            $body = $this->jsonDecode($rawBody);
+            $bodyArray = $this->jsonDecode($rawBody, true);
             $tmpTimestamp = $this->updateGraphCallLimits($body);
+
             $this->log('Graph response: '.json_encode(property_exists($body, 'errors') ? $body->errors : $body->data));
 
             // Return Guzzle response and JSON-decoded body
             return (object) [
                 'response'   => $resp,
                 'body'       => property_exists($body, 'errors') ? $body->errors : $body->data,
+                'bodyArray'  => isset($bodyArray['errors']) ? $bodyArray['errors'] : $bodyArray['data'],
                 'errors'     => property_exists($body, 'errors'),
                 'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
             ];
@@ -789,11 +793,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
          * @return stdClass
          */
         $successFn = function (ResponseInterface $resp) use ($uri, $type, $tmpTimestamp): stdClass {
-            $body = $resp->getBody();
+            $rawBody = $resp->getBody();
             $status = $resp->getStatusCode();
 
             $this->updateRestCallLimits($resp);
-            $this->log("[{$uri}:{$type}] {$status}: ".json_encode($body));
+            $this->log("[{$uri}:{$type}] {$status}: ".json_encode($rawBody));
 
             // Check for "Link" header
             $link = null;
@@ -806,7 +810,8 @@ class BasicShopifyAPI implements LoggerAwareInterface
                 'errors'     => false,
                 'status'     => $status,
                 'response'   => $resp,
-                'body'       => $this->jsonDecode($body),
+                'body'       => $this->jsonDecode($rawBody),
+                'bodyArray'  => $this->jsonDecode($rawBody, true),
                 'link'       => $link,
                 'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
             ];
@@ -822,38 +827,45 @@ class BasicShopifyAPI implements LoggerAwareInterface
         $errorFn = function (RequestException $e) use ($uri, $type, $tmpTimestamp): stdClass {
             $resp = $e->getResponse();
             if ($resp) {
-                $body = $resp->getBody();
+                $rawBody = $resp->getBody();
                 $status = $resp->getStatusCode();
 
                 $this->updateRestCallLimits($resp);
-                $this->log("[{$uri}:{$type}] {$status} Error: {$body}");
+                $this->log("[{$uri}:{$type}] {$status} Error: {$rawBody}");
 
                 // Build the error object
-                $body = $this->jsonDecode($body);
+                $body = $this->jsonDecode($rawBody);
+                $bodyArray = $this->jsonDecode($rawBody, true);
                 if ($body !== null) {
                     if (property_exists($body, 'errors')) {
                         $body = $body->errors;
+                        $bodyArray = $bodyArray['errors'];
                     } elseif (property_exists($body, 'error')) {
                         $body = $body->error;
+                        $bodyArray = $bodyArray['error'];
                     } else {
                         $body = null;
+                        $bodyArray = null;
                     }
                 }
             } else {
                 $status = null;
                 $body = null;
+                $bodyArray = null;
+
                 $this->log("[{$uri}:{$type}] Unknown Error: {$e->getMessage()}");
             }
 
-                return (object) [
-                    'errors'     => true,
-                    'status'     => $status,
-                    'response'   => $resp,
-                    'body'       => $body,
-                    'link'       => null,
-                    'exception'  => $e,
-                    'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
-                ];
+            return (object) [
+                'errors'     => true,
+                'status'     => $status,
+                'response'   => $resp,
+                'body'       => $body,
+                'bodyArray'  => $bodyArray,
+                'link'       => null,
+                'exception'  => $e,
+                'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
+            ];
         };
 
         if ($sync === false) {
@@ -973,11 +985,12 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Decodes the JSON body.
      *
-     * @param string $json The JSON body.
+     * @param string $json    The JSON body.
+     * @param bool   $asArray Decode as an array.
      *
-     * @return stdClass The decoded JSON.
+     * @return stdClass|array The decoded JSON.
      */
-    protected function jsonDecode($json): stdClass
+    protected function jsonDecode($json, bool $asArray = false)
     {
         // From firebase/php-jwt
         if (!(defined('JSON_C_VERSION') && PHP_INT_SIZE > 4)) {
@@ -986,7 +999,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
              * to specify that large ints (like Steam Transaction IDs) should be treated as
              * strings, rather than the PHP default behaviour of converting them to floats.
              */
-            $obj = json_decode($json, false, 512, JSON_BIGINT_AS_STRING);
+            $obj = json_decode($json, $asArray, 512, JSON_BIGINT_AS_STRING);
         } else {
             // @codeCoverageIgnoreStart
             /**
@@ -997,7 +1010,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
              */
             $maxIntLength = strlen((string) PHP_INT_MAX) - 1;
             $jsonWithoutBigints = preg_replace('/:\s*(-?\d{'.$maxIntLength.',})/', ': "$1"', $json);
-            $obj = json_decode($jsonWithoutBigints);
+            $obj = json_decode($jsonWithoutBigints, $asArray);
             // @codeCoverageIgnoreEnd
         }
 
