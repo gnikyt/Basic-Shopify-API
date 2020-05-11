@@ -3,20 +3,16 @@
 namespace Osiset\BasicShopifyAPI\Middleware;
 
 use Psr\Http\Message\RequestInterface;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Psr\Http\Message\ResponseInterface;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Traits\IsResponseType;
 
 /**
  * Update API limits for REST and GraphQL calls.
  */
 class UpdateApiLimits
 {
-    /**
-     * Header used for REST limits.
-     *
-     * @var string
-     */
-    public const REST_LIMIT_HEADER = 'http_x_shopify_shop_api_call_limit';
+    use IsResponseType;
 
     /**
      * The API instance.
@@ -50,11 +46,11 @@ class UpdateApiLimits
                 $promise = $handler($request, $options);
                 return $promise->then(
                     function (ResponseInterface $response) use ($self, $handler) {
-                        if ($self->isRestRequest($response)) {
+                        if ($self->isRestResponse($response)) {
                             $self->updateRestLimits($response);
                         }
 
-                        if ($self->isGraphRequest($response)) {
+                        if ($self->isGraphResponse($response)) {
                             $self->updateGraphCosts($response);
                         }
 
@@ -63,29 +59,6 @@ class UpdateApiLimits
                 );
             };
         };
-    }
-
-    /**
-     * Check if this is a REST request by sniffing headers.
-     *
-     * @param ResponseInterface $response
-     *
-     * @return bool
-     */
-    protected function isRestRequest(ResponseInterface $response): bool
-    {
-        return $response->hasHeader(self::REST_LIMIT_HEADER);
-    }
-
-    /**
-     * Check if this is a GraphQL request by sniffing headers.
-     *
-     * @param ResponseInterface $response
-     * @return boolean
-     */
-    protected function isGraphRequest(ResponseInterface $response): bool
-    {
-        return !$this->isRestRequest($response);
     }
 
     /**
@@ -134,7 +107,7 @@ class UpdateApiLimits
     protected function updateRestLimits(ResponseInterface $response): void
     {
         // Grab the API call limit header returned from Shopify
-        $header = $response->getHeader(self::REST_LIMIT_HEADER);
+        $header = $response->getHeader('http_x_shopify_shop_api_call_limit');
         if (!$header) {
             // Non-existant, exit
             return;

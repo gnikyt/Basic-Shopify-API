@@ -42,23 +42,15 @@ class Graph extends AbstractClient implements GraphRequester
     protected $lastActualCost;
 
     /**
-     * Update the cost limits.
-     * Used by middleware.
-     *
-     * @param array $limits
-     *
-     * @return self
+     * {@inheritDoc}
      */
-    public function setLimits(array $limits): self
+    public function setLimits(array $limits): void
     {
         $this->limits = $limits;
-        return $this;
     }
 
     /**
-     * Get the cost limits.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getLimits(): array
     {
@@ -66,16 +58,10 @@ class Graph extends AbstractClient implements GraphRequester
     }
 
     /**
-     * Runs a request to the Shopify API.
-     *
-     * @param string $query     The GraphQL query.
-     * @param array  $variables The optional variables for the query.
-     * @param bool   $sync      Optionally wait for the request to finish.
+     * {@inheritDoc}
      *
      * @throws Exception When missing api password is missing for private apps.
      * @throws Exception When missing access key is missing for public apps.
-     *
-     * @return stdClass|Promise An Object of the Guzzle response, and JSON-decoded body.
      */
     public function request(string $query, array $variables = [], bool $sync = true)
     {
@@ -83,9 +69,6 @@ class Graph extends AbstractClient implements GraphRequester
         $requestFn = function (array $request) use ($sync) {
             // Encode the request
             $json = json_encode($request);
-
-            // Update the timestamp of the request
-            $this->updateRequestTime();
 
             // Run the request
             $fn = $sync ? 'request' : 'requestAsync';
