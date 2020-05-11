@@ -10,5 +10,14 @@ use Osiset\BasicShopifyAPI\Contracts\RestRequester;
  */
 class Rest extends AbstractClient implements RestRequester
 {
-
+    /**
+     * The current API call limits from last request.
+     *
+     * @var array
+     */
+    protected $apiCallLimits = [
+        'left'  => 0,
+        'made'  => 0,
+        'limit' => 40,
+    ];
 }

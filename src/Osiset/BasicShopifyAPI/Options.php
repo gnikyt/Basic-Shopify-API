@@ -2,11 +2,20 @@
 
 namespace Osiset\BasicShopifyAPI;
 
+use Exception;
+
 /**
  * Options for the library.
  */
 class Options
 {
+    /**
+     * API version pattern.
+     *
+     * @var string
+     */
+    const VERSION_PATTERN = '/([0-9]{4}-[0-9]{2})|unstable/';
+
     /**
      * Private or public API calls.
      *
@@ -48,6 +57,13 @@ class Options
      * @var int
      */
     protected $graphLimit = 50;
+
+    /**
+     * API version
+     *
+     * @var string|null
+     */
+    protected $version;
 
     /**
      * Additional Guzzle options.
@@ -244,5 +260,35 @@ class Options
     public function getGuzzleOptions(): array
     {
         return $this->guzzleOptions;
+    }
+
+    /**
+     * Sets the version of Shopify API to use.
+     *
+     * @param string $version The API version.
+     *
+     * @throws Exception if version does not match.
+     *
+     * @return self
+     */
+    public function setVersion(string $version): self
+    {
+        if (!preg_match(self::VERSION_PATTERN, $version)) {
+            // Invalid version string
+            throw new Exception('Version string must be of YYYY-MM or unstable');
+        }
+
+        $this->version = $version;
+        return $this;
+    }
+
+    /**
+     * Returns the current in-use API version.
+     *
+     * @return string|null
+     */
+    public function getVersion(): ?string
+    {
+        return $this->version;
     }
 }

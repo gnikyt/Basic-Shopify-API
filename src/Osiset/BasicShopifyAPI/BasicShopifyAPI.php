@@ -18,6 +18,8 @@ use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleRetry\GuzzleRetryMiddleware;
+use Osiset\BasicShopifyAPI\Middleware\AuthRequest;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -29,22 +31,8 @@ use GuzzleHttp\Exception\RequestException;
  * maintainability, right now we do not see a way without breaking
  * changes occruing.
  */
-class BasicShopifyAPI implements LoggerAwareInterface
+class BasicShopifyAPI
 {
-    /**
-     * API version pattern.
-     *
-     * @var string
-     */
-    const VERSION_PATTERN = '/([0-9]{4}-[0-9]{2})|unstable/';
-
-    /**
-     * The key to use for logging (prefix for filtering).
-     *
-     * @var string
-     */
-    const LOG_KEY = '[BasicShopifyAPI]';
-
     /**
      * The Guzzle client.
      *
@@ -53,11 +41,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
     protected $client;
 
     /**
-     * The version of API.
+     * The library options.
      *
-     * @var string
+     * @var Options
      */
-    protected $version;
+    protected $options;
 
     /**
      * The API session.
@@ -65,57 +53,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
      * @var Session
      */
     protected $session;
-
-
-
-    /**
-     * If the API was called with per-user grant option, this will be filled.
-     *
-     * @var stdClass
-     */
-    protected $user;
-
-    /**
-     * The current API call limits from last request.
-     *
-     * @var array
-     */
-    protected $apiCallLimits = [
-        'rest'  => [
-            'left'  => 0,
-            'made'  => 0,
-            'limit' => 40,
-        ],
-        'graph' => [
-            'left'          => 0,
-            'made'          => 0,
-            'limit'         => 1000,
-            'restoreRate'   => 50,
-            'requestedCost' => 0,
-            'actualCost'    => 0,
-        ],
-    ];
-
-    /**
-     * If rate limiting is enabled.
-     *
-     * @var bool
-     */
-    protected $rateLimitingEnabled = false;
-
-    /**
-     * The rate limiting cycle (in ms).
-     *
-     * @var int
-     */
-    protected $rateLimitCycle = 0.5 * 1000;
-
-    /**
-     * The rate limiting cycle buffer (in ms).
-     *
-     * @var int
-     */
-    protected $rateLimitCycleBuffer = 0.1 * 1000;
 
     /**
      * Request timestamp for every new call.
@@ -126,13 +63,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
     protected $requestTimestamp;
 
     /**
-     * The logger.
-     *
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * Constructor.
      *
      * @param Options $options The options for the library setup.
@@ -141,25 +71,16 @@ class BasicShopifyAPI implements LoggerAwareInterface
      */
     public function __construct(Options $options)
     {
+        // Set the options
+        $this->options = $options;
+
         // Create the stack and assign the middleware which attempts to fix redirects
         $stack = HandlerStack::create();
-        $stack->push(Middleware::mapRequest([$this, 'authRequest']));
+        $stack->push((new AuthRequest($this))());
+        $stack->push(GuzzleRetryMiddleware::factory());
 
         // Create a default Guzzle client with our stack
-        $this->client = new Client(
-            array_merge(
-                [
-                    'handler'  => $stack,
-                    'headers'  => [
-                        'Accept'       => 'application/json',
-                        'Content-Type' => 'application/json',
-                    ],
-                ],
-                $options
-            )
-        );
-
-        return $this;
+        $this->client = new Client($this->options->getGuzzleOptions());
     }
 
     /**
@@ -176,66 +97,26 @@ class BasicShopifyAPI implements LoggerAwareInterface
     }
 
     /**
-     * Sets the version of Shopify API to use.
+     * Set options for the library.
      *
-     * @param string $version The API version.
-     *
-     * @throws Exception if version does not match.
+     * @param Options $options
      *
      * @return self
      */
-    public function setVersion(string $version): self
+    public function setOptions(Options $options): self
     {
-        if (!preg_match(self::VERSION_PATTERN, $version)) {
-            // Invalid version string
-            throw new Exception('Version string must be of YYYY-MM or unstable');
-        }
-
-        $this->version = $version;
+        $this->options = $options;
         return $this;
     }
 
     /**
-     * Returns the current in-use API version.
+     * Get the options for the library.
      *
-     * @return string|null
+     * @return Options
      */
-    public function getVersion(): ?string
+    public function getOptions(): Options
     {
-        return $this->version;
-    }
-
-    /**
-     * Sets the user (public apps).
-     *
-     * @param stdClass $user The user returned from the access request.
-     *
-     * @return self
-     */
-    public function setUser(stdClass $user): self
-    {
-        $this->user = $user;
-        return $this;
-    }
-
-    /**
-     * Gets the user.
-     *
-     * @return stdClass|null
-     */
-    public function getUser(): ?stdClass
-    {
-        return $this->user;
-    }
-
-    /**
-     * Checks if we have a user.
-     *
-     * @return bool
-     */
-    public function hasUser(): bool
-    {
-        return $this->user !== null;
+        return $this->options;
     }
 
     /**
@@ -252,6 +133,16 @@ class BasicShopifyAPI implements LoggerAwareInterface
     }
 
     /**
+     * Get the session.
+     *
+     * @return Session|null
+     */
+    public function getSession(): ?Session
+    {
+        return $this->session;
+    }
+
+    /**
      * Accepts a closure to do isolated API calls for a shop.
      *
      * @param Session $session The shop/user session.
@@ -265,7 +156,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
         $clonedApi->setSession($session);
-
         return $closure->call($clonedApi);
     }
 
@@ -700,166 +590,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
     public function restAsync(string $type, string $path, array $params = null, array $headers = []): Promise
     {
         return $this->rest($type, $path, $params, $headers, false);
-    }
-
-    /**
-     * Ensures we have the proper request for private and public calls.
-     * Also modifies issues with redirects.
-     *
-     * @param Request $request The request object.
-     *
-     * @throws Exception for missing API key or password for private apps.
-     * @throws Exception for missing access token on GraphQL calls.
-     *
-     * @return void
-     */
-    public function authRequest(Request $request): Request
-    {
-        // Get the request URI
-        $uri = $request->getUri();
-
-        if ($this->isAuthableRequest((string) $uri)) {
-            if ($this->isRestRequest((string) $uri)) {
-                // Checks for REST
-                if ($this->private && ($this->apiKey === null || $this->apiPassword === null)) {
-                    // Key and password are required for private API calls
-                    throw new Exception('API key and password required for private Shopify REST calls');
-                }
-
-                // Private: Add auth for REST calls
-                if ($this->private) {
-                    // Add the basic auth header
-                    return $request->withHeader(
-                        'Authorization',
-                        'Basic '.base64_encode("{$this->apiKey}:{$this->apiPassword}")
-                    );
-                }
-
-                // Public: Add the token header
-                return $request->withHeader('X-Shopify-Access-Token', $this->accessToken);
-            } else {
-                // Checks for Graph
-                if ($this->private && ($this->apiPassword === null && $this->accessToken === null)) {
-                    // Private apps need password for use as access token
-                    throw new Exception('API password/access token required for private Shopify GraphQL calls');
-                } elseif (!$this->private && $this->accessToken === null) {
-                    // Need access token for public calls
-                    throw new Exception('Access token required for public Shopify GraphQL calls');
-                }
-
-                // Public/Private: Add the token header
-                return $request->withHeader(
-                    'X-Shopify-Access-Token',
-                    $this->apiPassword ?? $this->accessToken
-                );
-            }
-        }
-
-        return $request;
-    }
-
-    /**
-     * Sets a logger instance on the object.
-     *
-     * @param LoggerInterface $logger The logger instance.
-     *
-     * @return self
-     */
-    public function setLogger(LoggerInterface $logger): self
-    {
-        $this->logger = $logger;
-        return $this;
-    }
-
-    /**
-     * Log a message to the logger.
-     *
-     * @param string $msg   The message to send.
-     * @param int    $level The level of message.
-     *
-     * @return bool
-     */
-    public function log(string $msg, string $level = LogLevel::DEBUG): bool
-    {
-        if ($this->logger === null) {
-            // No logger, do nothing
-            return false;
-        }
-
-        // Call the logger by level and pass the message
-        call_user_func([$this->logger, $level], self::LOG_KEY.' '.$msg);
-        return true;
-    }
-
-    /**
-     * Decodes the JSON body.
-     *
-     * @param string $json    The JSON body.
-     * @param bool   $asArray Decode as an array.
-     *
-     * @return stdClass|array The decoded JSON.
-     */
-    protected function jsonDecode($json, bool $asArray = false)
-    {
-        // From firebase/php-jwt
-        if (!(defined('JSON_C_VERSION') && PHP_INT_SIZE > 4)) {
-            /**
-             * In PHP >=5.4.0, json_decode() accepts an options parameter, that allows you
-             * to specify that large ints (like Steam Transaction IDs) should be treated as
-             * strings, rather than the PHP default behaviour of converting them to floats.
-             */
-            $obj = json_decode($json, $asArray, 512, JSON_BIGINT_AS_STRING);
-        } else {
-            // @codeCoverageIgnoreStart
-            /**
-             * Not all servers will support that, however, so for older versions we must
-             * manually detect large ints in the JSON string and quote them (thus converting
-             * them to strings) before decoding, hence the preg_replace() call.
-             * Currently not sure how to test this so I ignored it for now.
-             */
-            $maxIntLength = strlen((string) PHP_INT_MAX) - 1;
-            $jsonWithoutBigints = preg_replace('/:\s*(-?\d{'.$maxIntLength.',})/', ': "$1"', $json);
-            $obj = json_decode($jsonWithoutBigints, $asArray);
-            // @codeCoverageIgnoreEnd
-        }
-
-        return $obj;
-    }
-
-    /**
-     * Determines if the request is to Graph API.
-     *
-     * @param string $uri The request URI.
-     *
-     * @return bool
-     */
-    protected function isGraphRequest(string $uri): bool
-    {
-        return strpos($uri, 'graphql.json') !== false;
-    }
-
-    /**
-     * Determines if the request is to REST API.
-     *
-     * @param string $uri The request URI.
-     *
-     * @return bool
-     */
-    protected function isRestRequest(string $uri): bool
-    {
-        return $this->isGraphRequest($uri) === false;
-    }
-
-    /**
-     * Determines if the request requires auth headers.
-     *
-     * @param string $uri The request URI.
-     *
-     * @return bool
-     */
-    protected function isAuthableRequest(string $uri): bool
-    {
-        return preg_match('/\/admin\/oauth\/(authorize|access_token)/', $uri) === 0;
     }
 
     /**

@@ -22,17 +22,26 @@ class Session
     protected $accessToken;
 
     /**
+     * If the API was called with per-user grant option, this will be filled.
+     *
+     * @var array|null
+     */
+    protected $user;
+
+    /**
      * Setup a session.
      *
-     * @param string $shop        The shop domain.
-     * @param string $accessToken The access token for the shop.
+     * @param string     $shop        The shop domain.
+     * @param string     $accessToken The access token for the shop.
+     * @param array|null $user        The user for per-user.
      *
      * @return self
      */
-    public function __construct(string $shop, string $accessToken)
+    public function __construct(string $shop, string $accessToken, ?array $user)
     {
         $this->shop = $shop;
         $this->accessToken = $accessToken;
+        $this->user = $user;
     }
 
     /**
@@ -53,5 +62,25 @@ class Session
     public function getShop(): ?string
     {
         return $this->shop;
+    }
+
+    /**
+     * Gets the user.
+     *
+     * @return array|null
+     */
+    public function getUser(): ?array
+    {
+        return $this->user;
+    }
+
+    /**
+     * Checks if we have a user.
+     *
+     * @return bool
+     */
+    public function hasUser(): bool
+    {
+        return $this->user !== null;
     }
 }
