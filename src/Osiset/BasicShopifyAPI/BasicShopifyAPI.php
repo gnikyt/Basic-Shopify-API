@@ -19,7 +19,11 @@ use Osiset\BasicShopifyAPI\Session;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleRetry\GuzzleRetryMiddleware;
+use Osiset\BasicShopifyAPI\Clients\Graph;
+use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
+use Osiset\BasicShopifyAPI\Contracts\RestRequester;
 use Osiset\BasicShopifyAPI\Middleware\AuthRequest;
+use Osiset\BasicShopifyAPI\Rest;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -36,9 +40,23 @@ class BasicShopifyAPI
     /**
      * The Guzzle client.
      *
-     * @var \GuzzleHttp\Client
+     * @var Client
      */
     protected $client;
+
+    /**
+     * The GraphQL client.
+     *
+     * @var GraphRequester
+     */
+    protected $graphClient;
+
+    /**
+     * The REST client.
+     *
+     * @var RestRequester
+     */
+    protected $restClient;
 
     /**
      * The library options.
@@ -81,12 +99,16 @@ class BasicShopifyAPI
 
         // Create a default Guzzle client with our stack
         $this->client = new Client($this->options->getGuzzleOptions());
+
+        // Setup REST and Graph clients
+        $this->restClient = new Rest();
+        $this->graphClient = new Graph();
     }
 
     /**
      * Sets the Guzzle client for the API calls (allows for override with your own).
      *
-     * @param \GuzzleHttp\Client $client The Guzzle client
+     * @param Client $client The Guzzle client.
      *
      * @return self
      */
@@ -117,6 +139,52 @@ class BasicShopifyAPI
     public function getOptions(): Options
     {
         return $this->options;
+    }
+
+    /**
+     * Sets the GraphQL request client.
+     *
+     * @param GraphRequester $client The client for GraphQL.
+     *
+     * @return self
+     */
+    public function setGraphClient(GraphRequester $client): self
+    {
+        $this->graphClient = $client;
+        return $this;
+    }
+
+    /**
+     * Get the GraphQL client.
+     *
+     * @return GraphRequester
+     */
+    public function getGraphClient(): GraphRequester
+    {
+        return $this->graphClient;
+    }
+
+    /**
+     * Sets the REST request client.
+     *
+     * @param RestRequester $client The client for REST.
+     *
+     * @return self
+     */
+    public function setRestClient(RestRequester $client): self
+    {
+        $this->restClient = $client;
+        return $this;
+    }
+
+    /**
+     * Get the REST client.
+     *
+     * @return RestRequester
+     */
+    public function getRestClient(): RestRequester
+    {
+        return $this->restClient;
     }
 
     /**
@@ -664,60 +732,6 @@ class BasicShopifyAPI
         $this->requestTimestamp = microtime(true);
 
         return $tmpTimestamp;
-    }
-
-    /**
-     * Updates the REST API call limits from Shopify headers.
-     *
-     * @param ResponseInterface $resp The response from the request.
-     *
-     * @return void
-     */
-    protected function updateRestCallLimits(ResponseInterface $resp): void
-    {
-        // Grab the API call limit header returned from Shopify
-        $callLimitHeader = $resp->getHeader('http_x_shopify_shop_api_call_limit');
-        if (!$callLimitHeader) {
-            return;
-        }
-
-        $calls = explode('/', $callLimitHeader[0]);
-        $this->apiCallLimits['rest'] = [
-            'left'  => (int) $calls[1] - $calls[0],
-            'made'  => (int) $calls[0],
-            'limit' => (int) $calls[1],
-        ];
-    }
-
-    /**
-     * Updates the GraphQL API call limits from the response body.
-     *
-     * @param stdClass $body The GraphQL response body.
-     *
-     * @return void
-     */
-    protected function updateGraphCallLimits(stdClass $body): void
-    {
-        if (!property_exists($body, 'extensions') || !property_exists($body->extensions, 'cost')) {
-            return;
-        }
-
-        // Update the API call information
-        $calls = $body->extensions->cost;
-        $this->apiCallLimits['graph'] = [
-            'left'          => (int)
-                $calls->throttleStatus->currentlyAvailable,
-            'made'          => (int)
-                ($calls->throttleStatus->maximumAvailable - $calls->throttleStatus->currentlyAvailable),
-            'limit'         => (int)
-                $calls->throttleStatus->maximumAvailable,
-            'restoreRate'   => (int)
-                $calls->throttleStatus->restoreRate,
-            'requestedCost' => (int)
-                $calls->requestedQueryCost,
-            'actualCost'    => (int)
-                $calls->actualQueryCost,
-        ];
     }
 
     /**

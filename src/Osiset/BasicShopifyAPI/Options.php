@@ -14,7 +14,7 @@ class Options
      *
      * @var string
      */
-    const VERSION_PATTERN = '/([0-9]{4}-[0-9]{2})|unstable/';
+    public const VERSION_PATTERN = '/([0-9]{4}-[0-9]{2})|unstable/';
 
     /**
      * Private or public API calls.

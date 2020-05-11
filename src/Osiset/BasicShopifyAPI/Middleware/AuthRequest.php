@@ -6,6 +6,10 @@ use Exception;
 use Psr\Http\Message\RequestInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 
+/**
+ * Ensures we have the proper request for private and public calls.
+ * Also modifies issues with redirects.
+*/
 class AuthRequest
 {
     /**
@@ -28,44 +32,7 @@ class AuthRequest
     }
 
     /**
-     * Determines if the request requires auth headers.
-     *
-     * @param string $uri The request URI.
-     *
-     * @return bool
-     */
-    protected function isAuthableRequest(string $uri): bool
-    {
-        return preg_match('/\/admin\/oauth\/(authorize|access_token)/', $uri) === 0;
-    }
-
-    /**
-     * Determines if the request is to Graph API.
-     *
-     * @param string $uri The request URI.
-     *
-     * @return bool
-     */
-    protected function isGraphRequest(string $uri): bool
-    {
-        return strpos($uri, 'graphql.json') !== false;
-    }
-
-    /**
-     * Determines if the request is to REST API.
-     *
-     * @param string $uri The request URI.
-     *
-     * @return bool
-     */
-    protected function isRestRequest(string $uri): bool
-    {
-        return $this->isGraphRequest($uri) === false;
-    }
-
-    /**
-     * Ensures we have the proper request for private and public calls.
-     * Also modifies issues with redirects.
+     * Run.
      *
      * @throws Exception for missing API key or password for private apps.
      * @throws Exception for missing access token on GraphQL calls.
@@ -123,5 +90,41 @@ class AuthRequest
                 return $handler($request, $options);
             };
         };
+    }
+
+    /**
+     * Determines if the request requires auth headers.
+     *
+     * @param string $uri The request URI.
+     *
+     * @return bool
+     */
+    protected function isAuthableRequest(string $uri): bool
+    {
+        return preg_match('/\/admin\/oauth\/(authorize|access_token)/', $uri) === 0;
+    }
+
+    /**
+     * Determines if the request is to Graph API.
+     *
+     * @param string $uri The request URI.
+     *
+     * @return bool
+     */
+    protected function isGraphRequest(string $uri): bool
+    {
+        return strpos($uri, 'graphql.json') !== false;
+    }
+
+    /**
+     * Determines if the request is to REST API.
+     *
+     * @param string $uri The request URI.
+     *
+     * @return bool
+     */
+    protected function isRestRequest(string $uri): bool
+    {
+        return $this->isGraphRequest($uri) === false;
     }
 }

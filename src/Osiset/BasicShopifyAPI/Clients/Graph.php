@@ -2,8 +2,10 @@
 
 namespace Osiset\BasicShopifyAPI\Clients;
 
+use Psr\Http\Message\ResponseInterface;
 use Osiset\BasicShopifyAPI\Clients\AbstractClient;
 use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
+use Osiset\BasicShopifyAPI\Response;
 
 /**
  * GraphQL client.
@@ -15,7 +17,7 @@ class Graph extends AbstractClient implements GraphRequester
      *
      * @var array
      */
-    protected $apiCallLimits = [
+    protected $limits = [
         'left'          => 0,
         'made'          => 0,
         'limit'         => 1000,
@@ -28,9 +30,40 @@ class Graph extends AbstractClient implements GraphRequester
      * Request timestamp for every new call.
      * Used for rate limiting.
      *
-     * @var int
+     * @var int|null
      */
     protected $requestTimestamp;
+
+    /**
+     * Last actual cost of a query/mutation.
+     *
+     * @var int|null
+     */
+    protected $lastActualCost;
+
+    /**
+     * Update the cost limits.
+     * Used by middleware.
+     *
+     * @param array $limits
+     *
+     * @return self
+     */
+    public function setLimits(array $limits): self
+    {
+        $this->limits = $limits;
+        return $this;
+    }
+
+    /**
+     * Get the cost limits.
+     *
+     * @return array
+     */
+    public function getLimits(): array
+    {
+        return $this->limits;
+    }
 
     /**
      * Runs a request to the Shopify API.
@@ -105,5 +138,25 @@ class Graph extends AbstractClient implements GraphRequester
             // Sync request (default)
             return $successFn($requestFn($request));
         }
+    }
+
+    protected function handleSuccess(ResponseInterface $resp): array
+    {
+        // Convert data to response
+        $body = $this->toResponse($resp->getBody());
+        $tmpTimestamp = $this->updateGraphCallLimits($body);
+
+        // Return Guzzle response and JSON-decoded body
+        return [
+            'response'   => $resp,
+            'body'       => $body,
+            'errors'     => $body->hasErrors() ? $body->getErrors() : false,
+            'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
+        ];
+    }
+
+    protected function handleFailure()
+    {
+
     }
 }

@@ -15,7 +15,7 @@ abstract class AbstractClient
      *
      * @return Response
      */
-    protected function toResponse(StreamInterface $body): Response
+    public function toResponse(StreamInterface $body): Response
     {
         $decoded = json_decode($body, true, 512, JSON_BIGINT_AS_STRING);
         return new Response($decoded);
