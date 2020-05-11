@@ -14,6 +14,8 @@ use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
 use GuzzleHttp\Promise\Promise;
 use Psr\Log\LoggerAwareInterface;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\Session;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 
@@ -58,46 +60,13 @@ class BasicShopifyAPI implements LoggerAwareInterface
     protected $version;
 
     /**
-     * The Shopify domain.
+     * The API session.
      *
-     * @var string
+     * @var Session
      */
-    protected $shop;
+    protected $session;
 
-    /**
-     * The Shopify access token.
-     *
-     * @var string
-     */
-    protected $accessToken;
 
-    /**
-     * The Shopify API key.
-     *
-     * @var string
-     */
-    protected $apiKey;
-
-    /**
-     * The Shopify API password.
-     *
-     * @var string
-     */
-    protected $apiPassword;
-
-    /**
-     * The Shopify API secret.
-     *
-     * @var string
-     */
-    protected $apiSecret;
-
-    /**
-     * If API calls are from a public or private app.
-     *
-     * @var string
-     */
-    protected $private;
 
     /**
      * If the API was called with per-user grant option, this will be filled.
@@ -166,16 +135,12 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Constructor.
      *
-     * @param bool  $private       If this is a private or public app.
-     * @param array $clientOptions Additional options to pass to the Guzzle client.
+     * @param Options $options The options for the library setup.
      *
      * @return self
      */
-    public function __construct(bool $private = false, array $options = [])
+    public function __construct(Options $options)
     {
-        // Set if app is private or public
-        $this->private = $private;
-
         // Create the stack and assign the middleware which attempts to fix redirects
         $stack = HandlerStack::create();
         $stack->push(Middleware::mapRequest([$this, 'authRequest']));
@@ -195,26 +160,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
         );
 
         return $this;
-    }
-
-    /**
-     * Determines if the calls are private.
-     *
-     * @return bool
-     */
-    public function isPrivate(): bool
-    {
-        return $this->private === true;
-    }
-
-    /**
-     * Determines if the calls are public.
-     *
-     * @return bool
-     */
-    public function isPublic(): bool
-    {
-        return !$this->isPrivate();
     }
 
     /**
@@ -261,91 +206,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
     }
 
     /**
-     * Sets the Shopify domain (*.myshopify.com) we're working with.
-     *
-     * @param string $shop The myshopify domain
-     *
-     * @return self
-     */
-    public function setShop(string $shop): self
-    {
-        $this->shop = $shop;
-        return $this;
-    }
-
-    /**
-     * Gets the Shopify domain (*.myshopify.com) we're working with.
-     *
-     * @return string|null
-     */
-    public function getShop(): ?string
-    {
-        return $this->shop;
-    }
-
-    /**
-     * Sets the access token for use with the Shopify API (public apps).
-     *
-     * @param string $accessToken The access token
-     *
-     * @return self
-     */
-    public function setAccessToken(string $accessToken): self
-    {
-        $this->accessToken = $accessToken;
-        return $this;
-    }
-
-    /**
-     * Gets the access token.
-     *
-     * @return string|null
-     */
-    public function getAccessToken(): ?string
-    {
-        return $this->accessToken;
-    }
-
-    /**
-     * Sets the API key for use with the Shopify API (public or private apps).
-     *
-     * @param string $apiKey The API key.
-     *
-     * @return self
-     */
-    public function setApiKey(string $apiKey): self
-    {
-        $this->apiKey = $apiKey;
-        return $this;
-    }
-
-    /**
-     * Sets the API secret for use with the Shopify API (public apps).
-     *
-     * @param string $apiSecret The API secret key.
-     *
-     * @return self
-     */
-    public function setApiSecret(string $apiSecret): self
-    {
-        $this->apiSecret = $apiSecret;
-        return $this;
-    }
-
-    /**
-     * Sets the API password for use with the Shopify API (private apps).
-     *
-     * @param string $apiPassword The API password.
-     *
-     * @return self
-     */
-    public function setApiPassword(string $apiPassword): self
-    {
-        $this->apiPassword = $apiPassword;
-        return $this;
-    }
-
-    /**
      * Sets the user (public apps).
      *
      * @param stdClass $user The user returned from the access request.
@@ -379,83 +239,32 @@ class BasicShopifyAPI implements LoggerAwareInterface
     }
 
     /**
-     * Set the rate limiting state to enabled.
+     * Set the session for the API calls.
      *
-     * @param int|null $cycle  The rate limiting cycle (in ms, default 500ms).
-     * @param int|null $buffer The rate limiting cycle buffer (in ms, default 100ms).
-     *
-     * @return self
-     */
-    public function enableRateLimiting(int $cycle = null, int $buffer = null): self
-    {
-        $this->rateLimitingEnabled = true;
-
-        if (!is_null($cycle)) {
-            $this->rateLimitCycle = $cycle;
-        }
-
-        if (!is_null($cycle)) {
-            $this->rateLimitCycleBuffer = $buffer;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set the rate limiting state to disabled.
+     * @param Session $session The shop/user session.
      *
      * @return self
      */
-    public function disableRateLimiting(): self
+    public function setSession(Session $session): self
     {
-        $this->rateLimitingEnabled = false;
-        return $this;
-    }
-
-    /**
-     * Determines if rate limiting is enabled.
-     *
-     * @return bool
-     */
-    public function isRateLimitingEnabled(): bool
-    {
-        return $this->rateLimitingEnabled === true;
-    }
-
-    /**
-     * Simple quick method to set shop and access token in one shot.
-     *
-     * @param string $shop        The shop's domain
-     * @param string $accessToken The access token for API requests
-     *
-     * @return self
-     */
-    public function setSession(string $shop, string $accessToken): self
-    {
-        $this->setShop($shop);
-        $this->setAccessToken($accessToken);
-
+        $this->session = $session;
         return $this;
     }
 
     /**
      * Accepts a closure to do isolated API calls for a shop.
      *
-     * @param string  $shop        The shop's domain
-     * @param string  $accessToken The access token for API requests
-     * @param Closure $closure     The closure to run isolated
+     * @param Session $session The shop/user session.
      *
-     * @throws Exception When closure is missing or not callable
+     * @throws Exception When closure is missing or not callable.
      *
      * @return mixed
      */
-    public function withSession(string $shop, string $accessToken, Closure $closure)
+    public function withSession(Session $session, Closure $closure)
     {
-        $this->log("WithSession started for {$shop}");
-
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
-        $clonedApi->setSession($shop, $accessToken);
+        $clonedApi->setSession($session);
 
         return $closure->call($clonedApi);
     }
