@@ -37,7 +37,7 @@ class Session
      *
      * @return self
      */
-    public function __construct(string $shop, string $accessToken, ?array $user)
+    public function __construct(string $shop, string $accessToken, ?array $user = null)
     {
         $this->shop = $shop;
         $this->accessToken = $accessToken;

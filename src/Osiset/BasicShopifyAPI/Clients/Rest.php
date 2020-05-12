@@ -2,6 +2,9 @@
 
 namespace Osiset\BasicShopifyAPI;
 
+use Exception;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\RequestException;
 use Osiset\BasicShopifyAPI\Clients\AbstractClient;
 use Osiset\BasicShopifyAPI\Contracts\RestRequester;
 
@@ -24,9 +27,9 @@ class Rest extends AbstractClient implements RestRequester
     /**
      * Processes the "Link" header.
      *
-     * @return stdClass
+     * @return Response
      */
-    protected function extractLinkHeader(string $header): stdClass
+    protected function extractLinkHeader(string $header): Response
     {
         $links = [
             'next'     => null,
@@ -39,6 +42,172 @@ class Rest extends AbstractClient implements RestRequester
             $links[$type] = isset($matches[1]) ? $matches[1] : null;
         }
 
-        return (object) $links;
+        return new Response($links);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function requestAccess(string $code): Response
+    {
+        if ($this->options->getApiSecret() === null || $this->options->getApiKey() === null) {
+            // Key and secret required
+            throw new Exception('API key or secret is missing');
+        }
+
+        // Do a JSON POST request to grab the access token
+        $response = $this->client->request(
+            'POST',
+            $this->getBaseUri()->withPath('/admin/oauth/access_token'),
+            [
+                'json' => [
+                    'client_id'     => $this->options->getApiKey(),
+                    'client_secret' => $this->options->getApiSecret(),
+                    'code'          => $code,
+                ],
+            ]
+        );
+
+        return $this->toResponse($response->getBody());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAuthUrl($scopes, string $redirectUri, string $mode = 'offline'): string
+    {
+        if ($this->options->getApiKey() === null) {
+            throw new Exception('API key is missing');
+        }
+
+        if (is_array($scopes)) {
+            $scopes = implode(',', $scopes);
+        }
+
+        $query = [
+            'client_id'    => $this->options->getApiKey(),
+            'scope'        => $scopes,
+            'redirect_uri' => $redirectUri,
+        ];
+        if ($mode !== null && $mode !== 'offline') {
+            $query['grant_options'] = [$mode];
+        }
+
+        return (string) $this
+            ->getBaseUri()
+            ->withPath('/admin/oauth/authorize')
+            ->withQuery(
+                preg_replace('/\%5B\d+\%5D/', '%5B%5D', http_build_query($query))
+            );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
+    {
+        // Build URI
+        $uri = $this->getBaseUri()->withPath($path);
+
+        // Build the request parameters for Guzzle
+        $guzzleParams = [];
+        if ($params !== null) {
+            $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
+        }
+
+        // Add custom headers
+        if (count($headers) > 0) {
+            $guzzleParams['headers'] = $headers;
+        }
+
+        /**
+         * Run the request as sync or async.
+         */
+        $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
+            $fn = $sync ? 'request' : 'requestAsync';
+            return $this->client->{$fn}($type, $uri, $guzzleParams);
+        };
+
+        if ($sync === false) {
+            // Async request
+            $promise = $requestFn();
+            return $promise->then([$this, 'handleSuccess'], [$this, 'handleFailure']);
+        } else {
+            // Sync request (default)
+            try {
+                return $this->handleSuccess($requestFn());
+            } catch (RequestException $e) {
+                return $this->handleFailure($e);
+            }
+        }
+    }
+
+    /**
+     * Handle success of response.
+     *
+     * @param ResponseInterface $resp
+     *
+     * @return array
+     */
+    public function handleSuccess(ResponseInterface $resp): array
+    {
+        // Check for "Link" header
+        $link = null;
+        if ($resp->hasHeader('Link')) {
+            $link = $this->extractLinkHeader($resp->getHeader('Link')[0]);
+        }
+
+        // Return Guzzle response and JSON-decoded body
+        return [
+            'errors'     => false,
+            'response'   => $resp,
+            'status'     => $resp->getStatusCode(),
+            'body'       => $this->toResponse($resp->getBody()),
+            'link'       => $link,
+            'timestamps' => $this->getTimeStore()->get(),
+        ];
+    }
+
+    /**
+     * Handle failure of response.
+     *
+     * @param RequestException $e
+     *
+     * @return array
+     */
+    public function handleFailure(RequestException $e): array
+    {
+        $resp = $e->getResponse();
+        $body = null;
+        $status = null;
+
+        if ($resp) {
+            // Get the body stream
+            $rawBody = $resp->getBody();
+            $status = $resp->getStatusCode();
+
+            // Build the error object
+            if ($rawBody !== null) {
+                // Convert data to response
+                $body = $this->toResponse($rawBody);
+                if ($body->hasErrors()) {
+                    // Use errors for body
+                    $body = $body->getErrors();
+                } else {
+                    // Return no body
+                    $body = null;
+                }
+            }
+        }
+
+        return [
+            'errors'     => true,
+            'status'     => $status,
+            'response'   => $resp,
+            'body'       => $body,
+            'link'       => null,
+            'exception'  => $e,
+            'timestamps' => $this->getTimeStore()->get(),
+        ];
     }
 }

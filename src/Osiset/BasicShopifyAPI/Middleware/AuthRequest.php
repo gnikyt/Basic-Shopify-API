@@ -3,6 +3,7 @@
 namespace Osiset\BasicShopifyAPI\Middleware;
 
 use Exception;
+use Osiset\BasicShopifyAPI\Options;
 use Psr\Http\Message\RequestInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Traits\IsRequestType;
@@ -49,9 +50,9 @@ class AuthRequest
             return function (RequestInterface $request, array $options) use ($self, $handler) {
                 // Get the request URI
                 $uri = $request->getUri();
-                $isPrivate = $self->api->geOptions()->isPrivate();
-                $apiKey = $self->api->getSession()->getApiKey();
-                $apiPassword = $self->api->getSession()->getApiPassword();
+                $isPrivate = $self->api->getOptions()->isPrivate();
+                $apiKey = $self->api->getOptions()->getApiKey();
+                $apiPassword = $self->api->getOptions()->getApiPassword();
                 $accessToken = $self->api->getSession()->getAccessToken();
 
                 if ($self->isAuthableRequest((string) $uri)) {
@@ -90,6 +91,14 @@ class AuthRequest
                     }
                 }
 
+                // Adjust URI path to be versioned
+                $uri = $request->getUri();
+                $request = $request->withUri(
+                    $uri->withPath(
+                        $this->versionPath($uri->getPath())
+                    )
+                );
+
                 return $handler($request, $options);
             };
         };
@@ -105,5 +114,44 @@ class AuthRequest
     protected function isAuthableRequest(string $uri): bool
     {
         return preg_match('/\/admin\/oauth\/(authorize|access_token)/', $uri) === 0;
+    }
+
+    /**
+     * Versions the API call with the set version.
+     *
+     * @param string $uri The request URI.
+     *
+     * @return string
+     */
+    protected function versionPath(string $uri): string
+    {
+        if ($this->version === null ||
+            preg_match(Options::VERSION_PATTERN, $uri) ||
+            !$this->isAuthableRequest($uri) ||
+            !$this->isVersionableRequest($uri)
+        ) {
+            // No version set, or already versioned... nothing to do
+            return $uri;
+        }
+
+        // Graph request
+        if ($this->isGraphRequest($uri)) {
+            return str_replace('/admin/api', "/admin/api/{$this->version}", $uri);
+        }
+
+        // REST request
+        return preg_replace('/\/admin(\/api)?\//', "/admin/api/{$this->version}/", $uri);
+    }
+
+    /**
+     * Determines if the request requires versioning.
+     *
+     * @param string $uri The request URI.
+     *
+     * @return bool
+     */
+    protected function isVersionableRequest(string $uri): bool
+    {
+        return preg_match('/\/admin\/(oauth\/access_scopes)/', $uri) === 0;
     }
 }

@@ -5,7 +5,6 @@ namespace Osiset\BasicShopifyAPI\Clients;
 use Psr\Http\Message\ResponseInterface;
 use Osiset\BasicShopifyAPI\Clients\AbstractClient;
 use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
-use Osiset\BasicShopifyAPI\Response;
 
 /**
  * GraphQL client.
@@ -35,29 +34,15 @@ class Graph extends AbstractClient implements GraphRequester
 
     /**
      * {@inheritDoc}
-     */
-    public function setLimits(array $limits): void
-    {
-        $this->limits = $limits;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLimits(): array
-    {
-        return $this->limits;
-    }
-
-    /**
-     * {@inheritDoc}
      *
      * @throws Exception When missing api password is missing for private apps.
      * @throws Exception When missing access key is missing for public apps.
      */
     public function request(string $query, array $variables = [], bool $sync = true)
     {
-        // Request function
+        /**
+         * Run the request as sync or async
+         */
         $requestFn = function (array $request) use ($sync) {
             // Encode the request
             $json = json_encode($request);
@@ -66,37 +51,9 @@ class Graph extends AbstractClient implements GraphRequester
             $fn = $sync ? 'request' : 'requestAsync';
             return $this->client->{$fn}(
                 'POST',
-                $this->getBaseUri()->withPath(
-                    $this->versionPath('/admin/api/graphql.json')
-                ),
+                $this->getBaseUri()->withPath('/admin/api/graphql.json'),
                 ['body' => $json]
             );
-        };
-
-        /**
-         * Success function.
-         *
-         * @param ResponseInterface $resp The response object.
-         *
-         * @return stdClass
-         */
-        $successFn = function (ResponseInterface $resp): stdClass {
-            // Grab the data result and extensions
-            $rawBody = $resp->getBody();
-            $body = $this->jsonDecode($rawBody);
-            $bodyArray = $this->jsonDecode($rawBody, true);
-            $tmpTimestamp = $this->updateGraphCallLimits($body);
-
-            $this->log('Graph response: '.json_encode(property_exists($body, 'errors') ? $body->errors : $body->data));
-
-            // Return Guzzle response and JSON-decoded body
-            return (object) [
-                'response'   => $resp,
-                'body'       => property_exists($body, 'errors') ? $body->errors : $body->data,
-                'bodyArray'  => isset($bodyArray['errors']) ? $bodyArray['errors'] : $bodyArray['data'],
-                'errors'     => property_exists($body, 'errors'),
-                'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
-            ];
         };
 
         // Build the request
@@ -108,14 +65,21 @@ class Graph extends AbstractClient implements GraphRequester
         if ($sync === false) {
             // Async request
             $promise = $requestFn($request);
-            return $promise->then($successFn);
-        } else {
-            // Sync request (default)
-            return $successFn($requestFn($request));
+            return $promise->then([$this, 'handleResponse']);
         }
+
+        // Sync request (default)
+        return $this->handleResponse($requestFn($request));
     }
 
-    protected function handleSuccess(ResponseInterface $resp): array
+    /**
+     * Handle response from request.
+     *
+     * @param ResponseInterface $resp
+     *
+     * @return array
+     */
+    public function handleResponse(ResponseInterface $resp): array
     {
         // Convert data to response
         $body = $this->toResponse($resp->getBody());
@@ -125,12 +89,7 @@ class Graph extends AbstractClient implements GraphRequester
             'response'   => $resp,
             'body'       => $body,
             'errors'     => $body->hasErrors() ? $body->getErrors() : false,
-            'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
+            'timestamps' => $this->getTimeStore()->get(),
         ];
-    }
-
-    protected function handleFailure()
-    {
-
     }
 }

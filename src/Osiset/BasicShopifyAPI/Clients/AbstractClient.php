@@ -2,17 +2,23 @@
 
 namespace Osiset\BasicShopifyAPI\Clients;
 
-use Osiset\BasicShopifyAPI\Response;
-use Psr\Http\Message\StreamInterface;
+use Exception;
+use GuzzleHttp\Psr7\Uri;
+use Osiset\BasicShopifyAPI\Session;
 use Osiset\BasicShopifyAPI\Contracts\TimeStorer;
-use Osiset\BasicShopifyAPI\Contracts\TimeTracker;
+use Osiset\BasicShopifyAPI\Contracts\LimitTracker;
+use Osiset\BasicShopifyAPI\Contracts\SessionAware;
+use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
+use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 
 /**
  * Base client class.
  */
-abstract class AbstractClient
+abstract class AbstractClient implements TimeAccesser, SessionAware, LimitTracker
 {
+    use ResponseTransform;
+
     /**
      * The time store implementation.
      *
@@ -28,6 +34,13 @@ abstract class AbstractClient
     protected $tdeferrer;
 
     /**
+     * The API session.
+     *
+     * @var Session|null
+     */
+    protected $session;
+
+    /**
      * Setup.
      *
      * @param TimeStorer   $tstore    The time store implementation.
@@ -39,6 +52,19 @@ abstract class AbstractClient
     {
         $this->tstore = $tstore;
         $this->tdeferrer = $tdeferrer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getBaseUri(): Uri
+    {
+        if ($this->session->getShop() === null) {
+            // Shop is required
+            throw new Exception('Shopify domain missing for API calls');
+        }
+
+        return new Uri("https://{$this->shop}");
     }
 
     /**
@@ -58,13 +84,34 @@ abstract class AbstractClient
     }
 
     /**
-     * Convert request response to response object.
-     *
-     * @return Response
+     * {@inheritDoc}
      */
-    public function toResponse(StreamInterface $body): Response
+    public function setSession(Session $session): void
     {
-        $decoded = json_decode($body, true, 512, JSON_BIGINT_AS_STRING);
-        return new Response($decoded);
+        $this->session = $session;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSession(): ?Session
+    {
+        return $this->session;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLimits(array $limits): void
+    {
+        $this->limits = $limits;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLimits(): array
+    {
+        return $this->limits;
     }
 }

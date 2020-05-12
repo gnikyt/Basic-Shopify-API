@@ -8,7 +8,7 @@ use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
 /**
  * Reprecents time tracking.
  */
-interface TimeTracker
+interface TimeAccesser
 {
     /**
      * Get the time store implementation.

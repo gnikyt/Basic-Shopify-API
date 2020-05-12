@@ -2,14 +2,16 @@
 
 namespace Osiset\BasicShopifyAPI\Contracts;
 
+use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Promise\Promise;
-use Osiset\BasicShopifyAPI\Contracts\TimeTracker;
 use Osiset\BasicShopifyAPI\Contracts\LimitTracker;
+use Osiset\BasicShopifyAPI\Contracts\SessionAware;
+use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
 
 /**
  * Reprecents Graph client.
  */
-interface GraphRequester extends LimitTracker, TimeTracker
+interface GraphRequester extends LimitTracker, TimeAccesser, SessionAware
 {
     /**
      * Runs a request to the Shopify API.
@@ -21,4 +23,13 @@ interface GraphRequester extends LimitTracker, TimeTracker
      * @return array|Promise
      */
     public function request(string $query, array $variables = [], bool $sync = true);
+
+    /**
+     * Returns the base URI to use.
+     *
+     * @throws Exception For missing shop domain.
+     *
+     * @return Uri
+     */
+    public function getBaseUri(): Uri;
 }
