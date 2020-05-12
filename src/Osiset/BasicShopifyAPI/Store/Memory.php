@@ -12,26 +12,26 @@ use Osiset\BasicShopifyAPI\Contracts\TimeStorer;
 class Memory implements StateStorage
 {
     /**
-     * The timestamps.
+     * The data container.
      *
      * @var array
      */
-    protected $timestamps = [];
+    protected $container = [];
 
     /**
      * {@inheritDoc}
      */
     public function get(array $options = []): array
     {
-        return $this->timestamps;
+        return $this->container;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function set(array $values, array $options = [])
+    public function set(array $values, array $options = []): void
     {
-        $this->timestamps = $values;
+        $this->container = $values;
     }
 
     /**
@@ -40,7 +40,7 @@ class Memory implements StateStorage
     public function push($value, array $options = []): void
     {
         // Set the value as first element, cut values off at 2 entrys for current and previous
-        array_unshift($this->timestamps, $value);
-        $this->timestamps = array_slice($this->timestamps, 0, 2);
+        array_unshift($this->container, $value);
+        $this->container = array_slice($this->container, 0, 2);
     }
 }

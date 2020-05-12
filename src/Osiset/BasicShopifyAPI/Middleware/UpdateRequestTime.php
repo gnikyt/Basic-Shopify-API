@@ -47,10 +47,9 @@ class UpdateRequestTime
                     $self->api->getRestClient() :
                     $self->api->getGraphClient();
 
-                $timestamps = $client->getTimeStore()->get();
-                $currentTime = $client->getTimeDeferrer()->getCurrentTime();
-
-                // Do checks for graph or rest here
+                $client->getTimeStore()->push(
+                    $client->getTimeDeferrer()->getCurrentTime()
+                );
 
                 return $handler($request, $options);
             };

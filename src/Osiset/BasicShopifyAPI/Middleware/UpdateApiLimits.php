@@ -81,7 +81,7 @@ class UpdateApiLimits
 
         // Update the costs
         $cost = $body['extensions']['cost'];
-        $client->getLimitStore->push([
+        $client->getLimitStore()->push([
             'left'          => (int)
                 $cost['throttleStatus']['currentlyAvailable'],
             'made'          => (int)

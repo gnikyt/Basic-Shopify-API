@@ -31,13 +31,13 @@ class Session
     /**
      * Setup a session.
      *
-     * @param string     $shop        The shop domain.
-     * @param string     $accessToken The access token for the shop.
-     * @param array|null $user        The user for per-user.
+     * @param string      $shop        The shop domain.
+     * @param string|null $accessToken The access token for the shop.
+     * @param array|null  $user        The user for per-user.
      *
      * @return self
      */
-    public function __construct(string $shop, string $accessToken, ?array $user = null)
+    public function __construct(string $shop, ?string $accessToken = null, ?array $user = null)
     {
         $this->shop = $shop;
         $this->accessToken = $accessToken;

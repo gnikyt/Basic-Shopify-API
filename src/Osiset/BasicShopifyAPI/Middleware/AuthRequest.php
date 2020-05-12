@@ -125,7 +125,8 @@ class AuthRequest
      */
     protected function versionPath(string $uri): string
     {
-        if ($this->version === null ||
+        $version = $this->api->getOptions()->getVersion();
+        if ($version === null ||
             preg_match(Options::VERSION_PATTERN, $uri) ||
             !$this->isAuthableRequest($uri) ||
             !$this->isVersionableRequest($uri)
@@ -136,11 +137,11 @@ class AuthRequest
 
         // Graph request
         if ($this->isGraphRequest($uri)) {
-            return str_replace('/admin/api', "/admin/api/{$this->version}", $uri);
+            return str_replace('/admin/api', "/admin/api/{$version}", $uri);
         }
 
         // REST request
-        return preg_replace('/\/admin(\/api)?\//', "/admin/api/{$this->version}/", $uri);
+        return preg_replace('/\/admin(\/api)?\//', "/admin/api/{$version}/", $uri);
     }
 
     /**

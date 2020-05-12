@@ -6,26 +6,31 @@ use Closure;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\Promise;
-use Osiset\BasicShopifyAPI\Rest;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
 use Osiset\BasicShopifyAPI\Response;
 use GuzzleRetry\GuzzleRetryMiddleware;
+use Osiset\BasicShopifyAPI\Clients\Rest;
 use Osiset\BasicShopifyAPI\Store\Memory;
 use Osiset\BasicShopifyAPI\Clients\Graph;
 use Osiset\BasicShopifyAPI\Deferrers\Sleep;
+use Osiset\BasicShopifyAPI\Contracts\ClientAware;
+use Osiset\BasicShopifyAPI\Contracts\SessionAware;
 use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
 use Osiset\BasicShopifyAPI\Middleware\AuthRequest;
 use Osiset\BasicShopifyAPI\Contracts\RestRequester;
 use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
 use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
+use Osiset\BasicShopifyAPI\Middleware\UpdateApiLimits;
+use Osiset\BasicShopifyAPI\Middleware\UpdateRequestTime;
 
 /**
  * Basic Shopify API for REST & GraphQL.
  */
-class BasicShopifyAPI
+class BasicShopifyAPI implements SessionAware, ClientAware
 {
     use ResponseTransform;
 
@@ -82,52 +87,99 @@ class BasicShopifyAPI
     /**
      * Constructor.
      *
-     * @param Options      $options   The options for the library setup.
-     * @param StateStorage   $sstore    The time storer implementation to use for rate limiting.
-     * @param TimeDeferrer $tdeferrer The time deferrer implementation to use for rate limiting.
+     * @param Options           $options   The options for the library setup.
+     * @param StateStorage|null $tstore    The time storer implementation to use for rate limiting.
+     * @param StateStorage|null $lstore    The limits storer implementation to use for rate limiting.
+     * @param TimeDeferrer|null $tdeferrer The time deferrer implementation to use for rate limiting.
      *
      * @return self
      */
-    public function __construct(Options $options, ?StateStorage $sstore = null, ?TimeDeferrer $tdeferrer = null)
+    public function __construct(Options $options, ?StateStorage $tstore = null, ?StateStorage $lstore = null, ?TimeDeferrer $tdeferrer = null)
     {
         // Set the options
         $this->options = $options;
 
+        // Setup REST and GraphQL clients
+        $this->setupClients($tstore, $lstore, $tdeferrer);
+
         // Create the stack and assign the middleware which attempts to fix redirects
         $this->stack = HandlerStack::create();
-        $this->addMiddleware((new AuthRequest($this))());
-        $this->addMiddleware(GuzzleRetryMiddleware::factory());
+        $this
+            ->addMiddleware((new AuthRequest($this))())
+            ->addMiddleware((new UpdateApiLimits($this))())
+            ->addMiddleware((new UpdateRequestTime($this))())
+            ->addMiddleware(GuzzleRetryMiddleware::factory());
 
         // Create a default Guzzle client with our stack
-        $this->client = new Client(array_merge(
-            ['handler' => $this->stack],
-            $this->options->getGuzzleOptions()
-        ));
+        $this->setClient(
+            new Client(array_merge(
+                ['handler' => $this->stack],
+                $this->options->getGuzzleOptions()
+            ))
+        );
+    }
 
-        // Setup the time handlers if need be
-        if ($sstore === null) {
-            $sstore = new Memory();
+    /**
+     * Setup the REST and GraphQL clients.
+     *
+     * @param StateStorage|null $tstore    The time storer implementation to use for rate limiting.
+     * @param StateStorage|null $lstore    The limits storer implementation to use for rate limiting.
+     * @param TimeDeferrer|null $tdeferrer The time deferrer implementation to use for rate limiting.
+     *
+     * @return void
+     */
+    protected function setupClients(?StateStorage $tstore = null, ?StateStorage $lstore = null, ?TimeDeferrer $tdeferrer = null): void
+    {
+        // Base/default storage class if none provided
+        $baseStorage = Memory::class;
+
+        // Setup timestamp storage
+        if ($tstore === null) {
+            // Instance for each
+            $graphTstore = new $baseStorage();
+            $restTstore = new $baseStorage();
+        } else {
+            // Clone to make instance for each
+            $graphTstore = clone $tstore;
+            $restTstore = clone $tstore;
         }
+
+        // Setup limits storage
+        if ($lstore === null) {
+            // Instance for each
+            $graphLstore = new $baseStorage();
+            $restLstore = new $baseStorage();
+        } else {
+            $graphLstore = clone $lstore;
+            $restLstore = clone $lstore;
+        }
+
+        // Setup time deferrer
         if ($tdeferrer === null) {
             $tdeferrer = new Sleep();
         }
 
         // Setup REST and Graph clients
-        $this->restClient = new Rest($sstore, $tdeferrer);
-        $this->graphClient = new Graph($sstore, $tdeferrer);
+        $this->setRestClient(new Rest($restTstore, $restLstore, $tdeferrer));
+        $this->setGraphClient(new Graph($graphTstore, $graphLstore, $tdeferrer));
     }
 
     /**
-     * Sets the Guzzle client for the API calls (allows for override with your own).
-     *
-     * @param Client $client The Guzzle client.
-     *
-     * @return self
+     * {@inheritDoc}
      */
-    public function setClient(Client $client): self
+    public function setClient(ClientInterface $client): void
     {
         $this->client = $client;
-        return $this;
+        $this->getGraphClient()->setClient($this->client);
+        $this->getRestClient()->setClient($this->client);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getClient(): ClientInterface
+    {
+        return $this->client;
     }
 
     /**
@@ -205,6 +257,8 @@ class BasicShopifyAPI
     public function setSession(Session $session): void
     {
         $this->session = $session;
+        $this->getGraphClient()->setSession($this->session);
+        $this->getRestClient()->setSession($this->session);
     }
 
     /**

@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Promise\Promise;
 use Osiset\BasicShopifyAPI\Response;
+use Osiset\BasicShopifyAPI\Contracts\ClientAware;
 use Osiset\BasicShopifyAPI\Contracts\Respondable;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
 use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
@@ -14,7 +15,7 @@ use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
 /**
  * Reprecents REST client.
  */
-interface RestRequester extends LimitAccesser, TimeAccesser, SessionAware, Respondable
+interface RestRequester extends LimitAccesser, TimeAccesser, SessionAware, ClientAware, Respondable
 {
     /**
      * Runs a request to the Shopify API.

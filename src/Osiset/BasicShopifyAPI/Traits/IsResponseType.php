@@ -29,6 +29,6 @@ trait IsResponseType
      */
     protected function isGraphResponse(ResponseInterface $response): bool
     {
-        return !$this->isRestRequest($response);
+        return !$this->isRestResponse($response);
     }
 }

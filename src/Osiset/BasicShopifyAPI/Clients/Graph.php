@@ -28,7 +28,7 @@ class Graph extends AbstractClient implements GraphRequester
 
             // Run the request
             $fn = $sync ? 'request' : 'requestAsync';
-            return $this->client->{$fn}(
+            return $this->getClient()->{$fn}(
                 'POST',
                 $this->getBaseUri()->withPath('/admin/api/graphql.json'),
                 ['body' => $json]

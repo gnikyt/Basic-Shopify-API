@@ -1,8 +1,9 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI;
+namespace Osiset\BasicShopifyAPI\Clients;
 
 use Exception;
+use Osiset\BasicShopifyAPI\Response;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 use Osiset\BasicShopifyAPI\Clients\AbstractClient;
@@ -45,7 +46,7 @@ class Rest extends AbstractClient implements RestRequester
         }
 
         // Do a JSON POST request to grab the access token
-        $response = $this->client->request(
+        $response = $this->getClient()->request(
             'POST',
             $this->getBaseUri()->withPath('/admin/oauth/access_token'),
             [
@@ -93,7 +94,7 @@ class Rest extends AbstractClient implements RestRequester
     /**
      * {@inheritDoc}
      */
-    public function rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
+    public function request(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
     {
         // Build URI
         $uri = $this->getBaseUri()->withPath($path);
@@ -114,7 +115,7 @@ class Rest extends AbstractClient implements RestRequester
          */
         $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
             $fn = $sync ? 'request' : 'requestAsync';
-            return $this->client->{$fn}($type, $uri, $guzzleParams);
+            return $this->getClient()->{$fn}($type, $uri, $guzzleParams);
         };
 
         if ($sync === false) {

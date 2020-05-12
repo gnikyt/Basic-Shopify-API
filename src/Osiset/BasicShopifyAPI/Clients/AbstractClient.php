@@ -4,9 +4,11 @@ namespace Osiset\BasicShopifyAPI\Clients;
 
 use Exception;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\ClientInterface;
 use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Contracts\StateStorage;
+use Osiset\BasicShopifyAPI\Contracts\ClientAware;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
+use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
 use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
@@ -15,7 +17,7 @@ use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 /**
  * Base client class.
  */
-abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccesser
+abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccesser, ClientAware
 {
     use ResponseTransform;
 
@@ -25,6 +27,13 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
      * @var StateStorage
      */
     protected $tstore;
+
+    /**
+     * The limits store implementation.
+     *
+     * @var StateStorage
+     */
+    protected $lstore;
 
     /**
      * The time deferrer implementation.
@@ -41,16 +50,25 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     protected $session;
 
     /**
+     * The Guzzle client.
+     *
+     * @var ClientInterface|null
+     */
+    protected $client;
+
+    /**
      * Setup.
      *
-     * @param StateStorage   $tstore    The time store implementation.
+     * @param StateStorage $tstore    The time store implementation.
+     * @param StateStorage $lstore    The limits store implementation.
      * @param TimeDeferrer $tdeferrer The time deferrer implementation.
      *
      * @return self
      */
-    public function __construct(StateStorage $tstore, TimeDeferrer $tdeferrer)
+    public function __construct(StateStorage $tstore, StateStorage $lstore, TimeDeferrer $tdeferrer)
     {
         $this->tstore = $tstore;
+        $this->lstore = $lstore;
         $this->tdeferrer = $tdeferrer;
     }
 
@@ -59,12 +77,12 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
      */
     public function getBaseUri(): Uri
     {
-        if ($this->session->getShop() === null) {
+        if ($this->session === null || $this->session->getShop() === null) {
             // Shop is required
             throw new Exception('Shopify domain missing for API calls');
         }
 
-        return new Uri("https://{$this->shop}");
+        return new Uri("https://{$this->session->getShop()}");
     }
 
     /**
@@ -105,5 +123,21 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     public function getSession(): ?Session
     {
         return $this->session;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setClient(ClientInterface $client): void
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getClient(): ?ClientInterface
+    {
+        return $this->client;
     }
 }

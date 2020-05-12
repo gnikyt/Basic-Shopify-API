@@ -14,27 +14,18 @@ class Response implements ArrayAccess
      *
      * @var mixed
      */
-    public $data;
-
-    /**
-     * Request timestamp for last and new call.
-     *
-     * @var array
-     */
-    protected $timestamps;
+    public $container;
 
     /**
      * Setup resource.
      *
      * @param mixed $data       The data to use for source.
-     * @param array $timestamps The timestamps of last and new request.
      *
      * @return self
      */
-    public function __construct($data, array $timestamps = [])
+    public function __construct($data)
     {
-        $this->data = $data;
-        $this->timestamps = $timestamps;
+        $this->container = $data;
     }
 
     /**
@@ -46,7 +37,7 @@ class Response implements ArrayAccess
      */
     public function offsetExists($offset): bool
     {
-        return isset($this->data[$offset]);
+        return isset($this->container[$offset]);
     }
 
     /**
@@ -58,7 +49,7 @@ class Response implements ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->data[$offset];
+        return $this->container[$offset];
     }
 
     /**
@@ -71,7 +62,7 @@ class Response implements ArrayAccess
      */
     public function offsetSet($offset, $value): void
     {
-        $this->data[$offset] = $value;
+        $this->container[$offset] = $value;
     }
 
     /**
@@ -95,11 +86,12 @@ class Response implements ArrayAccess
      */
     public function __isset($key): bool
     {
-        return isset($this->data[$key]);
+        return isset($this->container[$key]);
     }
 
     /**
-     * Get to array.
+     * Allows for accessing the underlying array as an object.
+     * $response->shop->name will forward to $response['shop']['name']
      *
      * @param string $key
      *
@@ -107,7 +99,11 @@ class Response implements ArrayAccess
      */
     public function __get($key)
     {
-        return $this->data[$key];
+        if (isset($this->container[$key]) && is_array($this->container[$key])) {
+            return new static($this->container[$key]);
+        }
+
+        return $this->container[$key];
     }
 
     /**
@@ -120,7 +116,7 @@ class Response implements ArrayAccess
      */
     public function __set($key, $value): void
     {
-        $this->data[$key] = $value;
+        $this->container[$key] = $value;
     }
 
     /**
@@ -130,7 +126,7 @@ class Response implements ArrayAccess
      */
     public function hasErrors(): bool
     {
-        return isset($this->data['errors']) || isset($this->data['error']);
+        return isset($this->container['errors']) || isset($this->container['error']);
     }
 
     /**
@@ -144,6 +140,6 @@ class Response implements ArrayAccess
             return;
         }
 
-        return isset($this->data['errors']) ? $this->data['errors'] : $this->data['error'];
+        return isset($this->container['errors']) ? $this->container['errors'] : $this->container['error'];
     }
 }
