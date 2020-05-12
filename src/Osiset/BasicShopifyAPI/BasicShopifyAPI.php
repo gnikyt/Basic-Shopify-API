@@ -1,29 +1,28 @@
 <?php
 
-namespace Osiset;
+namespace Osiset\BasicShopifyAPI;
 
 use Closure;
 use stdClass;
 use Exception;
-use Psr\Log\LogLevel;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
-use Psr\Log\LoggerInterface;
 use GuzzleHttp\Promise\Promise;
-use Psr\Log\LoggerAwareInterface;
+use Osiset\BasicShopifyAPI\Rest;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleRetry\GuzzleRetryMiddleware;
+use Psr\Http\Message\ResponseInterface;
+use Osiset\BasicShopifyAPI\Store\Memory;
 use Osiset\BasicShopifyAPI\Clients\Graph;
-use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
-use Osiset\BasicShopifyAPI\Contracts\RestRequester;
+use GuzzleHttp\Exception\RequestException;
+use Osiset\BasicShopifyAPI\Deferrers\Sleep;
+use Osiset\BasicShopifyAPI\Contracts\TimeStorer;
+use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
 use Osiset\BasicShopifyAPI\Middleware\AuthRequest;
-use Osiset\BasicShopifyAPI\Rest;
+use Osiset\BasicShopifyAPI\Contracts\RestRequester;
+use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -43,6 +42,13 @@ class BasicShopifyAPI
      * @var Client
      */
     protected $client;
+
+    /**
+     * The handler stack.
+     *
+     * @var HandlerStack
+     */
+    protected $stack;
 
     /**
      * The GraphQL client.
@@ -83,26 +89,39 @@ class BasicShopifyAPI
     /**
      * Constructor.
      *
-     * @param Options $options The options for the library setup.
+     * @param Options      $options   The options for the library setup.
+     * @param TimeStorer   $tstore    The time storer implementation to use for rate limiting.
+     * @param TimeDeferrer $tdeferrer The time deferrer implementation to use for rate limiting.
      *
      * @return self
      */
-    public function __construct(Options $options)
+    public function __construct(Options $options, ?TimeStorer $tstore = null, ?TimeDeferrer $tdeferrer = null)
     {
         // Set the options
         $this->options = $options;
 
         // Create the stack and assign the middleware which attempts to fix redirects
-        $stack = HandlerStack::create();
-        $stack->push((new AuthRequest($this))());
-        $stack->push(GuzzleRetryMiddleware::factory());
+        $this->stack = HandlerStack::create();
+        $this->addMiddleware((new AuthRequest($this))());
+        $this->addMiddleware(GuzzleRetryMiddleware::factory());
 
         // Create a default Guzzle client with our stack
-        $this->client = new Client($this->options->getGuzzleOptions());
+        $this->client = new Client(array_merge(
+            ['handler' => $this->stack],
+            $this->options->getGuzzleOptions()
+        ));
+
+        // Setup the time handlers if need be
+        if ($tstore === null) {
+            $tstore = new Memory();
+        }
+        if ($tdeferrer === null) {
+            $tdeferrer = new Sleep();
+        }
 
         // Setup REST and Graph clients
-        $this->restClient = new Rest();
-        $this->graphClient = new Graph();
+        $this->restClient = new Rest($tstore, $tdeferrer);
+        $this->graphClient = new Graph($tstore, $tdeferrer);
     }
 
     /**
@@ -115,6 +134,20 @@ class BasicShopifyAPI
     public function setClient(Client $client): self
     {
         $this->client = $client;
+        return $this;
+    }
+
+    /**
+     * Add middleware to the handler stack.
+     *
+     * @param callable $callable Middleware function.
+     * @param string   $name     Name to register for this middleware.
+     *
+     * @return self
+     */
+    public function addMiddleware(callable $callable, string $name = ''): self
+    {
+        $this->stack->push($callable, $name);
         return $this;
     }
 
@@ -719,39 +752,5 @@ class BasicShopifyAPI
             $this->log('Rest rate limit hit');
             usleep($waitTime * 1000);
         }
-    }
-
-    /**
-     * Updates the request time.
-     *
-     * @return float|null
-     */
-    protected function updateRequestTime(): ?float
-    {
-        $tmpTimestamp = $this->requestTimestamp;
-        $this->requestTimestamp = microtime(true);
-
-        return $tmpTimestamp;
-    }
-
-    /**
-     * Processes the "Link" header.
-     *
-     * @return stdClass
-     */
-    protected function extractLinkHeader(string $header): stdClass
-    {
-        $links = [
-            'next'     => null,
-            'previous' => null,
-        ];
-        $regex = '/<.*page_info=([a-z0-9\-_]+).*>; rel="?{type}"?/i';
-
-        foreach (array_keys($links) as $type) {
-            preg_match(str_replace('{type}', $type, $regex), $header, $matches);
-            $links[$type] = isset($matches[1]) ? $matches[1] : null;
-        }
-
-        return (object) $links;
     }
 }

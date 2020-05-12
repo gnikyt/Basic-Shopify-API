@@ -27,14 +27,6 @@ class Graph extends AbstractClient implements GraphRequester
     ];
 
     /**
-     * Request timestamp for every new call.
-     * Used for rate limiting.
-     *
-     * @var int|null
-     */
-    protected $requestTimestamp;
-
-    /**
      * Last actual cost of a query/mutation.
      *
      * @var int|null
@@ -127,7 +119,6 @@ class Graph extends AbstractClient implements GraphRequester
     {
         // Convert data to response
         $body = $this->toResponse($resp->getBody());
-        $tmpTimestamp = $this->updateGraphCallLimits($body);
 
         // Return Guzzle response and JSON-decoded body
         return [

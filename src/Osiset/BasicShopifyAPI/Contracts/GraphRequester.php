@@ -3,11 +3,13 @@
 namespace Osiset\BasicShopifyAPI\Contracts;
 
 use GuzzleHttp\Promise\Promise;
+use Osiset\BasicShopifyAPI\Contracts\TimeTracker;
+use Osiset\BasicShopifyAPI\Contracts\LimitTracker;
 
 /**
  * Reprecents Graph client.
  */
-interface GraphRequester
+interface GraphRequester extends LimitTracker, TimeTracker
 {
     /**
      * Runs a request to the Shopify API.
@@ -19,21 +21,4 @@ interface GraphRequester
      * @return array|Promise
      */
     public function request(string $query, array $variables = [], bool $sync = true);
-
-    /**
-     * Update the cost limits.
-     * Used by middleware.
-     *
-     * @param array $limits
-     *
-     * @return void
-     */
-    public function setLimits(array $limits): void;
-
-    /**
-     * Get the cost limits.
-     *
-     * @return array
-     */
-    public function getLimits(): array;
 }

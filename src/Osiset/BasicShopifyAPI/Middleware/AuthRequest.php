@@ -5,6 +5,7 @@ namespace Osiset\BasicShopifyAPI\Middleware;
 use Exception;
 use Psr\Http\Message\RequestInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Traits\IsRequestType;
 
 /**
  * Ensures we have the proper request for private and public calls.
@@ -12,6 +13,8 @@ use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 */
 class AuthRequest
 {
+    use IsRequestType;
+
     /**
      * The API instance.
      *
@@ -102,29 +105,5 @@ class AuthRequest
     protected function isAuthableRequest(string $uri): bool
     {
         return preg_match('/\/admin\/oauth\/(authorize|access_token)/', $uri) === 0;
-    }
-
-    /**
-     * Determines if the request is to Graph API.
-     *
-     * @param string $uri The request URI.
-     *
-     * @return bool
-     */
-    protected function isGraphRequest(string $uri): bool
-    {
-        return strpos($uri, 'graphql.json') !== false;
-    }
-
-    /**
-     * Determines if the request is to REST API.
-     *
-     * @param string $uri The request URI.
-     *
-     * @return bool
-     */
-    protected function isRestRequest(string $uri): bool
-    {
-        return $this->isGraphRequest($uri) === false;
     }
 }
