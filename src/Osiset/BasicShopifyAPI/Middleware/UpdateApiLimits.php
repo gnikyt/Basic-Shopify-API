@@ -72,7 +72,7 @@ class UpdateApiLimits
     {
         // Get the GraphQL client
         $client = $this->api->getGraphClient();
-        $body = $client->toResponse($response);
+        $body = $client->toResponse($response->getBody());
 
         if (!isset($body['extensions']) || !isset($body['extensions']['cost'])) {
             // Non-existant, exit
@@ -81,7 +81,7 @@ class UpdateApiLimits
 
         // Update the costs
         $cost = $body['extensions']['cost'];
-        $client->setLimits([
+        $client->getLimitStore->push([
             'left'          => (int)
                 $cost['throttleStatus']['currentlyAvailable'],
             'made'          => (int)
@@ -116,7 +116,7 @@ class UpdateApiLimits
         // Update the limits
         $calls = explode('/', $header[0]);
         $client = $this->api->getRestClient();
-        $client->setLimits([
+        $client->getLimitStore()->push([
             'left'  => (int) $calls[1] - $calls[0],
             'made'  => (int) $calls[0],
             'limit' => (int) $calls[1],

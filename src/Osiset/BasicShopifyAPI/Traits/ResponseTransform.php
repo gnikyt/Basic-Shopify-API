@@ -11,9 +11,7 @@ use Psr\Http\Message\StreamInterface;
 trait ResponseTransform
 {
     /**
-     * Convert request response to response object.
-     *
-     * @return Response
+     * @see Respondable::toResponse
      */
     public function toResponse(StreamInterface $body): Response
     {

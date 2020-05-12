@@ -15,7 +15,7 @@ use GuzzleRetry\GuzzleRetryMiddleware;
 use Osiset\BasicShopifyAPI\Store\Memory;
 use Osiset\BasicShopifyAPI\Clients\Graph;
 use Osiset\BasicShopifyAPI\Deferrers\Sleep;
-use Osiset\BasicShopifyAPI\Contracts\TimeStorer;
+use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
 use Osiset\BasicShopifyAPI\Middleware\AuthRequest;
 use Osiset\BasicShopifyAPI\Contracts\RestRequester;
@@ -83,12 +83,12 @@ class BasicShopifyAPI
      * Constructor.
      *
      * @param Options      $options   The options for the library setup.
-     * @param TimeStorer   $tstore    The time storer implementation to use for rate limiting.
+     * @param StateStorage   $sstore    The time storer implementation to use for rate limiting.
      * @param TimeDeferrer $tdeferrer The time deferrer implementation to use for rate limiting.
      *
      * @return self
      */
-    public function __construct(Options $options, ?TimeStorer $tstore = null, ?TimeDeferrer $tdeferrer = null)
+    public function __construct(Options $options, ?StateStorage $sstore = null, ?TimeDeferrer $tdeferrer = null)
     {
         // Set the options
         $this->options = $options;
@@ -105,16 +105,16 @@ class BasicShopifyAPI
         ));
 
         // Setup the time handlers if need be
-        if ($tstore === null) {
-            $tstore = new Memory();
+        if ($sstore === null) {
+            $sstore = new Memory();
         }
         if ($tdeferrer === null) {
             $tdeferrer = new Sleep();
         }
 
         // Setup REST and Graph clients
-        $this->restClient = new Rest($tstore, $tdeferrer);
-        $this->graphClient = new Graph($tstore, $tdeferrer);
+        $this->restClient = new Rest($sstore, $tdeferrer);
+        $this->graphClient = new Graph($sstore, $tdeferrer);
     }
 
     /**

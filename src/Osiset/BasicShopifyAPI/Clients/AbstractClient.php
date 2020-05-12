@@ -5,24 +5,24 @@ namespace Osiset\BasicShopifyAPI\Clients;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Contracts\TimeStorer;
-use Osiset\BasicShopifyAPI\Contracts\LimitTracker;
+use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
 use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
+use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
 use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 
 /**
  * Base client class.
  */
-abstract class AbstractClient implements TimeAccesser, SessionAware, LimitTracker
+abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccesser
 {
     use ResponseTransform;
 
     /**
      * The time store implementation.
      *
-     * @var TimeStorer
+     * @var StateStorage
      */
     protected $tstore;
 
@@ -43,12 +43,12 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitTracke
     /**
      * Setup.
      *
-     * @param TimeStorer   $tstore    The time store implementation.
+     * @param StateStorage   $tstore    The time store implementation.
      * @param TimeDeferrer $tdeferrer The time deferrer implementation.
      *
      * @return self
      */
-    public function __construct(TimeStorer $tstore, TimeDeferrer $tdeferrer)
+    public function __construct(StateStorage $tstore, TimeDeferrer $tdeferrer)
     {
         $this->tstore = $tstore;
         $this->tdeferrer = $tdeferrer;
@@ -78,9 +78,17 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitTracke
     /**
      * {@inheritDoc}
      */
-    public function getTimeStore(): TimeStorer
+    public function getTimeStore(): StateStorage
     {
         return $this->tstore;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLimitStore(): StateStorage
+    {
+        return $this->lstore;
     }
 
     /**
@@ -97,21 +105,5 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitTracke
     public function getSession(): ?Session
     {
         return $this->session;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setLimits(array $limits): void
-    {
-        $this->limits = $limits;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLimits(): array
-    {
-        return $this->limits;
     }
 }

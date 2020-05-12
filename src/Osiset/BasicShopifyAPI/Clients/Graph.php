@@ -12,27 +12,6 @@ use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
 class Graph extends AbstractClient implements GraphRequester
 {
     /**
-     * The current API call limits from last request.
-     *
-     * @var array
-     */
-    protected $limits = [
-        'left'          => 0,
-        'made'          => 0,
-        'limit'         => 1000,
-        'restoreRate'   => 50,
-        'requestedCost' => 0,
-        'actualCost'    => 0,
-    ];
-
-    /**
-     * Last actual cost of a query/mutation.
-     *
-     * @var int|null
-     */
-    protected $lastActualCost;
-
-    /**
      * {@inheritDoc}
      *
      * @throws Exception When missing api password is missing for private apps.

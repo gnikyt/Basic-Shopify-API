@@ -2,7 +2,7 @@
 
 namespace Osiset\BasicShopifyAPI\Contracts;
 
-use Osiset\BasicShopifyAPI\Contracts\TimeStorer;
+use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
 
 /**
@@ -13,9 +13,9 @@ interface TimeAccesser
     /**
      * Get the time store implementation.
      *
-     * @return TimeStorer
+     * @return StateStorage
      */
-    public function getTimeStore(): TimeStorer;
+    public function getTimeStore(): StateStorage;
 
     /**
      * Get the time deferrer implementation.
