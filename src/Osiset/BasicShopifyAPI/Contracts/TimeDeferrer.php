@@ -16,7 +16,7 @@ interface TimeDeferrer
     public function getCurrentTime(): int;
 
     /**
-     * Sleep for a number of ms,
+     * Sleep for a number of ms.
      *
      * @param int $milliseconds
      *

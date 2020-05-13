@@ -3,7 +3,6 @@
 namespace Osiset\BasicShopifyAPI\Store;
 
 use Osiset\BasicShopifyAPI\Contracts\StateStorage;
-use Osiset\BasicShopifyAPI\Contracts\TimeStorer;
 
 /**
  * In-memory storage for timestamps used by rate limit middleware.

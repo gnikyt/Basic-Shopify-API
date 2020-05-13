@@ -19,7 +19,7 @@ class Response implements ArrayAccess
     /**
      * Setup resource.
      *
-     * @param mixed $data       The data to use for source.
+     * @param mixed $data The data to use for source.
      *
      * @return self
      */

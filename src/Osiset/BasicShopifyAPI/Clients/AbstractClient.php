@@ -7,6 +7,7 @@ use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\ClientInterface;
 use Osiset\BasicShopifyAPI\Session;
 use Osiset\BasicShopifyAPI\Contracts\ClientAware;
+use Osiset\BasicShopifyAPI\Contracts\Respondable;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
 use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
@@ -17,7 +18,7 @@ use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 /**
  * Base client class.
  */
-abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccesser, ClientAware
+abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccesser, ClientAware, Respondable
 {
     use ResponseTransform;
 

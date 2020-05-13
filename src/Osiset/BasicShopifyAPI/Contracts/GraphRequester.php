@@ -5,7 +5,6 @@ namespace Osiset\BasicShopifyAPI\Contracts;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Promise\Promise;
 use Osiset\BasicShopifyAPI\Contracts\ClientAware;
-use Osiset\BasicShopifyAPI\Contracts\Respondable;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
 use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
 use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
@@ -13,7 +12,7 @@ use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
 /**
  * Reprecents Graph client.
  */
-interface GraphRequester extends LimitAccesser, TimeAccesser, SessionAware, ClientAware, Respondable
+interface GraphRequester extends LimitAccesser, TimeAccesser, SessionAware, ClientAware
 {
     /**
      * Runs a request to the Shopify API.

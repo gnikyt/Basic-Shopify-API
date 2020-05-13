@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Traits\IsResponseType;
 use Osiset\BasicShopifyAPI\Middleware\AbstractMiddleware;
+use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 
 /**
  * Update API limits for REST and GraphQL calls.
@@ -14,6 +15,7 @@ use Osiset\BasicShopifyAPI\Middleware\AbstractMiddleware;
 class UpdateApiLimits extends AbstractMiddleware
 {
     use IsResponseType;
+    use ResponseTransform;
 
     /**
      * Run.
@@ -52,7 +54,7 @@ class UpdateApiLimits extends AbstractMiddleware
     {
         // Get the GraphQL client
         $client = $this->api->getGraphClient();
-        $body = $client->toResponse($response->getBody());
+        $body = $this->toResponse($response->getBody());
 
         if (!isset($body['extensions']) || !isset($body['extensions']['cost'])) {
             // Non-existant, exit
