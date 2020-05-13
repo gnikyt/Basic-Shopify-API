@@ -6,58 +6,38 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Traits\IsResponseType;
+use Osiset\BasicShopifyAPI\Middleware\AbstractMiddleware;
 
 /**
  * Update API limits for REST and GraphQL calls.
  */
-class UpdateApiLimits
+class UpdateApiLimits extends AbstractMiddleware
 {
     use IsResponseType;
 
     /**
-     * The API instance.
-     *
-     * @var BasicShopifyAPI
-     */
-    protected $api;
-
-    /**
-     * Setup.
-     *
-     * @param BasicShopifyAPI $api The API instance.
-     *
-     * @return self
-     */
-    public function __construct(BasicShopifyAPI $api)
-    {
-        $this->api = $api;
-    }
-
-    /**
      * Run.
+     *
+     * @param callable $handler
      *
      * @return callable
      */
-    public function __invoke(): callable
+    public function __invoke(callable $handler): callable
     {
         $self = $this;
-        return function (callable $handler) use ($self) {
-            return function (RequestInterface $request, array $options) use ($self, $handler) {
-                $promise = $handler($request, $options);
-                return $promise->then(
-                    function (ResponseInterface $response) use ($self, $handler) {
-                        if ($self->isRestResponse($response)) {
-                            $self->updateRestLimits($response);
-                        }
-
-                        if ($self->isGraphResponse($response)) {
-                            $self->updateGraphCosts($response);
-                        }
-
-                        return $response;
+        return function (RequestInterface $request, array $options) use ($self, $handler) {
+            $promise = $handler($request, $options);
+            return $promise->then(
+                function (ResponseInterface $response) use ($self) {
+                    if ($self->isRestResponse($response)) {
+                        $self->updateRestLimits($response);
+                    } else {
+                        $self->updateGraphCosts($response);
                     }
-                );
-            };
+
+                    return $response;
+                }
+            );
         };
     }
 
@@ -107,7 +87,7 @@ class UpdateApiLimits
     protected function updateRestLimits(ResponseInterface $response): void
     {
         // Grab the API call limit header returned from Shopify
-        $header = $response->getHeader('http_x_shopify_shop_api_call_limit');
+        $header = $response->getHeader(BasicShopifyAPI::HEADER_REST_API_LIMITS);
         if (!$header) {
             // Non-existant, exit
             return;

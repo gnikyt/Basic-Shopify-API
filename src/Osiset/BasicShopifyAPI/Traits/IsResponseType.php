@@ -3,6 +3,7 @@
 namespace Osiset\BasicShopifyAPI\Traits;
 
 use Psr\Http\Message\ResponseInterface;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 
 /**
  * Determine GraphQL or REST response type.
@@ -18,7 +19,7 @@ trait IsResponseType
      */
     protected function isRestResponse(ResponseInterface $response): bool
     {
-        return $response->hasHeader('http_x_shopify_shop_api_call_limit');
+        return $response->hasHeader(BasicShopifyAPI::HEADER_REST_API_LIMITS);
     }
 
     /**

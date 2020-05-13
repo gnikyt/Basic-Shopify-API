@@ -35,6 +35,13 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     use ResponseTransform;
 
     /**
+     * Header for per-shop API call limits.
+     *
+     * @var string
+     */
+    public const HEADER_REST_API_LIMITS = 'http_x_shopify_shop_api_call_limit';
+
+    /**
      * The Guzzle client.
      *
      * @var Client
@@ -97,7 +104,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function __construct(Options $options, ?StateStorage $tstore = null, ?StateStorage $lstore = null, ?TimeDeferrer $tdeferrer = null)
     {
         // Set the options
-        $this->options = $options;
+        $this->setOptions($options);
 
         // Setup REST and GraphQL clients
         $this->setupClients($tstore, $lstore, $tdeferrer);
@@ -105,9 +112,9 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         // Create the stack and assign the middleware which attempts to fix redirects
         $this->stack = HandlerStack::create();
         $this
-            ->addMiddleware((new AuthRequest($this))())
-            ->addMiddleware((new UpdateApiLimits($this))())
-            ->addMiddleware((new UpdateRequestTime($this))())
+            ->addMiddleware(new AuthRequest($this))
+            ->addMiddleware(new UpdateApiLimits($this))
+            ->addMiddleware(new UpdateRequestTime($this))
             ->addMiddleware(GuzzleRetryMiddleware::factory());
 
         // Create a default Guzzle client with our stack
@@ -117,51 +124,6 @@ class BasicShopifyAPI implements SessionAware, ClientAware
                 $this->options->getGuzzleOptions()
             ))
         );
-    }
-
-    /**
-     * Setup the REST and GraphQL clients.
-     *
-     * @param StateStorage|null $tstore    The time storer implementation to use for rate limiting.
-     * @param StateStorage|null $lstore    The limits storer implementation to use for rate limiting.
-     * @param TimeDeferrer|null $tdeferrer The time deferrer implementation to use for rate limiting.
-     *
-     * @return void
-     */
-    protected function setupClients(?StateStorage $tstore = null, ?StateStorage $lstore = null, ?TimeDeferrer $tdeferrer = null): void
-    {
-        // Base/default storage class if none provided
-        $baseStorage = Memory::class;
-
-        // Setup timestamp storage
-        if ($tstore === null) {
-            // Instance for each
-            $graphTstore = new $baseStorage();
-            $restTstore = new $baseStorage();
-        } else {
-            // Clone to make instance for each
-            $graphTstore = clone $tstore;
-            $restTstore = clone $tstore;
-        }
-
-        // Setup limits storage
-        if ($lstore === null) {
-            // Instance for each
-            $graphLstore = new $baseStorage();
-            $restLstore = new $baseStorage();
-        } else {
-            $graphLstore = clone $lstore;
-            $restLstore = clone $lstore;
-        }
-
-        // Setup time deferrer
-        if ($tdeferrer === null) {
-            $tdeferrer = new Sleep();
-        }
-
-        // Setup REST and Graph clients
-        $this->setRestClient(new Rest($restTstore, $restLstore, $tdeferrer));
-        $this->setGraphClient(new Graph($graphTstore, $graphLstore, $tdeferrer));
     }
 
     /**
@@ -435,5 +397,50 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function restAsync(string $type, string $path, array $params = null, array $headers = []): Promise
     {
         return $this->rest($type, $path, $params, $headers, false);
+    }
+
+    /**
+     * Setup the REST and GraphQL clients.
+     *
+     * @param StateStorage|null $tstore    The time storer implementation to use for rate limiting.
+     * @param StateStorage|null $lstore    The limits storer implementation to use for rate limiting.
+     * @param TimeDeferrer|null $tdeferrer The time deferrer implementation to use for rate limiting.
+     *
+     * @return void
+     */
+    protected function setupClients(?StateStorage $tstore = null, ?StateStorage $lstore = null, ?TimeDeferrer $tdeferrer = null): void
+    {
+        // Base/default storage class if none provided
+        $baseStorage = Memory::class;
+
+        // Setup timestamp storage
+        if ($tstore === null) {
+            // Instance for each
+            $graphTstore = new $baseStorage();
+            $restTstore = new $baseStorage();
+        } else {
+            // Clone to make instance for each
+            $graphTstore = clone $tstore;
+            $restTstore = clone $tstore;
+        }
+
+        // Setup limits storage
+        if ($lstore === null) {
+            // Instance for each
+            $graphLstore = new $baseStorage();
+            $restLstore = new $baseStorage();
+        } else {
+            $graphLstore = clone $lstore;
+            $restLstore = clone $lstore;
+        }
+
+        // Setup time deferrer
+        if ($tdeferrer === null) {
+            $tdeferrer = new Sleep();
+        }
+
+        // Setup REST and Graph clients
+        $this->setRestClient(new Rest($restTstore, $restLstore, $tdeferrer));
+        $this->setGraphClient(new Graph($graphTstore, $graphLstore, $tdeferrer));
     }
 }
