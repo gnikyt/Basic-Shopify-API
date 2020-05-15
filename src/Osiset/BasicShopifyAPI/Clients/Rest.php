@@ -40,7 +40,7 @@ class Rest extends AbstractClient implements RestRequester
      */
     public function requestAccess(string $code): Response
     {
-        if ($this->options->getApiSecret() === null || $this->options->getApiKey() === null) {
+        if ($this->getOptions()->getApiSecret() === null || $this->getOptions()->getApiKey() === null) {
             // Key and secret required
             throw new Exception('API key or secret is missing');
         }
@@ -51,8 +51,8 @@ class Rest extends AbstractClient implements RestRequester
             $this->getBaseUri()->withPath('/admin/oauth/access_token'),
             [
                 'json' => [
-                    'client_id'     => $this->options->getApiKey(),
-                    'client_secret' => $this->options->getApiSecret(),
+                    'client_id'     => $this->getOptions()->getApiKey(),
+                    'client_secret' => $this->getOptions()->getApiSecret(),
                     'code'          => $code,
                 ],
             ]
@@ -66,7 +66,7 @@ class Rest extends AbstractClient implements RestRequester
      */
     public function getAuthUrl($scopes, string $redirectUri, string $mode = 'offline'): string
     {
-        if ($this->options->getApiKey() === null) {
+        if ($this->getOptions()->getApiKey() === null) {
             throw new Exception('API key is missing');
         }
 
@@ -75,7 +75,7 @@ class Rest extends AbstractClient implements RestRequester
         }
 
         $query = [
-            'client_id'    => $this->options->getApiKey(),
+            'client_id'    => $this->getOptions()->getApiKey(),
             'scope'        => $scopes,
             'redirect_uri' => $redirectUri,
         ];
@@ -122,13 +122,13 @@ class Rest extends AbstractClient implements RestRequester
             // Async request
             $promise = $requestFn();
             return $promise->then([$this, 'handleSuccess'], [$this, 'handleFailure']);
-        } else {
-            // Sync request (default)
-            try {
-                return $this->handleSuccess($requestFn());
-            } catch (RequestException $e) {
-                return $this->handleFailure($e);
-            }
+        }
+
+        // Sync request (default)
+        try {
+            return $this->handleSuccess($requestFn());
+        } catch (RequestException $e) {
+            return $this->handleFailure($e);
         }
     }
 
@@ -180,20 +180,14 @@ class Rest extends AbstractClient implements RestRequester
             if ($rawBody !== null) {
                 // Convert data to response
                 $body = $this->toResponse($rawBody);
-                if ($body->hasErrors()) {
-                    // Use errors for body
-                    $body = $body->getErrors();
-                } else {
-                    // Return no body
-                    $body = null;
-                }
+                $body = $body->hasErrors() ? $body->getErrors() : null;
             }
         }
 
         return [
             'errors'     => true,
-            'status'     => $status,
             'response'   => $resp,
+            'status'     => $status,
             'body'       => $body,
             'link'       => null,
             'exception'  => $e,

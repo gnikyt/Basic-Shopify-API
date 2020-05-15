@@ -101,16 +101,20 @@ class BasicShopifyAPI implements SessionAware, ClientAware
      *
      * @return self
      */
-    public function __construct(Options $options, ?StateStorage $tstore = null, ?StateStorage $lstore = null, ?TimeDeferrer $tdeferrer = null)
-    {
-        // Set the options
-        $this->setOptions($options);
-
+    public function __construct(
+        Options $options,
+        ?StateStorage $tstore = null,
+        ?StateStorage $lstore = null,
+        ?TimeDeferrer $tdeferrer = null
+    ) {
         // Setup REST and GraphQL clients
         $this->setupClients($tstore, $lstore, $tdeferrer);
 
+        // Set the options
+        $this->setOptions($options);
+
         // Create the stack and assign the middleware which attempts to fix redirects
-        $this->stack = HandlerStack::create();
+        $this->stack = HandlerStack::create($this->getOptions()->getGuzzleHandler());
         $this
             ->addMiddleware(new AuthRequest($this))
             ->addMiddleware(new UpdateApiLimits($this))
@@ -121,7 +125,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         $this->setClient(
             new Client(array_merge(
                 ['handler' => $this->stack],
-                $this->options->getGuzzleOptions()
+                $this->getOptions()->getGuzzleOptions()
             ))
         );
     }
@@ -145,22 +149,17 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     }
 
     /**
-     * Set options for the library.
-     *
-     * @param Options $options
-     *
-     * @return self
+     * {@inheritDoc}
      */
-    public function setOptions(Options $options): self
+    public function setOptions(Options $options): void
     {
         $this->options = $options;
-        return $this;
+        $this->getGraphClient()->setOptions($this->options);
+        $this->getRestClient()->setOptions($this->options);
     }
 
     /**
-     * Get the options for the library.
-     *
-     * @return Options
+     * {@inheritDoc}
      */
     public function getOptions(): Options
     {
@@ -301,11 +300,9 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     {
         // Get the access response data
         $access = $this->requestAccess($code);
-        if (isset($access['associated_user'])) {
-            $session = new Session($this->session->getShop(), $access['access_token'], $access['associated_user']);
-        } else {
-            $session = new Session($this->session->getShop(), $access['access_token']);
-        }
+
+        $user = isset($access['associated_user']) ? $access['associated_user'] : null;
+        $session = new Session($this->session->getShop(), $access['access_token'], $user);
 
         // Update the session
         $this->setSession($session);
@@ -322,7 +319,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
      */
     public function verifyRequest(array $params): bool
     {
-        if ($this->options->getApiSecret() === null) {
+        if ($this->getOptions()->getApiSecret() === null) {
             // Secret is required
             throw new Exception('API secret is missing');
         }
@@ -408,36 +405,24 @@ class BasicShopifyAPI implements SessionAware, ClientAware
      *
      * @return void
      */
-    protected function setupClients(?StateStorage $tstore = null, ?StateStorage $lstore = null, ?TimeDeferrer $tdeferrer = null): void
-    {
+    protected function setupClients(
+        ?StateStorage $tstore = null,
+        ?StateStorage $lstore = null,
+        ?TimeDeferrer $tdeferrer = null
+    ): void {
         // Base/default storage class if none provided
         $baseStorage = Memory::class;
 
         // Setup timestamp storage
-        if ($tstore === null) {
-            // Instance for each
-            $graphTstore = new $baseStorage();
-            $restTstore = new $baseStorage();
-        } else {
-            // Clone to make instance for each
-            $graphTstore = clone $tstore;
-            $restTstore = clone $tstore;
-        }
+        $graphTstore = $tstore === null ? new $baseStorage() : clone $tstore;
+        $restTstore = $tstore === null ? new $baseStorage() : clone $tstore;
 
         // Setup limits storage
-        if ($lstore === null) {
-            // Instance for each
-            $graphLstore = new $baseStorage();
-            $restLstore = new $baseStorage();
-        } else {
-            $graphLstore = clone $lstore;
-            $restLstore = clone $lstore;
-        }
+        $graphLstore = $lstore === null ? new $baseStorage() : clone $lstore;
+        $restLstore = $lstore === null ? new $baseStorage() : clone $lstore;
 
         // Setup time deferrer
-        if ($tdeferrer === null) {
-            $tdeferrer = new Sleep();
-        }
+        $tdeferrer = $tdeferrer ?? new Sleep();
 
         // Setup REST and Graph clients
         $this->setRestClient(new Rest($restTstore, $restLstore, $tdeferrer));

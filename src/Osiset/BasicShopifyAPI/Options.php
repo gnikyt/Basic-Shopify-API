@@ -82,6 +82,13 @@ class Options
     ];
 
     /**
+     * Optional Guzzle handler to use.
+     *
+     * @var callable|null
+     */
+    protected $guzzleHandler;
+
+    /**
      * Set type for API calls.
      *
      * @param bool $private True for private, false for public.
@@ -260,6 +267,29 @@ class Options
     public function getGuzzleOptions(): array
     {
         return $this->guzzleOptions;
+    }
+
+    /**
+     * Set a Guzzle handler.
+     *
+     * @param callable $handler
+     *
+     * @return self
+     */
+    public function setGuzzleHandler(callable $handler): self
+    {
+        $this->guzzleHandler = $handler;
+        return $this;
+    }
+
+    /**
+     * Get the Guzzle handler.
+     *
+     * @return callable|null
+     */
+    public function getGuzzleHandler(): ?callable
+    {
+        return $this->guzzleHandler;
     }
 
     /**

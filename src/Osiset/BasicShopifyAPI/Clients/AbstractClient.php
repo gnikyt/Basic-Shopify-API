@@ -5,6 +5,7 @@ namespace Osiset\BasicShopifyAPI\Clients;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\ClientInterface;
+use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
 use Osiset\BasicShopifyAPI\Contracts\ClientAware;
 use Osiset\BasicShopifyAPI\Contracts\Respondable;
@@ -53,9 +54,16 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     /**
      * The Guzzle client.
      *
-     * @var ClientInterface|null
+     * @var ClientInterface
      */
     protected $client;
+
+    /**
+     * The options.
+     *
+     * @var Options
+     */
+    protected $options;
 
     /**
      * Setup.
@@ -137,8 +145,24 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     /**
      * {@inheritDoc}
      */
-    public function getClient(): ?ClientInterface
+    public function getClient(): ClientInterface
     {
         return $this->client;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setOptions(Options $options): void
+    {
+        $this->options = $options;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOptions(): Options
+    {
+        return $this->options;
     }
 }
