@@ -9,6 +9,7 @@
   <exclude-pattern>/coverage/*</exclude-pattern>
   <exclude-pattern>/bin/*</exclude-pattern>
   <exclude-pattern>/test/*</exclude-pattern>
+  <exclude-pattern>/_test/*</exclude-pattern>
   <exclude-pattern>/test.php</exclude-pattern>
 
   <autoload>/vendor/autoload.php</autoload>
