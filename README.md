@@ -484,6 +484,16 @@ if ($call['errors']) {
 }
 ```
 
+### Middleware
+
+This library takes advantage of using Guzzle middleware for request/response checks and modifications. You're also able to inject middleware.
+
+```php
+$api->addMiddleware([callable]);
+```
+
+See Guzzle's documentation on middleware. As well, you can browse this library's middleware for examples.
+
 ## Documentation
 
 Code documentation is [available here](https://osiset.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
