@@ -5,6 +5,7 @@ namespace Osiset\BasicShopifyAPI\Middleware;
 use Exception;
 use Osiset\BasicShopifyAPI\Options;
 use Psr\Http\Message\RequestInterface;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Traits\IsRequestType;
 use Osiset\BasicShopifyAPI\Middleware\AbstractMiddleware;
 
@@ -53,7 +54,7 @@ class AuthRequest extends AbstractMiddleware
                         );
                     } else {
                         // Public: Add the token header
-                        $request = $request->withHeader('X-Shopify-Access-Token', $accessToken);
+                        $request = $request->withHeader(BasicShopifyAPI::HEADER_ACCESS_TOKEN, $accessToken);
                     }
                 } else {
                     // Checks for Graph
@@ -67,7 +68,7 @@ class AuthRequest extends AbstractMiddleware
 
                     // Public/Private: Add the token header
                     $request = $request->withHeader(
-                        'X-Shopify-Access-Token',
+                        BasicShopifyAPI::HEADER_ACCESS_TOKEN,
                         $apiPassword ?? $accessToken
                     );
                 }

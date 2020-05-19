@@ -35,11 +35,18 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     use ResponseTransform;
 
     /**
-     * Header for per-shop API call limits.
+     * Header for per-shop API call limits (recieve).
      *
      * @var string
      */
     public const HEADER_REST_API_LIMITS = 'http_x_shopify_shop_api_call_limit';
+
+    /**
+     * Header for access token (send).
+     *
+     * @var string
+     */
+    public const HEADER_ACCESS_TOKEN = 'x-shopify-access-token';
 
     /**
      * The Guzzle client.
