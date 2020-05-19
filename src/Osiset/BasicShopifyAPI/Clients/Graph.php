@@ -75,7 +75,7 @@ class Graph extends AbstractClient implements GraphRequester
             'response'   => $resp,
             'status'     => $resp->getStatusCode(),
             'body'       => $body,
-            'timestamps' => $this->getTimeStore()->get(),
+            'timestamps' => $this->getTimeStore()->get($this->getSession()),
         ];
     }
 
@@ -111,7 +111,7 @@ class Graph extends AbstractClient implements GraphRequester
             'status'     => $status,
             'body'       => $body,
             'exception'  => $e,
-            'timestamps' => $this->getTimeStore()->get(),
+            'timestamps' => $this->getTimeStore()->get($this->getSession()),
         ];
     }
 }

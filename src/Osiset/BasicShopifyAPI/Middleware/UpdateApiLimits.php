@@ -63,20 +63,23 @@ class UpdateApiLimits extends AbstractMiddleware
 
         // Update the costs
         $cost = $body['extensions']['cost'];
-        $client->getLimitStore()->push([
-            'left'          => (int)
-                $cost['throttleStatus']['currentlyAvailable'],
-            'made'          => (int)
-                ($cost['throttleStatus']['maximumAvailable'] - $cost['throttleStatus']['currentlyAvailable']),
-            'limit'         => (int)
-                $cost['throttleStatus']['maximumAvailable'],
-            'restoreRate'   => (int)
-                $cost['throttleStatus']['restoreRate'],
-            'requestedCost' => (int)
-                $cost['requestedQueryCost'],
-            'actualCost'    => (int)
-                $cost['actualQueryCost'],
-        ]);
+        $client->getLimitStore()->push(
+            [
+                'left'          => (int)
+                    $cost['throttleStatus']['currentlyAvailable'],
+                'made'          => (int)
+                    ($cost['throttleStatus']['maximumAvailable'] - $cost['throttleStatus']['currentlyAvailable']),
+                'limit'         => (int)
+                    $cost['throttleStatus']['maximumAvailable'],
+                'restoreRate'   => (int)
+                    $cost['throttleStatus']['restoreRate'],
+                'requestedCost' => (int)
+                    $cost['requestedQueryCost'],
+                'actualCost'    => (int)
+                    $cost['actualQueryCost'],
+            ],
+            $this->api->getSession()
+        );
     }
 
     /**
@@ -98,10 +101,13 @@ class UpdateApiLimits extends AbstractMiddleware
         // Update the limits
         $calls = explode('/', $header[0]);
         $client = $this->api->getRestClient();
-        $client->getLimitStore()->push([
-            'left'  => (int) $calls[1] - $calls[0],
-            'made'  => (int) $calls[0],
-            'limit' => (int) $calls[1],
-        ]);
+        $client->getLimitStore()->push(
+            [
+                'left'  => (int) $calls[1] - $calls[0],
+                'made'  => (int) $calls[0],
+                'limit' => (int) $calls[1],
+            ],
+            $this->api->getSession()
+        );
     }
 }

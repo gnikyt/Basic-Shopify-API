@@ -2,6 +2,8 @@
 
 namespace Osiset\BasicShopifyAPI;
 
+use Osiset\BasicShopifyAPI\ResponseAccess;
+
 /**
  * Shop or user session.
  */
@@ -24,7 +26,7 @@ class Session
     /**
      * If the API was called with per-user grant option, this will be filled.
      *
-     * @var array|null
+     * @var ResponseAccess|null
      */
     protected $user;
 
@@ -41,7 +43,7 @@ class Session
     {
         $this->shop = $shop;
         $this->accessToken = $accessToken;
-        $this->user = $user;
+        $this->user = new ResponseAccess($user);
     }
 
     /**
@@ -67,9 +69,9 @@ class Session
     /**
      * Gets the user.
      *
-     * @return array|null
+     * @return ResponseAccess|null
      */
-    public function getUser(): ?array
+    public function getUser(): ?ResponseAccess
     {
         return $this->user;
     }

@@ -2,12 +2,13 @@
 
 namespace Osiset\BasicShopifyAPI\Test\Middleware;
 
-use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use GuzzleHttp\Promise\Promise;
+use Osiset\BasicShopifyAPI\Session;
 use Psr\Http\Message\RequestInterface;
 use Osiset\BasicShopifyAPI\Test\BaseTest;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Middleware\UpdateApiLimits;
 
 class UpdateApiLimitsTest extends BaseTest
@@ -16,12 +17,13 @@ class UpdateApiLimitsTest extends BaseTest
     {
         // Create the client
         $api = $this->buildClient([]);
+        $api->setSession(new Session('example.myshopify.com'));
 
         // Create the middleware instance
         $mw = new UpdateApiLimits($api);
 
         // Ensure its empty
-        $previous = $api->getRestClient()->getLimitStore()->get();
+        $previous = $api->getRestClient()->getLimitStore()->get($api->getSession());
 
         // Run a request
         $promise = $mw(
@@ -30,24 +32,19 @@ class UpdateApiLimitsTest extends BaseTest
                 $promise->resolve(
                     new Response(
                         200,
-                        [
-                            BasicShopifyAPI::HEADER_REST_API_LIMITS => '79/80'
-                        ]
+                        [BasicShopifyAPI::HEADER_REST_API_LIMITS => '79/80']
                     )
                 );
 
                 return $promise;
             }
-        )(
-            new Request('GET', '/admin/shop.json'),
-            []
-        );
+        )(new Request('GET', '/admin/shop.json'), []);
         $promise->wait();
 
         // Check we have timestamp now
         $this->assertNotEquals(
             $previous,
-            $api->getRestClient()->getLimitStore()->get()
+            $api->getRestClient()->getLimitStore()->get($api->getSession())
         );
     }
 
@@ -55,12 +52,13 @@ class UpdateApiLimitsTest extends BaseTest
     {
         // Create the client
         $api = $this->buildClient([]);
+        $api->setSession(new Session('example.myshopify.com'));
 
         // Create the middleware instance
         $mw = new UpdateApiLimits($api);
 
         // Ensure its empty
-        $previous = $api->getGraphClient()->getLimitStore()->get();
+        $previous = $api->getGraphClient()->getLimitStore()->get($api->getSession());
 
         // Run a request
         $promise = $mw(
@@ -75,16 +73,13 @@ class UpdateApiLimitsTest extends BaseTest
 
                 return $promise;
             }
-        )(
-            new Request('GET', '/admin/api/graphql.json'),
-            []
-        );
+        )(new Request('GET', '/admin/api/graphql.json'), []);
         $promise->wait();
 
         // Check we have timestamp now
         $this->assertNotEquals(
             $previous,
-            $api->getGraphClient()->getLimitStore()->get()
+            $api->getGraphClient()->getLimitStore()->get($api->getSession())
         );
     }
 }

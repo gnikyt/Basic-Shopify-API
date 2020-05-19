@@ -25,12 +25,14 @@ class UpdateRequestTime extends AbstractMiddleware
         $self = $this;
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             // Get the client
+            $api = $self->api;
             $client = $self->isRestRequest($request->getUri()) ?
-                $self->api->getRestClient() :
-                $self->api->getGraphClient();
+                $api->getRestClient() :
+                $api->getGraphClient();
 
             $client->getTimeStore()->push(
-                $client->getTimeDeferrer()->getCurrentTime()
+                $client->getTimeDeferrer()->getCurrentTime(),
+                $api->getSession()
             );
 
             return $handler($request, $options);

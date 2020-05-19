@@ -10,7 +10,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\Promise;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Response;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use GuzzleRetry\GuzzleRetryMiddleware;
 use Osiset\BasicShopifyAPI\Clients\Rest;
 use Osiset\BasicShopifyAPI\Store\Memory;
@@ -279,7 +279,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     /**
      * @see Rest::requestAccess
      */
-    public function requestAccess(string $code): Response
+    public function requestAccess(string $code): ResponseAccess
     {
         return $this->getRestClient()->requestAccess($code);
     }

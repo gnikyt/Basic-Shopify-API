@@ -2,7 +2,7 @@
 
 namespace Osiset\BasicShopifyAPI\Contracts;
 
-use Osiset\BasicShopifyAPI\Response;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -13,7 +13,7 @@ interface Respondable
     /**
      * Convert request response to response object.
      *
-     * @return Response
+     * @return ResponseAccess
      */
-    public function toResponse(StreamInterface $body): Response;
+    public function toResponse(StreamInterface $body): ResponseAccess;
 }

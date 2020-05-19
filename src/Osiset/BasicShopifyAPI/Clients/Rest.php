@@ -3,7 +3,7 @@
 namespace Osiset\BasicShopifyAPI\Clients;
 
 use Exception;
-use Osiset\BasicShopifyAPI\Response;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
 use Osiset\BasicShopifyAPI\Clients\AbstractClient;
@@ -17,9 +17,9 @@ class Rest extends AbstractClient implements RestRequester
     /**
      * Processes the "Link" header.
      *
-     * @return Response
+     * @return ResponseAccess
      */
-    protected function extractLinkHeader(string $header): Response
+    protected function extractLinkHeader(string $header): ResponseAccess
     {
         $links = [
             'next'     => null,
@@ -32,13 +32,13 @@ class Rest extends AbstractClient implements RestRequester
             $links[$type] = isset($matches[1]) ? $matches[1] : null;
         }
 
-        return new Response($links);
+        return new ResponseAccess($links);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function requestAccess(string $code): Response
+    public function requestAccess(string $code): ResponseAccess
     {
         if ($this->getOptions()->getApiSecret() === null || $this->getOptions()->getApiKey() === null) {
             // Key and secret required
@@ -154,7 +154,7 @@ class Rest extends AbstractClient implements RestRequester
             'status'     => $resp->getStatusCode(),
             'body'       => $this->toResponse($resp->getBody()),
             'link'       => $link,
-            'timestamps' => $this->getTimeStore()->get(),
+            'timestamps' => $this->getTimeStore()->get($this->getSession()),
         ];
     }
 
@@ -191,7 +191,7 @@ class Rest extends AbstractClient implements RestRequester
             'body'       => $body,
             'link'       => null,
             'exception'  => $e,
-            'timestamps' => $this->getTimeStore()->get(),
+            'timestamps' => $this->getTimeStore()->get($this->getSession()),
         ];
     }
 }

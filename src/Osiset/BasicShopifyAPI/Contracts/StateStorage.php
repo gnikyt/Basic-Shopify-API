@@ -2,6 +2,8 @@
 
 namespace Osiset\BasicShopifyAPI\Contracts;
 
+use Osiset\BasicShopifyAPI\Session;
+
 /**
  * Reprecents basic state storage.
  * Based on spatie/guzzle-rate-limiter-middleware
@@ -9,31 +11,38 @@ namespace Osiset\BasicShopifyAPI\Contracts;
 interface StateStorage
 {
     /**
-     * Get the values.
-     *
-     * @param array $options Optional options to pass through.
+     * Get all container values.
      *
      * @return array
      */
-    public function get(array $options = []): array;
+    public function all(): array;
+
+    /**
+     * Get the values.
+     *
+     * @param Session $session The shop session.
+     *
+     * @return array
+     */
+    public function get(Session $session): array;
 
     /**
      * Set the values.
      *
-     * @param array $values  The values to set.
-     * @param array $options Optional options to pass through.
+     * @param array   $values  The values to set.
+     * @param Session $session The shop session.
      *
      * @return void
      */
-    public function set(array $values, array $options = []): void;
+    public function set(array $values, Session $session): void;
 
     /**
      * Set the values.
      *
-     * @param mixed $value   The value to add.
-     * @param array $options Optional options to pass through.
+     * @param mixed   $value   The value to add.
+     * @param Session $session The shop session.
      *
      * @return void
      */
-    public function push($value, array $options = []): void;
+    public function push($value, Session $session): void;
 }

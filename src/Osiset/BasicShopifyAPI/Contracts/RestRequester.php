@@ -5,7 +5,7 @@ namespace Osiset\BasicShopifyAPI\Contracts;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Promise\Promise;
-use Osiset\BasicShopifyAPI\Response;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\Contracts\ClientAware;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
 use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
@@ -38,9 +38,9 @@ interface RestRequester extends LimitAccesser, TimeAccesser, SessionAware, Clien
      *
      * @throws Exception When API secret is missing.
      *
-     * @return Response
+     * @return ResponseAccess
      */
-    public function requestAccess(string $code): Response;
+    public function requestAccess(string $code): ResponseAccess;
 
     /**
      * Returns the base URI to use.

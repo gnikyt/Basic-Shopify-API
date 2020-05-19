@@ -7,7 +7,7 @@ use ArrayAccess;
 /**
  * Response data object for accessing.
  */
-class Response implements ArrayAccess
+class ResponseAccess implements ArrayAccess
 {
     /**
      * The response data.
@@ -74,7 +74,7 @@ class Response implements ArrayAccess
      */
     public function offsetUnset($offset): void
     {
-        unset($this->resource[$offset]);
+        unset($this->container[$offset]);
     }
 
     /**

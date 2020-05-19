@@ -3,6 +3,7 @@
 namespace Osiset\BasicShopifyAPI\Store;
 
 use Osiset\BasicShopifyAPI\Contracts\StateStorage;
+use Osiset\BasicShopifyAPI\Session;
 
 /**
  * In-memory storage for timestamps used by rate limit middleware.
@@ -20,7 +21,7 @@ class Memory implements StateStorage
     /**
      * {@inheritDoc}
      */
-    public function get(array $options = []): array
+    public function all(): array
     {
         return $this->container;
     }
@@ -28,18 +29,32 @@ class Memory implements StateStorage
     /**
      * {@inheritDoc}
      */
-    public function set(array $values, array $options = []): void
+    public function get(Session $session): array
     {
-        $this->container = $values;
+        $shop = $session->getShop();
+        return isset($this->container[$shop]) ? $this->container[$shop] : [];
     }
 
     /**
      * {@inheritDoc}
      */
-    public function push($value, array $options = []): void
+    public function set(array $values, Session $session): void
     {
+        $this->container[$session->getShop()] = $values;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function push($value, Session $session): void
+    {
+        $shop = $session->getShop();
+        if (!isset($this->container[$shop])) {
+            $this->container[$shop] = [];
+        }
+
         // Set the value as first element, cut values off at 2 entrys for current and previous
-        array_unshift($this->container, $value);
-        $this->container = array_slice($this->container, 0, 2);
+        array_unshift($this->container[$shop], $value);
+        $this->container[$shop] = array_slice($this->container[$shop], 0, 2);
     }
 }

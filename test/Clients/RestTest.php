@@ -6,7 +6,7 @@ use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Response;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\Test\BaseTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
@@ -193,7 +193,7 @@ class RestTest extends BaseTest
         $this->assertTrue(is_array($response));
         $this->assertInstanceOf(GuzzleResponse::class, $response['response']);
         $this->assertEquals(200, $response['response']->getStatusCode());
-        $this->assertInstanceOf(Response::class, $response['body']);
+        $this->assertInstanceOf(ResponseAccess::class, $response['body']);
         $this->assertEquals('limit=1&page=1', $query);
         $this->assertEquals('!#@', $tokenHeader);
         $this->assertEquals(true, $specialHeader);
