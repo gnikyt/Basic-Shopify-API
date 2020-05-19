@@ -1,7 +1,7 @@
 {
   "name": "osiset/basic-shopify-api",
   "type": "library",
-  "description": "A basic Shopify API wrapper with REST and GraphQL support.",
+  "description": "A basic Shopify API wrapper with REST and GraphQL support, powered by Guzzle.",
   "keywords": ["api", "shopify", "rest", "graphql"],
   "license": "MIT",
   "authors": [
@@ -11,10 +11,9 @@
     }
   ],
   "require": {
-    "php": ">=7.1.0",
-    "guzzlehttp/guzzle": "^6.3",
-    "guzzlehttp/promises": "^1.3",
-    "psr/log": "^1.1"
+    "php": ">=7.2.0",
+    "guzzlehttp/guzzle": "^6.5",
+    "caseyamcl/guzzle_retry_middleware": "^2.3"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.2",
@@ -25,11 +24,13 @@
     "test": "bin/phpunit"
   },
   "autoload": {
-    "files": ["src/Osiset/BasicShopifyAPI.php"]
+    "psr-4": {
+      "Osiset\\BasicShopifyAPI\\": "src/Osiset/BasicShopifyAPI"
+    }
   },
   "autoload-dev": {
     "psr-4": {
-      "Osiset\\Test\\": "test"
+      "Osiset\\BasicShopifyAPI\\Test\\": "test"
     }
   },
   "config": { "bin-dir": "bin" }
