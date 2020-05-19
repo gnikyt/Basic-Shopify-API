@@ -494,6 +494,18 @@ $api->addMiddleware([callable]);
 
 See Guzzle's documentation on middleware. As well, you can browse this library's middleware for examples.
 
+### Storage
+
+For storing the current request times, API limits, request costs, etc. A basic in-memory array store is used `Osiset\BasicShopifyAPI\Store\Memory`.
+
+If you would like to implement a more advananced store such as one with Redis, simply implement `Osiset\BasicShopifyAPI\Contracts\StateStorage` and set the client to use it, example:
+
+```php
+$redisStore = new RedisStore($connection);
+
+$api = new BasicShopifyAPI($options, $redisStore, $redisStore, $redisStore);
+```
+
 ## Documentation
 
 Code documentation is [available here](https://osiset.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
