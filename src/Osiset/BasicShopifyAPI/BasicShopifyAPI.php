@@ -10,11 +10,11 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\Promise;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\ResponseAccess;
 use GuzzleRetry\GuzzleRetryMiddleware;
 use Osiset\BasicShopifyAPI\Clients\Rest;
 use Osiset\BasicShopifyAPI\Store\Memory;
 use Osiset\BasicShopifyAPI\Clients\Graph;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\Deferrers\Sleep;
 use Osiset\BasicShopifyAPI\Contracts\ClientAware;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
@@ -22,6 +22,7 @@ use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
 use Osiset\BasicShopifyAPI\Middleware\AuthRequest;
 use Osiset\BasicShopifyAPI\Contracts\RestRequester;
+use Osiset\BasicShopifyAPI\Middleware\RateLimiting;
 use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
 use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 use Osiset\BasicShopifyAPI\Middleware\UpdateApiLimits;
@@ -124,6 +125,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         $this->stack = HandlerStack::create($this->getOptions()->getGuzzleHandler());
         $this
             ->addMiddleware(new AuthRequest($this))
+            ->addMiddleware(new RateLimiting($this))
             ->addMiddleware(new UpdateApiLimits($this))
             ->addMiddleware(new UpdateRequestTime($this))
             ->addMiddleware(GuzzleRetryMiddleware::factory());

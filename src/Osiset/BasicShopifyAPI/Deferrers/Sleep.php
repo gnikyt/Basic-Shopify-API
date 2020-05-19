@@ -21,8 +21,8 @@ class Sleep implements TimeDeferrer
     /**
      * {@inheritDoc}
      */
-    public function sleep(int $milliseconds): void
+    public function sleep(int $microseconds): void
     {
-        usleep($milliseconds * 1000);
+        usleep($microseconds);
     }
 }
