@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# 9.0.0
+
+*Contains breaking changes*; Consult `UPGRADING.md`.
+
++ Library refactored and split up, no longer one file
++ Auth header handling moved into Guzzle middleware
++ API versioning handler moved into Guzzle middleware
++ Rate limiting improved and now available for GraphQL
++ Options moved into its own configuration class
++ "Retry" ability now built-in via `guzzle_retry_middleware` which respects Shopify's 'X-Retry-After' header
++ API responses are now mapped into a response class which can be accessed as an array or object
++ Storage of how/where rate limits, request times, and others are now changable with the `StateStorage` interface, and a default in-memory storage class provided
++ Both GraphQL and REST success and error returns have been normalized
+
 # 8.2.0
 
 + Added `bodyArray` to response object of rest and graph, this is the same as `body` except instead of a stdClass being returned, its an array.

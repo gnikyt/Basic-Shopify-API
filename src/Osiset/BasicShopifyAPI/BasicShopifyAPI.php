@@ -124,11 +124,11 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         // Create the stack and assign the middleware which attempts to fix redirects
         $this->stack = HandlerStack::create($this->getOptions()->getGuzzleHandler());
         $this
-            ->addMiddleware(new AuthRequest($this))
-            ->addMiddleware(new RateLimiting($this))
-            ->addMiddleware(new UpdateApiLimits($this))
-            ->addMiddleware(new UpdateRequestTime($this))
-            ->addMiddleware(GuzzleRetryMiddleware::factory());
+            ->addMiddleware(new AuthRequest($this), 'request:auth')
+            ->addMiddleware(new RateLimiting($this), 'rate:limiting')
+            ->addMiddleware(new UpdateApiLimits($this), 'rate:update')
+            ->addMiddleware(new UpdateRequestTime($this), 'time:update')
+            ->addMiddleware(GuzzleRetryMiddleware::factory(), 'request:retry');
 
         // Create a default Guzzle client with our stack
         $this->setClient(
@@ -267,6 +267,19 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function addMiddleware(callable $callable, string $name = ''): self
     {
         $this->stack->push($callable, $name);
+        return $this;
+    }
+
+    /**
+     * Remove middleware to the handler stack.
+     *
+     * @param string $name Name to register for this middleware.
+     *
+     * @return self
+     */
+    public function removeMiddleware(string $name = ''): self
+    {
+        $this->stack->remove($name);
         return $this;
     }
 
