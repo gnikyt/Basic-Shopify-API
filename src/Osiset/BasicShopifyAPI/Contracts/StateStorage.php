@@ -45,4 +45,13 @@ interface StateStorage
      * @return void
      */
     public function push($value, Session $session): void;
+
+    /**
+     * Remove all values.
+     *
+     * @param Session $session The shop session.
+     *
+     * @return void
+     */
+    public function reset(Session $session): void;
 }

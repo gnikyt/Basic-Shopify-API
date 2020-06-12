@@ -49,27 +49,29 @@ class RateLimiting extends AbstractMiddleware
         $td = $client->getTimeDeferrer();
         $ts = $client->getTimeStore();
 
-        // Get current, last request time, and time difference
-        $currentTime = $td->getCurrentTime();
-        $lastTime = $ts->get($api->getSession());
-        $lastTime = isset($lastTime[0]) ? $lastTime[0] : 0;
-
-        if ($lastTime === 0) {
-            // This is the first request, nothing to do
+        $times = $ts->get($api->getSession());
+        if (count($times) !== $api->getOptions()->getRestLimit()) {
+            // Not at our limit yet, allow through without limiting
             return false;
         }
-        
-        // Calculate how many calls can be made every X microseconds
-        $callEveryMs = 1000000 / $api->getOptions()->getRestLimit();
-        $timeDiff = round($currentTime - $lastTime, 3);
 
-        if ($timeDiff < $callEveryMs) {
-            // Over the limit, sleep X microseconds until we can run again
-            $td->sleep($callEveryMs - $timeDiff);
-            return true;
+        // Determine if this call has passed the window
+        $firstTime = end($times);
+        $windowTime = $firstTime + 1;
+        $currentTime = $td->getCurrentTime();
+
+        if ($currentTime > $windowTime) {
+            // Call is passed the window, reset and allow through without limiting
+            $ts->reset($api->getSession());
+            return false;
         }
 
-        return false;
+        // Call is inside the window and not at the call limit, sleep until window can be reset
+        $sleepTime = $windowTime - $currentTime;
+        $td->sleep($sleepTime < 0 ? 0 : $sleepTime);
+        $ts->reset($api->getSession());
+
+        return true;
     }
 
     /**

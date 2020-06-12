@@ -24,13 +24,14 @@ class RateLimitingTest extends BaseTest
         // Create fake times
         $td = $api->getRestClient()->getTimeDeferrer();
         $currentTime = $td->getCurrentTime();
-        $lastTime = $currentTime - 100000; // -100ms
+        $firstTime = $currentTime - 0.200;
+        $lastTime = $currentTime - 0.100;
 
         // Fill fake times
         $ts = $api->getRestClient()->getTimeStore();
-        $ts->set([$lastTime], $api->getSession());
+        $ts->set([$lastTime, $firstTime], $api->getSession());
 
-        // Given lastTime was less than the default 1 call per 500ms, we should be limited
+        // Given we have 2 previous calls within 1 second window, sleep should trigger
         $result = $method->invoke(new RateLimiting($api), $api);
         $this->assertTrue($result);
     }
@@ -48,13 +49,17 @@ class RateLimitingTest extends BaseTest
         // Create fake times
         $td = $api->getRestClient()->getTimeDeferrer();
         $currentTime = $td->getCurrentTime();
-        $lastTime = $currentTime - 1000000; // -1secs
+        $firstTime = $currentTime - 0.200;
+        $lastTime = $currentTime - 0.100;
 
         // Fill fake times
         $ts = $api->getRestClient()->getTimeStore();
-        $ts->set([$lastTime], $api->getSession());
+        $ts->set([$lastTime, $firstTime], $api->getSession());
 
-        // Given lastTime was over 1 secs, we should not be limited
+        // Even though two requests happened within 1 second window,
+        // If we do the "next" call after the window time, it should
+        // not sleep and reset the times
+        sleep(1);
         $result = $method->invoke(new RateLimiting($api), $api);
         $this->assertFalse($result);
     }

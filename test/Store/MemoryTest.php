@@ -28,8 +28,12 @@ class MemoryTest extends BaseTest
         // Test push
         $mem->push('c', $session);
         $this->assertEquals(
-            ['c', 'b'],
+            ['c', 'b', 'a'],
             $mem->get($session)
         );
+
+        // Test reset
+        $mem->reset($session);
+        $this->assertEquals([], $mem->get($session));
     }
 }

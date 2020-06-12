@@ -9,18 +9,18 @@ namespace Osiset\BasicShopifyAPI\Contracts;
 interface TimeDeferrer
 {
     /**
-     * Get the current timestamp.
+     * Get the current timestamp with microseconds.
      *
-     * @return int
+     * @return float
      */
-    public function getCurrentTime(): int;
+    public function getCurrentTime(): float;
 
     /**
-     * Sleep for a number of mircoseconds.
+     * Sleep for a number of microseconds.
      *
-     * @param int $microseconds
+     * @param float $microseconds
      *
      * @return void
      */
-    public function sleep(int $microseconds): void;
+    public function sleep(float $microseconds): void;
 }

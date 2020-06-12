@@ -50,11 +50,17 @@ class Memory implements StateStorage
     {
         $shop = $session->getShop();
         if (!isset($this->container[$shop])) {
-            $this->container[$shop] = [];
+            $this->reset($session);
         }
 
-        // Set the value as first element, cut values off at 2 entrys for current and previous
         array_unshift($this->container[$shop], $value);
-        $this->container[$shop] = array_slice($this->container[$shop], 0, 2);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function reset(Session $session): void
+    {
+        $this->container[$session->getShop()] = [];
     }
 }

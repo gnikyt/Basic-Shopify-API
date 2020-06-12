@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# 9.1.0
+
++ Rate limiting for REST has been improved to use a moving window method
++ `Sleep` deferrer now returns a float for the time microtime
++ `Memory` store now has a `reset` method to support the new rate limiting
++ `Memory` now accepts more then two values to support the new rate limiting
+
 # 9.0.0
 
 *Contains breaking changes*; Consult `UPGRADING.md`.
