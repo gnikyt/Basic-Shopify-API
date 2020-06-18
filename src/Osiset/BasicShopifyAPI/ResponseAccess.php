@@ -58,6 +58,10 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable
      */
     public function offsetGet($offset)
     {
+        if ($offset === 'container') {
+            return $this->container;
+        }
+
         if (is_array($this->container[$offset])) {
             return new static($this->container[$offset]);
         }
@@ -194,6 +198,26 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable
     public function count(): int
     {
         return count($this->container);
+    }
+
+    /**
+     * Get keys for the array.
+     *
+     * @return array
+     */
+    public function keys(): array
+    {
+        return array_keys($this->container);
+    }
+
+    /**
+     * Get values for the array.
+     *
+     * @return array
+     */
+    public function values(): array
+    {
+        return array_values($this->container);
     }
 
     /**

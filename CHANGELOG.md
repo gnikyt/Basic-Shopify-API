@@ -3,6 +3,7 @@
 # 9.1.1
 
 + Implemented `Iterable` and `Countable` on `ResponseAccess`.
++ Added methods `keys` and `values` to allow for getting keys and values easier.
 
 # 9.1.0
 

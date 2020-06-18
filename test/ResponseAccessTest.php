@@ -67,4 +67,19 @@ class ResponseAccessTest extends BaseTest
 
         $this->assertEquals(count($names), count($resp['names']));
     }
+
+    public function testKeysAndValues(): void
+    {
+        $names = [
+            'John',
+            'Tim',
+            'Tommy',
+        ];
+        $resp = new ResponseAccess([
+            'names' => $names,
+        ]);
+
+        $this->assertEquals(['names'], $resp->keys());
+        $this->assertEquals(array_values($names), $resp->names->values());
+    }
 }
