@@ -5,11 +5,12 @@ namespace Osiset\BasicShopifyAPI;
 use Iterator;
 use Countable;
 use ArrayAccess;
+use JsonSerializable;
 
 /**
  * Response data object for accessing.
  */
-class ResponseAccess implements ArrayAccess, Iterator, Countable
+class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializable
 {
     /**
      * The response data.
@@ -218,6 +219,16 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable
     public function values(): array
     {
         return array_values($this->container);
+    }
+
+    /**
+     * Return a JSON serializable array.
+     *
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->container;
     }
 
     /**

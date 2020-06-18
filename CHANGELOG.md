@@ -2,8 +2,9 @@
 
 # 9.1.1
 
-+ Implemented `Iterable` and `Countable` on `ResponseAccess`.
-+ Added methods `keys` and `values` to allow for getting keys and values easier.
++ Implemented `Iterable` and `Countable` on `ResponseAccess`
++ Added methods `keys` and `values` to allow for getting keys and values easier
++ Add JSON serilize method
 
 # 9.1.0
 

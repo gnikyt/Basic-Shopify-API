@@ -82,4 +82,18 @@ class ResponseAccessTest extends BaseTest
         $this->assertEquals(['names'], $resp->keys());
         $this->assertEquals(array_values($names), $resp->names->values());
     }
+
+    public function testJsonSerialize(): void
+    {
+        $names = [
+            'John',
+            'Tim',
+            'Tommy',
+        ];
+        $resp = new ResponseAccess([
+            'names' => $names,
+        ]);
+
+        $this->assertEquals(json_encode(['names' => $names]), json_encode($resp));
+    }
 }
