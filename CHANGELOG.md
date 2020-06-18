@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 9.1.1
+
++ Implemented `Iterable` and `Countable` on `ResponseAccess`.
+
 # 9.1.0
 
 + Rate limiting for REST has been improved to use a moving window method

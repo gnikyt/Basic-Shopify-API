@@ -47,4 +47,24 @@ class ResponseAccessTest extends BaseTest
         $this->assertTrue($resp->hasErrors());
         $this->assertEquals('Not found', $resp->getErrors());
     }
+
+    public function testIteratorAndCount(): void
+    {
+        $names = [
+            'John',
+            'Tim',
+            'Tommy',
+        ];
+        $resp = new ResponseAccess([
+            'names' => $names,
+        ]);
+
+        $i = 0;
+        foreach ($resp['names'] as $r) {
+            $this->assertEquals($names[$i], $r);
+            $i += 1;
+        }
+
+        $this->assertEquals(count($names), count($resp['names']));
+    }
 }

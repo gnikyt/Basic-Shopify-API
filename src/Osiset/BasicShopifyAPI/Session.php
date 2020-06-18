@@ -35,15 +35,18 @@ class Session
      *
      * @param string      $shop        The shop domain.
      * @param string|null $accessToken The access token for the shop.
-     * @param array|null  $user        The user for per-user.
+     * @param mixed|null  $user        The user for per-user.
      *
      * @return self
      */
-    public function __construct(string $shop, ?string $accessToken = null, ?array $user = null)
+    public function __construct(string $shop, ?string $accessToken = null, $user = null)
     {
         $this->shop = $shop;
         $this->accessToken = $accessToken;
-        $this->user = new ResponseAccess($user);
+
+        if ($user) {
+            $this->user = $user instanceof ResponseAccess ? $user : new ResponseAccess($user);
+        }
     }
 
     /**
