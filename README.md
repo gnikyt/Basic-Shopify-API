@@ -513,3 +513,7 @@ Code documentation is [available here](https://osiset.com/Basic-Shopify-API) fro
 ## LICENSE
 
 This project is released under the MIT [license](https://github.com/osiset/Basic-Shopify-API/blob/master/LICENSE).
+
+## Misc
+
+Using Python? [Check out basic_shopify_api](https://github.com/osiset/basic_shopify_api).
