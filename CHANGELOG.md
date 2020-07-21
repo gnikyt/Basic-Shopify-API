@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 9.1.2
+
++ Merged #15 by @pagameba to filter out what is verified by HMAC
+
 # 9.1.1
 
 + Implemented `Iterable` and `Countable` on `ResponseAccess`
