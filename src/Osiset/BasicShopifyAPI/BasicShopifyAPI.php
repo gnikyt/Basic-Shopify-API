@@ -353,7 +353,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         ) {
             // Grab the HMAC, remove it from the params, then sort the params for hashing
             $hmac = $params['hmac'];
-            $params = array_filter($params, function($v,$k) {
+            $params = array_filter($params, function($v, $k) {
                 return in_array($k, ['code', 'shop', 'timestamp']);
             }, ARRAY_FILTER_USE_BOTH);
             ksort($params);
