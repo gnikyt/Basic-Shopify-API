@@ -1,5 +1,64 @@
 # CHANGELOG
 
+# 9.1.1
+
++ Implemented `Iterable` and `Countable` on `ResponseAccess`
++ Added methods `keys` and `values` to allow for getting keys and values easier
++ Add JSON serilize method
+
+# 9.1.0
+
++ Rate limiting for REST has been improved to use a moving window method
++ `Sleep` deferrer now returns a float for the time microtime
++ `Memory` store now has a `reset` method to support the new rate limiting
++ `Memory` now accepts more then two values to support the new rate limiting
+
+# 9.0.0
+
+*Contains breaking changes*; Consult `UPGRADING.md`.
+
++ Library refactored and split up, no longer one file
++ Auth header handling moved into Guzzle middleware
++ API versioning handler moved into Guzzle middleware
++ Rate limiting improved and now available for GraphQL
++ Options moved into its own configuration class
++ "Retry" ability now built-in via `guzzle_retry_middleware` which respects Shopify's 'X-Retry-After' header
++ API responses are now mapped into a response class which can be accessed as an array or object
++ Storage of how/where rate limits, request times, and others are now changable with the `StateStorage` interface, and a default in-memory storage class provided
++ Both GraphQL and REST success and error returns have been normalized
+
+# 8.2.0
+
++ Added `bodyArray` to response object of rest and graph, this is the same as `body` except instead of a stdClass being returned, its an array.
+
+# 8.1.0
+
++ Added response to error callback function (#64)
++ Allow for additional client creation options (#65)
+
+# 8.0.0
+
++ Added return types to all functions.
++ Added async support for GraphQL via `graphAsync`.
++ Added support for call to `/admin/oauth/access_scopes.json`.
+
+# 6.1.2
+
++ Fix for REST calls not properly building error object (#47).
+
+# 6.1.1
+
++ Fixed `extractHeaderLink` for #45, to include both `next` and `previous`.
+
+# 6.1.0
+
++ Adds support for `Link` header (#39)
+
+# 6.0.0
+
++ Added ability to do Guzzle sync and async requests through Promises.
++ `errors` now returns a boolean instead of an object. `body` now contains the error response.
+
 # 5.5.0
 
 + Added ability to use custom headers in REST calls.
@@ -84,8 +143,8 @@ To better the library, it has been reverted back to its original single-class fo
 *Contains breaking changes*
 
 + No longer a single file, it now namespaced under `OhmyBrew\ShopifyAPI`
-+ GraphQL is now introduced under `OhMyBrew\ShopifyAPI\GraphAPI`
-+ REST is moved to `OhMyBrew\ShopifyAPI\RestAPI`
++ GraphQL is now introduced under `Osiset\ShopifyAPI\GraphAPI`
++ REST is moved to `Osiset\ShopifyAPI\RestAPI`
 
 # Version 1.0.1
 

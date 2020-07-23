@@ -1,39 +1,25 @@
 <?php
 
-namespace OhMyBrew\Test;
+namespace Osiset\BasicShopifyAPI\Test;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
-use OhMyBrew\BasicShopifyAPI;
+use Closure;
 use PHPUnit\Framework\TestCase;
+use GuzzleHttp\Handler\MockHandler;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Options;
 
 abstract class BaseTest extends TestCase
 {
-    /**
-     * Builds the client for the API.
-     *
-     * @param BasicShopifyAPI $api
-     * @param array           $responses
-     *
-     * @return MockHandler
-     */
-    protected function buildClient(BasicShopifyAPI $api, array $responses)
+    protected function buildClient(array $responses = [], ?Closure $options = null): BasicShopifyAPI
     {
-        // Build mock handler
-        $mock = new MockHandler($responses);
-
-        // Build stack with auth middleware
-        $stack = HandlerStack::create($mock);
-        $stack->push(Middleware::mapRequest([$api, 'authRequest']));
+        // Build the options
+        $opts = new Options();
+        $opts->setGuzzleHandler(new MockHandler($responses));
+        if ($options) {
+            $opts = $options($opts);
+        }
 
         // Build the client
-        $client = new Client(['handler' => $stack]);
-
-        // Set the client
-        $api->setClient($client);
-
-        return $mock;
+        return new BasicShopifyAPI($opts);
     }
 }

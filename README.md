@@ -1,54 +1,149 @@
 # Basic Shopify API
 
-[![Build Status](https://travis-ci.org/ohmybrew/Basic-Shopify-API.svg?branch=master)](http://travis-ci.org/ohmybrew/Basic-Shopify-API)
-[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/Basic-Shopify-API/badge.svg?branch=master)](https://coveralls.io/github/ohmybrew/Basic-Shopify-API?branch=master)
-[![StyleCI](https://styleci.io/repos/61004776/shield?branch=master)](https://styleci.io/repos/61004776)
-[![License](https://poser.pugx.org/ohmybrew/basic-shopify-api/license)](https://packagist.org/packages/ohmybrew/basic-shopify-api)
+![Tests](https://github.com/osiset/Basic-Shopify-API/workflows/Package%20Test/badge.svg?branch=master)
+[![Coverage](https://coveralls.io/repos/github/osiset/Basic-Shopify-API/badge.svg?branch=master)](https://coveralls.io/github/osiset/Basic-Shopify-API?branch=master)
+[![License](https://poser.pugx.org/osiset/basic-shopify-api/license)](https://packagist.org/packages/osiset/basic-shopify-api)
 
-A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify, and basic rate limiting abilities. It contains helpful methods for generating a installation URL, an authorize URL (offline and per-user), HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
+A simple, tested, API wrapper for Shopify using Guzzle.
 
-This library required PHP >= 7.
+It supports both the sync/async REST and GraphQL API provided by Shopify, basic rate limiting, and request retries.
+
+It contains helpful methods for generating a installation URL, an authorize URL (offline and per-user), HMAC signature validation, call limits, and API requests.
+
+It works with both OAuth and private API apps.
+
+## Table of Contents
+  * [Installation](#installation)
+  * [Usage](#usage)
+      * [Public API](#public-api)
+        * [REST (sync)](#rest-sync)
+        * [REST (async)](#rest-async)
+        * [GraphQL](#graphql)
+        * [Getting access (offline)](#getting-access-offline)
+        * [Getting access (per-user)](#getting-access-per-user)
+        * [Verifying HMAC signature](#verifying-hmac-signature)
+      * [Private API](#private-api)
+        * [REST](#rest)
+        * [GraphQL](#graphql-1)
+      * [Making requests](#making-requests)
+        * [REST](#rest-1)
+            * [If sync is true (regular rest call):](#if-sync-is-true-regular-rest-call)
+            * [If sync is false (restAsync call):](#if-sync-is-false-restasync-call)
+        * [GraphQL](#graphql-2)
+      * [API Versioning](#api-versioning)
+      * [Checking API limits](#checking-api-limits)
+      * [Rate Limiting](#rate-limiting)
+        * [Enable Rate Limiting](#enable-rate-limiting)
+        * [Disabiling Rate Limiting](#disabiling-rate-limiting)
+        * [Checking Rate Limiting Status](#checking-rate-limiting-status)
+        * [page_info / pagination Support](#page_info--pagination-support)
+        * [Getting Timestamps](#getting-timestamps)
+      * [Isolated API calls](#isolated-api-calls)
+      * [Errors](#errors)
+      * [Logging](#logging)
+  * [Documentation](#documentation)
+  * [LICENSE](#license)
 
 ## Installation
 
 The recommended way to install is [through composer](http://packagist.org).
 
-    $ composer require ohmybrew/basic-shopify-api
+    composer require osiset/basic-shopify-api
 
 ## Usage
-
-Add `use OhMyBrew\BasicShopifyAPI;` to your imports.
 
 ### Public API
 
 This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
 
-#### REST
+#### REST (sync)
 
 For REST calls, the shop domain and access token are required.
 
 ```php
-$api = new BasicShopifyAPI();
-$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
-$api->setShop('your shop here');
-$api->setAccessToken('your token here');
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\Session;
+
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+
+// Create the client and session
+$api = new BasicShopifyAPI($options);
+$api->setSession(new Session('example.myshopify.com', 'access-token-here'));
 
 // Now run your requests...
-$api->rest(...);
+$result = $api->rest(...);
 ```
 
-#### GraphQL
+#### REST (async)
+
+For REST calls, the shop domain and access token are required.
+
+```php
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\Session;
+
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+
+// Create the client and session
+$api = new BasicShopifyAPI($options);
+$api->setSession(new Session('example.myshopify.com', 'access-token-here'));
+
+// Now run your requests...
+$promise = $api->restAsync(...);
+$promise->then(function (array $result) {
+  // ...
+});
+```
+
+#### GraphQL (sync)
 
 For GraphQL calls, the shop domain and access token are required.
 
 ```php
-$api = new BasicShopifyAPI();
-$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
-$api->setShop('your shop here');
-$api->setAccessToken('your token here');
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\Session;
+
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+
+// Create the client and session
+$api = new BasicShopifyAPI($options);
+$api->setSession(new Session('example.myshopify.com', 'access-token-here'));
 
 // Now run your requests...
-$api->graph(...);
+$result = $api->graph(...);
+```
+
+#### GraphQL (async)
+
+For GraphQL calls, the shop domain and access token are required.
+
+```php
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\Session;
+
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+
+// Create the client and session
+$api = new BasicShopifyAPI($options);
+$api->setSession(new Session('example.myshopify.com', 'access-token-here'));
+
+// Now run your requests...
+$promise = $api->graphAsync(...);
+$promise->then(function (array $result) {
+  // ...
+});
 ```
 
 #### Getting access (offline)
@@ -58,11 +153,15 @@ This is the default mode which returns a permanent token.
 After obtaining the user's shop domain, to then direct them to the auth screen use `getAuthUrl`, as example (basic PHP):
 
 ```php
-$api = new BasicShopifyAPI();
-$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
-$api->setShop($_SESSION['shop']);
-$api->setApiKey(env('SHOPIFY_API_KEY'));
-$api->setApiSecret(env('SHOPIFY_API_SECRET'));
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+$options->setApiKey(env('SHOPIFY_API_KEY'));
+$options->setApiSecret(env('SHOPIFY_API_SECRET'));
+
+// Create the client and session
+$api = new BasicShopifyAPI($options);
+$api->setSession(new Session($_SESSION['shop']));
 
 $code = $_GET['code'];
 if (!$code) {
@@ -78,14 +177,7 @@ if (!$code) {
   // We now have a code, lets grab the access token
   $api->requestAndSetAccess($code);
 
-  // Above is equiv. to:
-  //
-  // $access = $api->requestAccess($code);
-  // $api->setAccessToken($access->access_token);
-  //
-  // You can use: $api->getAccessToken() and set it into the database or a cookie, etc
-
-  // You can now make API callsn`
+  // You can now make API calls
   $request = $api->rest('GET', '/admin/shop.json'); // or GraphQL
 }
 ```
@@ -95,11 +187,15 @@ if (!$code) {
 You can also change the grant mode to be `per-user` as [outlined in Shopify documentation](https://help.shopify.com/en/api/getting-started/authentication/oauth/api-access-modes). This will receieve user info from the user of the app within the Shopify store. The token recieved will expire at a specific time.
 
 ```php
-$api = new BasicShopifyAPI();
-$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
-$api->setShop($_SESSION['shop']);
-$api->setApiKey(env('SHOPIFY_API_KEY'));
-$api->setApiSecret(env('SHOPIFY_API_SECRET'));
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+$options->setApiKey(env('SHOPIFY_API_KEY'));
+$options->setApiSecret(env('SHOPIFY_API_SECRET'));
+
+// Create the client and session
+$api = new BasicShopifyAPI($options);
+$api->setSession(new Session($_SESSION['shop']));
 
 $code = $_GET['code'];
 if (!$code) {
@@ -115,15 +211,6 @@ if (!$code) {
 } else {
   // We now have a code, lets grab the access object
   $api->requestAndSetAccess($code);
-
-  // Above is equiv. to:
-  //
-  // $access = $api->requestAccess($code);
-  // $api->setAccessToken($access->access_token);
-  // $api->setUser($access->associated_user)
-  //
-  // You can use: $api->getAccessToken() and set it into a cookie, etc
-  // You can also get user details with: $api->getUser(), example: $api->getUser()->email
 
   // You can now make API calls
   $request = $api->rest('GET', '/admin/shop.json'); // or GraphQL
@@ -145,17 +232,22 @@ This assumes you properly have your app setup in the partner's dashboard with th
 
 #### REST
 
-For REST calls, shop domain, API key, and API password are request
+For REST (sync) calls, shop domain, API key, and API password are request
 
 ```php
-$api = new BasicShopifyAPI(true); // true sets it to private
-$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
-$api->setShop('example.myshopify.com');
-$api->setApiKey('your key here');
-$api->setApiPassword('your password here');
+// Create options for the API
+$options = new Options();
+$options->setType(true); // Makes it private
+$options->setVersion('2020-01');
+$options->setApiKey(env('SHOPIFY_API_KEY'));
+$options->setApiPassword(env('SHOPIFY_API_PASSWORD'));
+
+// Create the client and session
+$api = new BasicShopifyAPI($options);
+$api->setSession(new Session($_SESSION['shop']));
 
 // Now run your requests...
-$api->rest(...);
+$result = $api->rest(...);
 ```
 
 #### GraphQL
@@ -163,13 +255,17 @@ $api->rest(...);
 For GraphQL calls, shop domain and API password are required.
 
 ```php
-$api = new BasicShopifyAPI(true); // true sets it to private
-$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
-$api->setShop('example.myshopify.com');
-$api->setApiPassword('your password here');
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+$options->setApiPassword(env('SHOPIFY_API_PASSWORD'));
+
+// Create the client and session
+$api = new BasicShopifyAPI($options);
+$api->setSession(new Session($_SESSION['shop']));
 
 // Now run your requests...
-$api->graph(...);
+$result = $api->graph(...);
 ```
 
 ### Making requests
@@ -179,20 +275,65 @@ $api->graph(...);
 Requests are made using Guzzle.
 
 ```php
-$api->rest(string $type, string $path, array $params = null, array $headers = []);
+$api->rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true);
+// or $api->getRestClient()->request(....);
 ```
 
 + `type` refers to GET, POST, PUT, DELETE, etc
 + `path` refers to the API path, example: `/admin/products/1920902.json`
 + `params` refers to an array of params you wish to pass to the path, examples: `['handle' => 'cool-coat']`
 + `headers` refers to an array of custom headers you would like to optionally send with the request, example: `['X-Shopify-Test' => '123']`
++ `sync` refers to if the request should be synchronous or asynchronous.
 
-The return value for the request will be an object containing:
+You can use the alias `restAsync` to skip setting `sync` to `false`.
+
+##### If sync is true (regular rest call):
+
+The return value for the request will be an array containing:
 
 + `response` the full Guzzle response object
-+ `body` the JSON decoded response body
++ `body` the JSON decoded response body (\Osiset\BasicShopifyAPI\ResponseAccess instance)
++ `errors` if any errors are detected, true/false
++ `exception` if errors are true, exception object is available
++ `status` the HTTP status code
++ `link` an array of previous/next pagination values, if available
 
 *Note*: `request()` will alias to `rest()` as well.
+
+##### If sync is false (restAsync call):
+
+The return value for the request will be a Guzzle promise which you can handle on your own.
+
+The return value for the promise will be an object containing:
+
++ `response` the full Guzzle response object
++ `body` the JSON decoded response body (\Osiset\BasicShopifyAPI\ResponseAccess instance)
++ `errors` if any errors are detected, true/false
++ `exception` if errors are true, exception object is available
++ `status` the HTTP status code
++ `link` an array of previous/next pagination values, if available
+
+```php
+$promise = $api->restAsync(...);
+$promise->then(function (array $result) {
+  // `response` and `body`, etc are available in `$result`.
+});
+```
+
+##### Passing additional request options
+
+If you'd like to pass additional request options to the Guzzle client created, pass them as the second argument of the constructor.
+
+```php
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+// ...
+$options->setGuzzleOptions(['connect_timeout' => 3.0]);
+
+// Create the client
+$api = new BasicShopifyApi($options);
+```
 
 #### GraphQL
 
@@ -208,14 +349,16 @@ $api->graph(string $query, array $variables = []);
 The return value for the request will be an object containing:
 
 + `response` the full Guzzle response object
-+ `body` the JSON decoded response body
-+ `errors` if there was errors or not
++ `body` the JSON decoded response body (\Osiset\BasicShopifyAPI\ResponseAccess instance)
++ `errors` if there was errors or not, will return the errors if any are found
++ `status` the HTTP status code
 
 Example query:
 
 ```php
-$result = $api->graph('{ shop { productz(first: 1) { edges { node { handle, id } } } } }');
-echo $result->body->shop->products->edges[0]->node->handle; // test-product
+$result = $api->graph('{ shop { product(first: 1) { edges { node { handle, id } } } } }');
+echo $result['body']['shop']['products']['edges'][0]['node']['handle']; // test-product
+// or echo $result['body']->shop->products->edges[0]->node->handle;
 ```
 
 Example mutation:
@@ -225,7 +368,8 @@ $result = $api->graph(
     'mutation collectionCreate($input: CollectionInput!) { collectionCreate(input: $input) { userErrors { field message } collection { id } } }',
     ['input' => ['title' => 'Test Collection']]
 );
-echo $result->body->collectionCreate->collection->id; // gid://shopify/Collection/63171592234
+echo $result['body']['collectionCreate']['collection']['id']; // gid://shopify/Collection/63171592234
+// or echo $result['body']->collectionCreate->collection->id;
 ```
 
 ### API Versioning
@@ -233,90 +377,49 @@ echo $result->body->collectionCreate->collection->id; // gid://shopify/Collectio
 This library supports [versioning the requests](https://www.shopify.com/partners/blog/api-versioning-at-shopify), example:
 
 ```php
-$api = new BasicShopifyAPI(true);
-$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01'); // YYYY-MM or "unstable" is accepted
 
-// ... your code
+// Create the client
+$api = new BasicShopifyAPI($options);
 ```
 
 You can override the versioning at anytime for specific API requests, example:
 
 ```php
-$api = new BasicShopifyAPI(true);
-$api->setVersion('2019-04');
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
 
-$api->rest('GET', '/admin/api/unstable/shop.json'); // Will ignore "2019-04" version and use "unstable" for this request
-// ... your code
-```
-
-### Checking API limits
-
-After each request is made, the API call limits are updated. To access them, simply use:
-
-```php
-// Returns an array of left, made, and limit.
-// Example: ['left' => 79, 'made' => 1, 'limit' => 80]
-$limits = $api->getApiCalls('rest'); // or 'graph'
-```
-
-For GraphQL, additionally there will be the following values: `restoreRate`, `requestedCost`, `actualCost`.
-
-To quickly get a value, you may pass an optional parameter to the `getApiCalls` method:
-
-```php
-// As example, this will return 79
-// You may pass 'left', 'made', or 'limit'
-$left = $api->getApiCalls('graph', 'left'); // returns 79
-// or
-$left = $api->getApiCalls('graph')['left']; // returns 79
+// Create the client
+$api = new BasicShopifyAPI($options);
+$api->rest('GET', '/admin/api/unstable/shop.json'); // Will ignore "2020-01" version and use "unstable" for this request
 ```
 
 ### Rate Limiting
 
-This library comes with a built-in basic rate limiter, disabled by default. It will sleep for *x* microseconds to ensure you do not go over the limit for calls with Shopify. On non-Plus plans, you get 1 call every 500ms (2 calls a second), for Plus plans you get 2 calls every 500ms (4 calls a second).
+This library comes with a built-in basic rate limiter via `usleep`.
 
-By default the cycle is set to 500ms, with a buffer for safety of 100ms added on.
+For REST, it ensures you do not request more than the default of 2 calls per second.
 
-#### Enable Rate Limiting
+For GraphQL, it ensures you do not use more than the default of 50 points per second.
 
-Setup your API instance as normal, with an added:
+To adjust the default limits, use the option class' `setRateLimit` and `setGraphLimit.
 
-```php
-$api->enableRateLimiting();
-```
+#### page_info / pagination Support
 
-This will turn on rate limiting with the default 500ms cycle and 100ms buffer. To change this, do the following:
+2019-07 API version introduced a new `Link` header which is used for pagination ([explained here](https://help.shopify.com/en/api/guides/paginated-rest-results)).
 
-```php
-$api->enableRateLimiting(0.25 * 1000, 0);
-```
+If an endpoint supports page_info, you can use `$response->link` to grab the page_info value to pass in your next request.
 
-This will set the cycle to 250ms and 0ms buffer.
-
-#### Disabiling Rate Limiting
-
-If you've previously enabled it, you simply need to run:
+Example:
 
 ```php
-$api->disableRateLimiting();
-```
-
-#### Checking Rate Limiting Status
-
-```php
-$api->isRateLimitingEnabled();
-```
-
-#### Getting Timestamps
-
-The library will track timestamps from the previous and current (last) call. To see information on this:
-
-```php
-$response = $api->rest('POST', '/admin/gift_cards.json', ['gift_cards' => ['initial_value' => 25.00]]);
-print_r($response->timestamps);
-
-/* Above will return an array of [previous call, current (last) call], example:
- * [1541119962.965, 1541119963.3121] */
+$response = $api->rest('GET', '/admin/products.json', ['limit' => 5]);
+$link = $response['link']['next']; // eyJsYXN0X2lkIjo0MDkw
+$link2 = $response['link']['previous']; // dkUIsk00wlskWKl
+$response = $api->rest('GET', '/admin/products.json', ['limit' => 5, 'page_info' => $link]);
 ```
 
 ### Isolated API calls
@@ -324,30 +427,44 @@ print_r($response->timestamps);
 You can initialize the API once and use it for multiple shops. Each instance will be contained to not pollute the others. This is useful for something like background job processing.
 
 ```php
-$api->withSession(string $shop, string $accessToken, Closure $closure);
+$api->withSession(Session $newSession, Closure $closure);
 ```
 
-+ `shop` refers to the Shopify domain
-+ `accessToken` refers to the access token for the API calls
-+ `closure` refers to the closure to call for the session
-
-`$this` will be binded to the current API. Example:
+`$this` will be binded to the closure. Example:
 
 ```php
-$api = new BasicShopifyAPI(true);
-$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
-$api->setApiKey('your key here');
-$api->setApiPassword('your password here');
-
-$api->withSession('some-shop.myshopify.com', 'token from database?', function() {
+$api->withSession(new Session('someshop.myshopify.com', 'some-token'), function (): void {
   $request = $this->rest('GET', '/admin/shop.json');
-  echo $request->body->shop->name; // Some Shop
+  echo $request['body']['shop']['name']; // Some Shop
 });
 
-$api->withSession('some-shop-two.myshopify.com', 'token from database?', function() {
-  $request = $this->rest('GET', '/admin/shop.json');
-  echo $request->body->shop->name; // Some Shop Two
-});
+// $api->rest/graph will not be affected by the above code, it will use previously defined session
+```
+
+## Retries
+
+This library utilizes `caseyamcl/guzzle_retry_middleware` middleware package.
+
+By default, `429`, '500` and `503` errors will be retried twice.
+
+For REST calls, it will utilize Shopify's `X-Retry-After` header to wait *x* seconds before retrying the call.
+
+When all retries are exhasted, the standard response from the library will return where you can handle the error.
+
+To change the status codes watched or the maximum number of retries, use the option class' `setGuzzleOptions`:
+
+```php
+// Create options for the API
+$options = new Options();
+$options->setVersion('2020-01');
+// ...
+$options->setGuzzleOptions(
+  'max_retry_attempts' => 3, // Was 2
+  'retry_on_status'    => [429, 503, 400], // Was 439, 503, 500
+);
+
+// Create the client
+$api = new BasicShopifyApi($options);
 ```
 
 ### Errors
@@ -357,28 +474,46 @@ This library internally catches only 400-500 status range errors through Guzzle.
 ```php
 $call = $api->rest('GET', '/admin/non-existant-route-or-object.json');
 
-if ($call->errors) {
-  echo "Oops! {$call->errors->status} error";
-  print_r($call->errors->body);
+if ($call['errors']) {
+  echo "Oops! {$call['status']} error";
+  var_dump($call['body']);
 
-  // Original exception can be accessed via `$call->errors->exception`
+  // Original exception can be accessed via `$call['exception']`
   // Example, if response body was `{"error": "Not found"}`...
-  /// then: `$call->errors->body->error` would return "Not Found"
+  /// then: `$call['body']` would return "Not Found"
 }
 ```
 
-### Logging
+### Middleware
 
-This library accepts a PSR-compatible logger.
+This library takes advantage of using Guzzle middleware for request/response checks and modifications. You're also able to inject middleware.
 
 ```php
-$api->setLogger(... your logger instance ...);
+$api->addMiddleware([callable]);
+```
+
+See Guzzle's documentation on middleware. As well, you can browse this library's middleware for examples.
+
+### Storage
+
+For storing the current request times, API limits, request costs, etc. A basic in-memory array store is used `Osiset\BasicShopifyAPI\Store\Memory`.
+
+If you would like to implement a more advananced store such as one with Redis, simply implement `Osiset\BasicShopifyAPI\Contracts\StateStorage` and set the client to use it, example:
+
+```php
+$redisStore = new RedisStore($connection);
+
+$api = new BasicShopifyAPI($options, $redisStore, $redisStore, $redisStore);
 ```
 
 ## Documentation
 
-Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
+Code documentation is [available here](https://osiset.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
 
 ## LICENSE
 
-This project is released under the MIT [license](https://github.com/ohmybrew/Basic-Shopify-API/blob/master/LICENSE).
+This project is released under the MIT [license](https://github.com/osiset/Basic-Shopify-API/blob/master/LICENSE).
+
+## Misc
+
+Using Python? [Check out basic_shopify_api](https://github.com/osiset/basic_shopify_api).

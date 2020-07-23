@@ -6,8 +6,8 @@ Thanks for wanting to be a part of this library! This is a simple and standard g
 
 Well, you can:
 
-+ Tackle any [open issues](https://github.com/ohmybrew/Basic-Shopify-API/issues)
-+ Help review [pull requests](https://github.com/ohmybrew/Basic-Shopify-API/pulls)
++ Tackle any [open issues](https://github.com/osiset/Basic-Shopify-API/issues)
++ Help review [pull requests](https://github.com/osiset/Basic-Shopify-API/pulls)
 
 You don't have to be a superstar, or someone with experience, you can just dive in and help if you feel you can.
 
@@ -25,7 +25,7 @@ Its best to:
 
 Its best to:
 
-1. Ensure the bug was not already reported by [searching all issues](https://github.com/ohmybrew/Basic-Shopify-API/issues?q=).
+1. Ensure the bug was not already reported by [searching all issues](https://github.com/osiset/Basic-Shopify-API/issues?q=).
 2. If you're unable to find an open issue addressing the problem, open a new one.
     * Be sure to include a title and clear description, as much relevant information as possible.
 
@@ -46,7 +46,7 @@ Its best to:
 
 If you're forking the repository and wish to keep your copy up-to-date with the master, ensure you run this command:
 
-`git remote add upstream git@github.com:ohmybrew/basic-shopify-api.git`
+`git remote add upstream git@github.com:osiset/basic-shopify-api.git`
 
 You can then update by simply running:
 
