@@ -59,7 +59,7 @@ class Rest extends AbstractClient implements RestRequester
             $response = $this->getClient()->request(
                 'POST',
                 $url,
-                $data,
+                $data
             );
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             $body = json_decode($e->getResponse()->getBody()->getContents());
