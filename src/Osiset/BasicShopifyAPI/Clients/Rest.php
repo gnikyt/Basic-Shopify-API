@@ -46,17 +46,25 @@ class Rest extends AbstractClient implements RestRequester
         }
 
         // Do a JSON POST request to grab the access token
-        $response = $this->getClient()->request(
-            'POST',
-            $this->getBaseUri()->withPath('/admin/oauth/access_token'),
-            [
-                'json' => [
-                    'client_id'     => $this->getOptions()->getApiKey(),
-                    'client_secret' => $this->getOptions()->getApiSecret(),
-                    'code'          => $code,
-                ],
+        $url = $this->getBaseUri()->withPath('/admin/oauth/access_token');
+        $data = [
+            'json' => [
+                'client_id'     => $this->getOptions()->getApiKey(),
+                'client_secret' => $this->getOptions()->getApiSecret(),
+                'code'          => $code,
             ]
-        );
+        ];
+
+        try {
+            $response = $this->getClient()->request(
+                'POST',
+                $url,
+                $data,
+            );
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            $body = json_decode($e->getResponse()->getBody()->getContents());
+            throw new Exception($body->error_description);
+        }
 
         return $this->toResponse($response->getBody());
     }
