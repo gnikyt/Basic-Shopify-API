@@ -354,6 +354,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
             // Grab the HMAC, remove it from the params, then sort the params for hashing
             $hmac = $params['hmac'];
             unset($params['hmac']);
+
             ksort($params);
 
             // Encode and hash the params (without HMAC), add the API secret, and compare to the HMAC from params
