@@ -31,7 +31,7 @@ It works with both OAuth and private API apps.
             * [If sync is true (regular rest call):](#if-sync-is-true-regular-rest-call)
             * [If sync is false (restAsync call):](#if-sync-is-false-restasync-call)
             * [Passing additional request options](#passing-additional-request-options)
-        * [GraphQL](#graphql-2)
+        * [GraphQL](#graphql-1)
       * [API Versioning](#api-versioning)
       * [Rate Limiting](#rate-limiting)
       * [page_info / pagination Support](#page_info--pagination-support)
