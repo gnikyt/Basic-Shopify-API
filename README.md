@@ -18,29 +18,28 @@ It works with both OAuth and private API apps.
       * [Public API](#public-api)
         * [REST (sync)](#rest-sync)
         * [REST (async)](#rest-async)
-        * [GraphQL](#graphql)
+        * [GraphQL (sync)](#graphql-sync)
+        * [GraphQL (async)](#graphql-async)
         * [Getting access (offline)](#getting-access-offline)
         * [Getting access (per-user)](#getting-access-per-user)
         * [Verifying HMAC signature](#verifying-hmac-signature)
       * [Private API](#private-api)
         * [REST](#rest)
-        * [GraphQL](#graphql-1)
+        * [GraphQL](#graphql)
       * [Making requests](#making-requests)
         * [REST](#rest-1)
             * [If sync is true (regular rest call):](#if-sync-is-true-regular-rest-call)
             * [If sync is false (restAsync call):](#if-sync-is-false-restasync-call)
-        * [GraphQL](#graphql-2)
+            * [Passing additional request options](#passing-additional-request-options)
+        * [GraphQL](#graphql-1)
       * [API Versioning](#api-versioning)
-      * [Checking API limits](#checking-api-limits)
       * [Rate Limiting](#rate-limiting)
-        * [Enable Rate Limiting](#enable-rate-limiting)
-        * [Disabiling Rate Limiting](#disabiling-rate-limiting)
-        * [Checking Rate Limiting Status](#checking-rate-limiting-status)
-        * [page_info / pagination Support](#page_info--pagination-support)
-        * [Getting Timestamps](#getting-timestamps)
+      * [page_info / pagination Support](#page_info--pagination-support)
       * [Isolated API calls](#isolated-api-calls)
+      * [Retries](#retries)
       * [Errors](#errors)
-      * [Logging](#logging)
+      * [Middleware](#middleware)
+      * [Storage](#storage)
   * [Documentation](#documentation)
   * [LICENSE](#license)
 
@@ -405,9 +404,9 @@ For REST, it ensures you do not request more than the default of 2 calls per sec
 
 For GraphQL, it ensures you do not use more than the default of 50 points per second.
 
-To adjust the default limits, use the option class' `setRateLimit` and `setGraphLimit.
+To adjust the default limits, use the option class' `setRestLimit` and `setGraphLimit`.
 
-#### page_info / pagination Support
+### page_info / pagination Support
 
 2019-07 API version introduced a new `Link` header which is used for pagination ([explained here](https://help.shopify.com/en/api/guides/paginated-rest-results)).
 
@@ -441,7 +440,7 @@ $api->withSession(new Session('someshop.myshopify.com', 'some-token'), function 
 // $api->rest/graph will not be affected by the above code, it will use previously defined session
 ```
 
-## Retries
+### Retries
 
 This library utilizes `caseyamcl/guzzle_retry_middleware` middleware package.
 
