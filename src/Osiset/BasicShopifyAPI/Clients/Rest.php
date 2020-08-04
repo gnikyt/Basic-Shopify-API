@@ -3,9 +3,10 @@
 namespace Osiset\BasicShopifyAPI\Clients;
 
 use Exception;
-use Osiset\BasicShopifyAPI\ResponseAccess;
 use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\Clients\AbstractClient;
 use Osiset\BasicShopifyAPI\Contracts\RestRequester;
 
@@ -61,7 +62,7 @@ class Rest extends AbstractClient implements RestRequester
                 $url,
                 $data
             );
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             $body = json_decode($e->getResponse()->getBody()->getContents());
             throw new Exception($body->error_description);
         }
