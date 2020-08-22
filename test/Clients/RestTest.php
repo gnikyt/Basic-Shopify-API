@@ -199,6 +199,30 @@ class RestTest extends BaseTest
         $this->assertEquals(true, $specialHeader);
     }
 
+    public function testRequestForceRequestType(): void
+    {
+        // Setup the responses
+        $responses = [
+            new GuzzleResponse(
+                200,
+                [],
+                file_get_contents(__DIR__.'/../fixtures/rest/admin__shop.json')
+            ),
+        ];
+
+        // Create the client
+        $api = $this->buildClient($responses, function (Options $options): Options {
+            return $options->setApiKey('123');
+        });
+        $api->setSession(new Session('example.myshopify.com', '!#@'));
+
+        // Fake param just to test it receives it
+        $api->request('PUT', '/admin/shop.json', ['query' => ['limit' => 1 ]]);
+        $query = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getUri()->getQuery();
+        
+        $this->assertEquals('limit=1', $query);
+    }
+
     public function testRequestFailure(): void
     {
         // Setup the responses

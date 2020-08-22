@@ -111,7 +111,14 @@ class Rest extends AbstractClient implements RestRequester
         // Build the request parameters for Guzzle
         $guzzleParams = [];
         if ($params !== null) {
-            $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
+            $keys = array_keys($params);
+            if (isset($keys[0]) && in_array($keys[0], ['query', 'json'])) {
+                // Inputted type
+                $guzzleParams = $params;
+            } else {
+                // Detect type
+                $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
+            }
         }
 
         // Add custom headers

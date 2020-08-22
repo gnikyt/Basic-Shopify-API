@@ -319,6 +319,16 @@ $promise->then(function (array $result) {
 });
 ```
 
+##### Overriding request type
+
+If you require the need to force a query string for example on a non-GET endpoint, you can specify the type as a key.
+
+```php
+$api->rest('PUT', '/admin/themes/12345/assets.json', ['query' => [...]]);
+```
+
+Valid keys are `query` and `json`.
+
 ##### Passing additional request options
 
 If you'd like to pass additional request options to the Guzzle client created, pass them as the second argument of the constructor.
