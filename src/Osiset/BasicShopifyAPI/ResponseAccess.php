@@ -232,6 +232,16 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
     }
 
     /**
+     * To array, mainly for Laravel usage.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->container;
+    }
+
+    /**
      * Check if errors are in response.
      *
      * @return bool
