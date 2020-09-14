@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 10.0.0
+
++ Bump Guzzle to version 8 from 7 (#83)
+
 # 9.1.4
 
 + Implemented toArray method, mainly used for Laravel integration

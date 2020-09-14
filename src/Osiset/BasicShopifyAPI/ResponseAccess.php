@@ -157,7 +157,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
         if (is_array($this->container[$this->position])) {
             return new static($this->container[$this->position]);
         }
-        
+
         return $this->container[$this->position];
     }
 
