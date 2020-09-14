@@ -2,8 +2,6 @@
 
 namespace Osiset\BasicShopifyAPI\Contracts;
 
-use Osiset\BasicShopifyAPI\Contracts\StateStorage;
-
 /**
  * Reprecents common request limits tracking.
  */

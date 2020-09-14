@@ -2,9 +2,8 @@
 
 namespace Osiset\BasicShopifyAPI\Middleware;
 
-use Psr\Http\Message\RequestInterface;
 use Osiset\BasicShopifyAPI\Traits\IsRequestType;
-use Osiset\BasicShopifyAPI\Middleware\AbstractMiddleware;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Update request times for calls.
@@ -23,6 +22,7 @@ class UpdateRequestTime extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
+
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             // Get the client
             $api = $self->api;

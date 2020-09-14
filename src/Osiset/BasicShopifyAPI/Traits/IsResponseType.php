@@ -2,8 +2,8 @@
 
 namespace Osiset\BasicShopifyAPI\Traits;
 
-use Psr\Http\Message\ResponseInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Determine GraphQL or REST response type.
@@ -26,7 +26,8 @@ trait IsResponseType
      * Check if this is a GraphQL request by sniffing headers.
      *
      * @param ResponseInterface $response
-     * @return boolean
+     *
+     * @return bool
      */
     protected function isGraphResponse(ResponseInterface $response): bool
     {

@@ -3,9 +3,7 @@
 namespace Osiset\BasicShopifyAPI\Test;
 
 use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\Store\Memory;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
 
 class MemoryTest extends BaseTest
 {

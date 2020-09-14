@@ -3,7 +3,6 @@
 namespace Osiset\BasicShopifyAPI\Test;
 
 use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
 
 class ResponseAccessTest extends BaseTest
 {

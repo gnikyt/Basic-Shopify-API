@@ -7,7 +7,7 @@ use Osiset\BasicShopifyAPI\Session;
 
 /**
  * In-memory storage for timestamps used by rate limit middleware.
- * Based on spatie/guzzle-rate-limiter-middleware
+ * Based on spatie/guzzle-rate-limiter-middleware.
  */
 class Memory implements StateStorage
 {
@@ -19,7 +19,7 @@ class Memory implements StateStorage
     protected $container = [];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function all(): array
     {
@@ -27,16 +27,17 @@ class Memory implements StateStorage
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function get(Session $session): array
     {
         $shop = $session->getShop();
+
         return isset($this->container[$shop]) ? $this->container[$shop] : [];
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function set(array $values, Session $session): void
     {
@@ -44,7 +45,7 @@ class Memory implements StateStorage
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function push($value, Session $session): void
     {
@@ -57,7 +58,7 @@ class Memory implements StateStorage
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function reset(Session $session): void
     {

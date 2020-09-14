@@ -6,12 +6,12 @@ use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
 
 /**
  * Base time deferrer implementation.
- * Based on spatie/guzzle-rate-limiter-middleware
+ * Based on spatie/guzzle-rate-limiter-middleware.
  */
 class Sleep implements TimeDeferrer
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getCurrentTime(): float
     {
@@ -19,7 +19,7 @@ class Sleep implements TimeDeferrer
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function sleep(float $microseconds): void
     {

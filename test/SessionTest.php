@@ -2,9 +2,8 @@
 
 namespace Osiset\BasicShopifyAPI\Test;
 
-use Osiset\BasicShopifyAPI\Session;
 use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
+use Osiset\BasicShopifyAPI\Session;
 
 class SessionTest extends BaseTest
 {

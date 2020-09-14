@@ -2,14 +2,14 @@
 
 namespace Osiset\BasicShopifyAPI\Test\Middleware;
 
+use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Promise\Promise;
-use Osiset\BasicShopifyAPI\Session;
-use Psr\Http\Message\RequestInterface;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Middleware\UpdateApiLimits;
+use Osiset\BasicShopifyAPI\Session;
+use Osiset\BasicShopifyAPI\Test\BaseTest;
+use Psr\Http\Message\RequestInterface;
 
 class UpdateApiLimitsTest extends BaseTest
 {
@@ -69,7 +69,8 @@ class UpdateApiLimitsTest extends BaseTest
                         200,
                         [],
                         file_get_contents(__DIR__.'/../fixtures/graphql/shop_products.json')
-                    ));
+                    )
+                );
 
                 return $promise;
             }

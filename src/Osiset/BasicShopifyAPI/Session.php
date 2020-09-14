@@ -2,8 +2,6 @@
 
 namespace Osiset\BasicShopifyAPI;
 
-use Osiset\BasicShopifyAPI\ResponseAccess;
-
 /**
  * Shop or user session.
  */

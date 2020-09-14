@@ -2,12 +2,11 @@
 
 namespace Osiset\BasicShopifyAPI\Middleware;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Traits\IsResponseType;
-use Osiset\BasicShopifyAPI\Middleware\AbstractMiddleware;
 use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Update API limits for REST and GraphQL calls.
@@ -27,8 +26,10 @@ class UpdateApiLimits extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
+
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             $promise = $handler($request, $options);
+
             return $promise->then(
                 function (ResponseInterface $response) use ($self) {
                     if ($self->isRestResponse($response)) {

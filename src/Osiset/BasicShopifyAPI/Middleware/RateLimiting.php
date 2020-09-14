@@ -2,10 +2,9 @@
 
 namespace Osiset\BasicShopifyAPI\Middleware;
 
-use Psr\Http\Message\RequestInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Traits\IsRequestType;
-use Osiset\BasicShopifyAPI\Middleware\AbstractMiddleware;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Handle basic request rate limiting for REST and GraphQL.
@@ -24,6 +23,7 @@ class RateLimiting extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
+
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             if ($self->isRestRequest($request->getUri())) {
                 $this->handleRest($self->api);
@@ -63,6 +63,7 @@ class RateLimiting extends AbstractMiddleware
         if ($currentTime > $windowTime) {
             // Call is passed the window, reset and allow through without limiting
             $ts->reset($api->getSession());
+
             return false;
         }
 
@@ -111,6 +112,7 @@ class RateLimiting extends AbstractMiddleware
         if ($timeDiff < 1000000 && $lastCost > $pointsEverySecond) {
             // Less than a second has passed and the cost is over the limit
             $td->sleep(1000000 - $timeDiff);
+
             return true;
         }
 

@@ -3,16 +3,15 @@
 namespace Osiset\BasicShopifyAPI\Middleware;
 
 use Exception;
-use Osiset\BasicShopifyAPI\Options;
-use Psr\Http\Message\RequestInterface;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Traits\IsRequestType;
-use Osiset\BasicShopifyAPI\Middleware\AbstractMiddleware;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Ensures we have the proper request for private and public calls.
  * Also modifies issues with redirects.
-*/
+ */
 class AuthRequest extends AbstractMiddleware
 {
     use IsRequestType;
@@ -30,6 +29,7 @@ class AuthRequest extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
+
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             // Get the request URI
             $uri = $request->getUri();

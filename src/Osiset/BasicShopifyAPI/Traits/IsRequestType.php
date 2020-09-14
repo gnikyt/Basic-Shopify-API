@@ -2,8 +2,6 @@
 
 namespace Osiset\BasicShopifyAPI\Traits;
 
-use Psr\Http\Message\ResponseInterface;
-
 /**
  * Determine GraphQL or REST request type.
  */

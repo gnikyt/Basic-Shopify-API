@@ -2,12 +2,11 @@
 
 namespace Osiset\BasicShopifyAPI\Test\Middleware;
 
-use ReflectionMethod;
 use GuzzleHttp\Psr7\Request;
-use Osiset\BasicShopifyAPI\Session;
-use Psr\Http\Message\RequestInterface;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
 use Osiset\BasicShopifyAPI\Middleware\RateLimiting;
+use Osiset\BasicShopifyAPI\Session;
+use Osiset\BasicShopifyAPI\Test\BaseTest;
+use ReflectionMethod;
 
 class RateLimitingTest extends BaseTest
 {

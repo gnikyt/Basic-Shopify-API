@@ -3,17 +3,17 @@
 namespace Osiset\BasicShopifyAPI\Clients;
 
 use Exception;
-use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\ClientInterface;
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\Session;
+use GuzzleHttp\Psr7\Uri;
 use Osiset\BasicShopifyAPI\Contracts\ClientAware;
+use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
 use Osiset\BasicShopifyAPI\Contracts\Respondable;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
 use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
-use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\Session;
 use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 
 /**
@@ -82,7 +82,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getBaseUri(): Uri
     {
@@ -95,7 +95,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTimeDeferrer(): TimeDeferrer
     {
@@ -103,7 +103,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTimeStore(): StateStorage
     {
@@ -111,7 +111,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getLimitStore(): StateStorage
     {
@@ -119,7 +119,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setSession(Session $session): void
     {
@@ -127,7 +127,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSession(): ?Session
     {
@@ -135,7 +135,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setClient(ClientInterface $client): void
     {
@@ -143,7 +143,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getClient(): ClientInterface
     {
@@ -151,7 +151,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOptions(Options $options): void
     {
@@ -159,7 +159,7 @@ abstract class AbstractClient implements TimeAccesser, SessionAware, LimitAccess
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getOptions(): Options
     {

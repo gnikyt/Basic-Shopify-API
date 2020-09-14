@@ -3,10 +3,10 @@
 namespace Osiset\BasicShopifyAPI\Test\Middleware;
 
 use GuzzleHttp\Psr7\Request;
-use Osiset\BasicShopifyAPI\Session;
-use Psr\Http\Message\RequestInterface;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
 use Osiset\BasicShopifyAPI\Middleware\UpdateRequestTime;
+use Osiset\BasicShopifyAPI\Session;
+use Osiset\BasicShopifyAPI\Test\BaseTest;
+use Psr\Http\Message\RequestInterface;
 
 class UpdateRequestTimeTest extends BaseTest
 {
@@ -28,7 +28,6 @@ class UpdateRequestTimeTest extends BaseTest
         // Run a request
         $mw(
             function (RequestInterface $request, array $options): void {
-                return;
             }
         )(new Request('GET', '/admin/shop.json'), []);
 

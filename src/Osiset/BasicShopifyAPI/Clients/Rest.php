@@ -3,12 +3,11 @@
 namespace Osiset\BasicShopifyAPI\Clients;
 
 use Exception;
-use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
-use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Clients\AbstractClient;
 use Osiset\BasicShopifyAPI\Contracts\RestRequester;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * REST handler.
@@ -37,7 +36,7 @@ class Rest extends AbstractClient implements RestRequester
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function requestAccess(string $code): ResponseAccess
     {
@@ -53,7 +52,7 @@ class Rest extends AbstractClient implements RestRequester
                 'client_id'     => $this->getOptions()->getApiKey(),
                 'client_secret' => $this->getOptions()->getApiSecret(),
                 'code'          => $code,
-            ]
+            ],
         ];
 
         try {
@@ -64,6 +63,7 @@ class Rest extends AbstractClient implements RestRequester
             );
         } catch (ClientException $e) {
             $body = json_decode($e->getResponse()->getBody()->getContents());
+
             throw new Exception($body->error_description);
         }
 
@@ -71,7 +71,7 @@ class Rest extends AbstractClient implements RestRequester
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAuthUrl($scopes, string $redirectUri, string $mode = 'offline'): string
     {
@@ -101,7 +101,7 @@ class Rest extends AbstractClient implements RestRequester
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function request(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
     {
@@ -131,12 +131,14 @@ class Rest extends AbstractClient implements RestRequester
          */
         $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
             $fn = $sync ? 'request' : 'requestAsync';
+
             return $this->getClient()->{$fn}($type, $uri, $guzzleParams);
         };
 
         if ($sync === false) {
             // Async request
             $promise = $requestFn();
+
             return $promise->then([$this, 'handleSuccess'], [$this, 'handleFailure']);
         }
 

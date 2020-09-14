@@ -2,12 +2,12 @@
 
 namespace Osiset\BasicShopifyAPI\Test\Clients;
 
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\Session;
+use Osiset\BasicShopifyAPI\Test\BaseTest;
 
 class GraphTest extends BaseTest
 {

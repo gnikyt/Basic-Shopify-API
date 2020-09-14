@@ -4,10 +4,9 @@ namespace Osiset\BasicShopifyAPI\Test;
 
 use Exception;
 use GuzzleHttp\Client;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 
 class BasicShopifyAPITest extends BaseTest
 {

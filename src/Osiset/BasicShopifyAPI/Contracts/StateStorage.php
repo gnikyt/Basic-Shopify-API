@@ -6,7 +6,7 @@ use Osiset\BasicShopifyAPI\Session;
 
 /**
  * Reprecents basic state storage.
- * Based on spatie/guzzle-rate-limiter-middleware
+ * Based on spatie/guzzle-rate-limiter-middleware.
  */
 interface StateStorage
 {

@@ -59,7 +59,7 @@ class Options
     protected $graphLimit = 50;
 
     /**
-     * API version
+     * API version.
      *
      * @var string|null
      */
@@ -98,6 +98,7 @@ class Options
     public function setType(bool $private): self
     {
         $this->private = $private;
+
         return $this;
     }
 
@@ -141,6 +142,7 @@ class Options
     public function setApiKey(string $apiKey): self
     {
         $this->apiKey = $apiKey;
+
         return $this;
     }
 
@@ -164,6 +166,7 @@ class Options
     public function setApiSecret(string $apiSecret): self
     {
         $this->apiSecret = $apiSecret;
+
         return $this;
     }
 
@@ -187,6 +190,7 @@ class Options
     public function setApiPassword(string $apiPassword): self
     {
         $this->apiPassword = $apiPassword;
+
         return $this;
     }
 
@@ -210,13 +214,14 @@ class Options
     public function setRestLimit(int $limit): self
     {
         $this->restLimit = $limit;
+
         return $this;
     }
 
     /**
      * Get the REST limit.
      *
-     * @return integer
+     * @return int
      */
     public function getRestLimit(): int
     {
@@ -233,13 +238,14 @@ class Options
     public function setGraphLimit(int $limit): self
     {
         $this->graphLimit = $limit;
+
         return $this;
     }
 
     /**
      * Get the GraphQL limit.
      *
-     * @return integer
+     * @return int
      */
     public function getGraphLimit(): int
     {
@@ -256,6 +262,7 @@ class Options
     public function setGuzzleOptions(array $options): self
     {
         $this->guzzleOptions = array_merge($this->guzzleOptions, $options);
+
         return $this;
     }
 
@@ -279,6 +286,7 @@ class Options
     public function setGuzzleHandler(callable $handler): self
     {
         $this->guzzleHandler = $handler;
+
         return $this;
     }
 
@@ -309,6 +317,7 @@ class Options
         }
 
         $this->version = $version;
+
         return $this;
     }
 

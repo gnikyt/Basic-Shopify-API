@@ -2,9 +2,6 @@
 
 namespace Osiset\BasicShopifyAPI\Contracts;
 
-use Osiset\BasicShopifyAPI\Contracts\StateStorage;
-use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
-
 /**
  * Reprecents time tracking.
  */

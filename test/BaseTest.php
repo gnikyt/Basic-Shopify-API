@@ -3,10 +3,10 @@
 namespace Osiset\BasicShopifyAPI\Test;
 
 use Closure;
-use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Handler\MockHandler;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Options;
+use PHPUnit\Framework\TestCase;
 
 abstract class BaseTest extends TestCase
 {

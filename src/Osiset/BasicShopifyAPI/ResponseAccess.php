@@ -2,9 +2,9 @@
 
 namespace Osiset\BasicShopifyAPI;
 
-use Iterator;
-use Countable;
 use ArrayAccess;
+use Countable;
+use Iterator;
 use JsonSerializable;
 
 /**
@@ -39,7 +39,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
     }
 
     /**
-     * Check if offset exists
+     * Check if offset exists.
      *
      * @param mixed $offset
      *
@@ -109,7 +109,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
 
     /**
      * Allows for accessing the underlying array as an object.
-     * $response->shop->name will forward to $response['shop']['name']
+     * $response->shop->name will forward to $response['shop']['name'].
      *
      * @param string $key
      *
@@ -178,7 +178,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
      */
     public function next(): void
     {
-        ++$this->position;
+        $this->position++;
     }
 
     /**

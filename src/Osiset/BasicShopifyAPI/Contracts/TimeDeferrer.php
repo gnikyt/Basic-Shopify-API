@@ -4,7 +4,7 @@ namespace Osiset\BasicShopifyAPI\Contracts;
 
 /**
  * Reprecents basic time handling for getting and sleeping.
- * Based on spatie/guzzle-rate-limiter-middleware
+ * Based on spatie/guzzle-rate-limiter-middleware.
  */
 interface TimeDeferrer
 {

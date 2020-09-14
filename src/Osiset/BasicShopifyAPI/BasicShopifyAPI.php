@@ -5,28 +5,25 @@ namespace Osiset\BasicShopifyAPI;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\Promise;
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\Session;
 use GuzzleRetry\GuzzleRetryMiddleware;
-use Osiset\BasicShopifyAPI\Clients\Rest;
-use Osiset\BasicShopifyAPI\Store\Memory;
 use Osiset\BasicShopifyAPI\Clients\Graph;
-use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Deferrers\Sleep;
+use Osiset\BasicShopifyAPI\Clients\Rest;
 use Osiset\BasicShopifyAPI\Contracts\ClientAware;
+use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
+use Osiset\BasicShopifyAPI\Contracts\RestRequester;
 use Osiset\BasicShopifyAPI\Contracts\SessionAware;
 use Osiset\BasicShopifyAPI\Contracts\StateStorage;
 use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
+use Osiset\BasicShopifyAPI\Deferrers\Sleep;
 use Osiset\BasicShopifyAPI\Middleware\AuthRequest;
-use Osiset\BasicShopifyAPI\Contracts\RestRequester;
 use Osiset\BasicShopifyAPI\Middleware\RateLimiting;
-use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
-use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 use Osiset\BasicShopifyAPI\Middleware\UpdateApiLimits;
 use Osiset\BasicShopifyAPI\Middleware\UpdateRequestTime;
+use Osiset\BasicShopifyAPI\Store\Memory;
+use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -140,7 +137,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setClient(ClientInterface $client): void
     {
@@ -150,7 +147,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getClient(): ClientInterface
     {
@@ -158,7 +155,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setOptions(Options $options): void
     {
@@ -168,7 +165,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getOptions(): Options
     {
@@ -185,6 +182,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function setGraphClient(GraphRequester $client): self
     {
         $this->graphClient = $client;
+
         return $this;
     }
 
@@ -208,6 +206,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function setRestClient(RestRequester $client): self
     {
         $this->restClient = $client;
+
         return $this;
     }
 
@@ -222,7 +221,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setSession(Session $session): void
     {
@@ -232,7 +231,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSession(): ?Session
     {
@@ -253,6 +252,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
         $clonedApi->setSession($session);
+
         return $closure->call($clonedApi);
     }
 
@@ -267,6 +267,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function addMiddleware(callable $callable, string $name = ''): self
     {
         $this->stack->push($callable, $name);
+
         return $this;
     }
 
@@ -280,6 +281,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function removeMiddleware(string $name = ''): self
     {
         $this->stack->remove($name);
+
         return $this;
     }
 

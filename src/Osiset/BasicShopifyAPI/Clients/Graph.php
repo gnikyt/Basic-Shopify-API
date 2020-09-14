@@ -2,10 +2,9 @@
 
 namespace Osiset\BasicShopifyAPI\Clients;
 
-use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
-use Osiset\BasicShopifyAPI\Clients\AbstractClient;
 use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * GraphQL client.
@@ -13,7 +12,7 @@ use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
 class Graph extends AbstractClient implements GraphRequester
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @throws Exception When missing api password is missing for private apps.
      * @throws Exception When missing access key is missing for public apps.
@@ -21,7 +20,7 @@ class Graph extends AbstractClient implements GraphRequester
     public function request(string $query, array $variables = [], bool $sync = true)
     {
         /**
-         * Run the request as sync or async
+         * Run the request as sync or async.
          */
         $requestFn = function (array $request) use ($sync) {
             // Encode the request
@@ -29,6 +28,7 @@ class Graph extends AbstractClient implements GraphRequester
 
             // Run the request
             $fn = $sync ? 'request' : 'requestAsync';
+
             return $this->getClient()->{$fn}(
                 'POST',
                 $this->getBaseUri()->withPath('/admin/api/graphql.json'),
@@ -45,12 +45,14 @@ class Graph extends AbstractClient implements GraphRequester
         if ($sync === false) {
             // Async request
             $promise = $requestFn($request);
+
             return $promise->then([$this, 'handleSuccess'], [$this, 'handleFailure']);
         }
 
         // Sync request (default)
         try {
             $response = $requestFn($request);
+
             return $this->handleSuccess($response);
         } catch (RequestException $e) {
             return $this->handleFailure($e);

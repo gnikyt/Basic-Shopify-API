@@ -3,18 +3,18 @@
 namespace Osiset\BasicShopifyAPI\Test\Middleware;
 
 use GuzzleHttp\Psr7\Response;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Test\BaseTest;
+use Osiset\BasicShopifyAPI\Traits\IsResponseType;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\BasicShopifyAPI\Traits\IsResponseType;
 
 class IsResponsTypeTest extends BaseTest
 {
     public function test(): void
     {
         // Create anon class
-        $klass = new class {
+        $klass = new class() {
             use IsResponseType;
 
             private $self;

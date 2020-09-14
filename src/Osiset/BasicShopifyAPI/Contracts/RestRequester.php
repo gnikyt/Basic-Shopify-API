@@ -3,13 +3,9 @@
 namespace Osiset\BasicShopifyAPI\Contracts;
 
 use Exception;
-use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\Psr7\Uri;
 use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Contracts\ClientAware;
-use Osiset\BasicShopifyAPI\Contracts\SessionAware;
-use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
-use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
 
 /**
  * Reprecents REST client.

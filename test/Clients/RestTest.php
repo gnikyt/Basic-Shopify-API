@@ -3,13 +3,13 @@
 namespace Osiset\BasicShopifyAPI\Test\Clients;
 
 use Exception;
-use GuzzleHttp\Psr7\Uri;
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use GuzzleHttp\Psr7\Uri;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\Session;
+use Osiset\BasicShopifyAPI\Test\BaseTest;
 
 class RestTest extends BaseTest
 {
@@ -217,9 +217,9 @@ class RestTest extends BaseTest
         $api->setSession(new Session('example.myshopify.com', '!#@'));
 
         // Fake param just to test it receives it
-        $api->request('PUT', '/admin/shop.json', ['query' => ['limit' => 1 ]]);
+        $api->request('PUT', '/admin/shop.json', ['query' => ['limit' => 1]]);
         $query = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getUri()->getQuery();
-        
+
         $this->assertEquals('limit=1', $query);
     }
 
