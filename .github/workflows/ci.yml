@@ -9,16 +9,16 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        php-versions: ['7.2', '7.4']
+        php-versions: ['7.2', '7.4', '8.0']
 
     name: PHP ${{ matrix.php-versions }}
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-  
+
     - name: Setup PHP
-      uses: shivammathur/setup-php@v1
+      uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
         coverage: xdebug
@@ -39,7 +39,7 @@ jobs:
       run: composer run-script test
 
     - name: Upload coverage results
-      if: matrix.php-versions == '7.4'
+      if: matrix.php-versions == '8.0'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
