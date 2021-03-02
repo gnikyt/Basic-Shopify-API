@@ -84,7 +84,7 @@ class RateLimitingTest extends BaseTest
 
         // Fill in fake costs
         $ls = $api->getGraphClient()->getLimitStore();
-        $ls->set(['actualCost' => 400], $api->getSession());
+        $ls->set([['actualCost' => 400]], $api->getSession());
 
         // Given last cost was over the default 50 points and last request was less than a second ago, we should sleep
         $result = $method->invoke(new RateLimiting($api), $api);
@@ -112,7 +112,7 @@ class RateLimitingTest extends BaseTest
 
         // Fill in fake costs
         $ls = $api->getGraphClient()->getLimitStore();
-        $ls->set(['actualCost' => 50], $api->getSession());
+        $ls->set([['actualCost' => 50]], $api->getSession());
 
         // Given last cost was 50 points within 1 second, we should not sleep
         $result = $method->invoke(new RateLimiting($api), $api);
