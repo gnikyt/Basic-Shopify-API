@@ -132,7 +132,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
                 ->addMiddleware(new AuthRequest($this), 'request:auth')
                 ->addMiddleware(new UpdateApiLimits($this), 'rate:update')
                 ->addMiddleware(new UpdateRequestTime($this), 'time:update')
-                ->addMiddleware(GuzzleRetryMiddleware::factory(), 'request:retry');            
+                ->addMiddleware(GuzzleRetryMiddleware::factory(), 'request:retry');
         }
 
         // Create a default Guzzle client with our stack
