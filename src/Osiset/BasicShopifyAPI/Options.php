@@ -57,13 +57,13 @@ class Options
      * @var int
      */
     protected $graphLimit = 50;
-    
+
     /**
-     * Security factor for advanced rate limiting. Default value makes it no-blocking factor
+     * Security factor for advanced rate limiting. Default value makes it no-blocking.
      *
      * @var int
      */
-    protected $graphSecurityFactor = 1000;    
+    protected $graphSecurityFactor = 1000;
 
     /**
      * API version.
@@ -258,7 +258,7 @@ class Options
     {
         return $this->graphLimit;
     }
-    
+
     /**
      * Set the GraphQL Security Factor.
      *
@@ -271,8 +271,8 @@ class Options
         $this->graphSecurityFactor = $value;
 
         return $this;
-    }    
-    
+    }
+
     /**
      * Get the GraphQL Security Factor.
      *
@@ -281,7 +281,7 @@ class Options
     public function getGraphSecurityFactor(): int
     {
         return $this->graphSecurityFactor;
-    }    
+    }
 
     /**
      * Set options for Guzzle.
