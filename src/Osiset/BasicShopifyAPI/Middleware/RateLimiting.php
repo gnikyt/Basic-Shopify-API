@@ -110,13 +110,14 @@ class RateLimiting extends AbstractMiddleware
         $pointsEverySecond = $api->getOptions()->getGraphLimit();
         $securityFactor = $api->getOptions()->getGraphSecurityFactor();
         $timeDiff = $currentTime - $lastTime;
-        
-        // How many points we have spent over leak rate (time * pointsEverySecond)
-        $overCost = $lastCost - ($timeDiff * $pointsEverySecond);  
 
-        if ( ($overCost > 0) && ($leftPoints < ($lastCost * $securityFactor)) ) {
+        // How many points we have spent over leak rate (time * pointsEverySecond)
+        $overCost = $lastCost - ($timeDiff * $pointsEverySecond);
+
+        if (($overCost > 0) && ($leftPoints < ($lastCost * $securityFactor))) {
             //lastCost is more than "estimated recovered points" AND leftPoints is less than lastCost * security factor
-            $td->sleep($overCost/$pointsEverySecond * 1000000);  //calls usleep($microseconds), with enought time to recover $overCost
+            $td->sleep($overCost/$pointsEverySecond * 1000000);
+            //calls usleep($microseconds), with enought time to recover $overCost
             return true;
         }
 
