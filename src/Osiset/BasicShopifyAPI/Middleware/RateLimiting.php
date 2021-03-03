@@ -95,9 +95,10 @@ class RateLimiting extends AbstractMiddleware
         $lastTime = $ts->get($api->getSession());
         $lastTime = isset($lastTime[0]) ? $lastTime[0] : 0;
 
-        // Get the last request cost
+        // Get the last request cost and left points (leftPoints)
         /** @var int $lastCost */
         $lastCost = $ls->get($api->getSession());
+        $leftPoints = isset($lastCost[0]) && isset($lastCost[0]['left']) ? $lastCost[0]['left'] : 0;
         $lastCost = isset($lastCost[0]) && isset($lastCost[0]['actualCost']) ? $lastCost[0]['actualCost'] : 0;
 
         if ($lastTime === 0 || $lastCost === 0) {
@@ -105,14 +106,17 @@ class RateLimiting extends AbstractMiddleware
             return false;
         }
 
-        // How many points can be spent every second and time difference
+        // How many points can be spent every second, security factor and time difference
         $pointsEverySecond = $api->getOptions()->getGraphLimit();
+        $securityFactor = $api->getOptions()->getGraphSecurityFactor();
         $timeDiff = $currentTime - $lastTime;
+        
+        // How many points we have spent over leak rate (time * pointsEverySecond)
+        $overCost = $lastCost - ($timeDiff * $pointsEverySecond);  
 
-        if ($timeDiff < 1000000 && $lastCost > $pointsEverySecond) {
-            // Less than a second has passed and the cost is over the limit
-            $td->sleep(1000000 - $timeDiff);
-
+        if ( ($overCost > 0) && ($leftPoints < ($lastCost * $securityFactor)) ) {
+            //lastCost is more than "estimated recovered points" AND leftPoints is less than lastCost * security factor
+            $td->sleep($overCost/$pointsEverySecond * 1000000);  //calls usleep($microseconds), with enought time to recover $overCost
             return true;
         }
 
