@@ -112,6 +112,7 @@ class RateLimiting extends AbstractMiddleware
         if ($timeDiff < 1000000 && $lastCost > $pointsEverySecond) {
             // Less than a second has passed and the cost is over the limit
             $td->sleep(1000000 - $timeDiff);
+
             return true;
         }
 
