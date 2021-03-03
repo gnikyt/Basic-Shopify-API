@@ -414,9 +414,13 @@ This library comes with a built-in basic rate limiter via `usleep`.
 
 For REST, it ensures you do not request more than the default of 2 calls per second.
 
-For GraphQL, it ensures you do not use more than the default of 50 points per second.
+For GraphQL, it uses a more advanced way to limit rate. Library will sleep enougth time to recover the same amount of points that you have spent with last api call, but only when a these conditions are true:
++ In the last api call, you have spent more points than your Shopify's restore rate (usually 50 points per second, depens on your Shopify's plan) per time between api calls
++ Currently available points are less than last api call's spent points per GraphQL security factor
 
 To adjust the default limits, use the option class' `setRestLimit` and `setGraphLimit`.
+
+Optionally, you could use the option class' `setGraphSecurityFactor`, default value is 1000 (no-blocking factor). Advanced users will use values arround 2. The smaller the value, the more risk is run (see RateLimiting.php for more information)
 
 ### page_info / pagination Support
 
