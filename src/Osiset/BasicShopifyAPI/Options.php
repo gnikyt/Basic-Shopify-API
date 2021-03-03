@@ -161,7 +161,7 @@ class Options
     public function getUseRateLimit(): bool
     {
         return $this->useRateLimit;
-    }  
+    }
 
     /**
      * Sets the API key for use with the Shopify API (public or private apps).
