@@ -116,7 +116,7 @@ class RateLimiting extends AbstractMiddleware
 
         if (($overCost > 0) && ($leftPoints < ($lastCost * $securityFactor))) {
             //lastCost is more than "estimated recovered points" AND leftPoints is less than lastCost * security factor
-            $td->sleep($overCost/$pointsEverySecond * 1000000);
+            $td->sleep($overCost / $pointsEverySecond * 1000000);
             //calls usleep($microseconds), with enought time to recover $overCost
             return true;
         }
