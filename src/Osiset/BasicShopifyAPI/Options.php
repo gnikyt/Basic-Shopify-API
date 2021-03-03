@@ -24,11 +24,11 @@ class Options
     protected $private = false;
 
     /**
-     * Use GraphQL limit rate.
+     * Use library's limit rate.
      *
      * @var bool
      */
-    protected $useGraphLimit = true;
+    protected $useRateLimit = true;
 
     /**
      * The Shopify API key.
@@ -140,27 +140,27 @@ class Options
     }
 
     /**
-     * Set useGraphLimit to use or not the library's basic method of rate limit.
+     * Set useRateLimit to use or not the library's basic method of rate limit.
      *
-     * @param bool $useGraphLimit True for use library's basic method, false for not use.
+     * @param bool $useRateLimit True for use library's basic method, false for not use.
      *
      * @return self
      */
-    public function setUseGraphLimit(bool $value): self
+    public function setUseRateLimit(bool $value): self
     {
-        $this->useGraphLimit = $value;
+        $this->useRateLimit = $value;
 
         return $this;
     }
 
     /**
-     * Get the useGraphLimit.
+     * Get the useRateLimit.
      *
      * @return bool
      */
-    public function getUseGraphLimit(): bool
+    public function getUseRateLimit(): bool
     {
-        return $this->useGraphLimit;
+        return $this->useRateLimit;
     }  
 
     /**
