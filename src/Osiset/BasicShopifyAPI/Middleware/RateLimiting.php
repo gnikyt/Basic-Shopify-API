@@ -107,7 +107,7 @@ class RateLimiting extends AbstractMiddleware
 
         // How many points can be spent every second and time difference
         $pointsEverySecond = $api->getOptions()->getGraphLimit();
-        $timeDiff = ($currentTime - $lastTime)*1000000;
+        $timeDiff = ($currentTime - $lastTime) * 1000000;
 
         if ($timeDiff < 1000000 && $lastCost > $pointsEverySecond) {
             // Less than a second has passed and the cost is over the limit
