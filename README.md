@@ -418,6 +418,13 @@ For GraphQL, it ensures you do not use more than the default of 50 points per se
 
 To adjust the default limits, use the option class' `setRestLimit` and `setGraphLimit`.
 
+You can use your own rate limit method by using the option class' `setUseRateLimit` and `getUseRateLimit`. If you can use your own method
+```php
+// Create options for the API
+$options = new Options();
+$options->setUseRateLimit(false);
+```
+
 ### page_info / pagination Support
 
 2019-07 API version introduced a new `Link` header which is used for pagination ([explained here](https://help.shopify.com/en/api/guides/paginated-rest-results)).
