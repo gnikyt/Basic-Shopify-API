@@ -29,6 +29,7 @@ class AuthRequest extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
+
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             // Get the request URI
             $uri = $request->getUri();
@@ -80,6 +81,7 @@ class AuthRequest extends AbstractMiddleware
                     $this->versionPath($uri->getPath())
                 )
             );
+
             return $handler($request, $options);
         };
     }

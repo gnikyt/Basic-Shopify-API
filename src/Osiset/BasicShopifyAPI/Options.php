@@ -105,6 +105,7 @@ class Options
     public function setType(bool $private): self
     {
         $this->private = $private;
+
         return $this;
     }
 
@@ -148,6 +149,7 @@ class Options
     public function setApiKey(string $apiKey): self
     {
         $this->apiKey = $apiKey;
+
         return $this;
     }
 
@@ -171,6 +173,7 @@ class Options
     public function setApiSecret(string $apiSecret): self
     {
         $this->apiSecret = $apiSecret;
+
         return $this;
     }
 
@@ -194,6 +197,7 @@ class Options
     public function setApiPassword(string $apiPassword): self
     {
         $this->apiPassword = $apiPassword;
+
         return $this;
     }
 
@@ -217,6 +221,7 @@ class Options
     public function setRestLimit(int $limit): self
     {
         $this->restLimit = $limit;
+
         return $this;
     }
 
@@ -240,6 +245,7 @@ class Options
     public function setGraphLimit(int $limit): self
     {
         $this->graphLimit = $limit;
+
         return $this;
     }
 
@@ -263,6 +269,7 @@ class Options
     public function setGuzzleOptions(array $options): self
     {
         $this->guzzleOptions = array_merge($this->guzzleOptions, $options);
+
         return $this;
     }
 
@@ -286,6 +293,7 @@ class Options
     public function setGuzzleHandler(callable $handler): self
     {
         $this->guzzleHandler = $handler;
+
         return $this;
     }
 
@@ -316,6 +324,7 @@ class Options
         }
 
         $this->version = $version;
+
         return $this;
     }
 
@@ -337,6 +346,7 @@ class Options
     public function enableRateLimiting(): self
     {
         $this->rateLimiting = true;
+
         return $this;
     }
 
@@ -348,6 +358,7 @@ class Options
     public function disableRateLimiting(): self
     {
         $this->rateLimiting = false;
+
         return $this;
     }
 

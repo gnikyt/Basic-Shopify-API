@@ -23,12 +23,14 @@ class RateLimiting extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
+
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             if ($self->isRestRequest($request->getUri())) {
                 $this->handleRest($self->api);
             } else {
                 $this->handleGraph($self->api);
             }
+
             return $handler($request, $options);
         };
     }
@@ -61,6 +63,7 @@ class RateLimiting extends AbstractMiddleware
         if ($currentTime > $windowTime) {
             // Call is passed the window, reset and allow through without limiting
             $ts->reset($api->getSession());
+
             return false;
         }
 
@@ -68,6 +71,7 @@ class RateLimiting extends AbstractMiddleware
         $sleepTime = $windowTime - $currentTime;
         $td->sleep($sleepTime < 0 ? 0 : $sleepTime);
         $ts->reset($api->getSession());
+
         return true;
     }
 
@@ -106,8 +110,10 @@ class RateLimiting extends AbstractMiddleware
         if ($timeDiff < 1000000 && $lastCost > $pointsEverySecond) {
             // Less than a second has passed and the cost is over the limit
             $td->sleep(1000000 - $timeDiff);
+
             return true;
         }
+
         return false;
     }
 }

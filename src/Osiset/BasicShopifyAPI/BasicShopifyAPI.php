@@ -184,6 +184,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function setGraphClient(GraphRequester $client): self
     {
         $this->graphClient = $client;
+
         return $this;
     }
 
@@ -207,6 +208,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function setRestClient(RestRequester $client): self
     {
         $this->restClient = $client;
+
         return $this;
     }
 
@@ -252,6 +254,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
         $clonedApi->setSession($session);
+
         return $closure->call($clonedApi);
     }
 
@@ -266,6 +269,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function addMiddleware(callable $callable, string $name = ''): self
     {
         $this->stack->push($callable, $name);
+
         return $this;
     }
 
@@ -279,6 +283,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function removeMiddleware(string $name = ''): self
     {
         $this->stack->remove($name);
+
         return $this;
     }
 

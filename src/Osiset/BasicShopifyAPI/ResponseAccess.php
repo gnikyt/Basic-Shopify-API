@@ -66,6 +66,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
         if (is_array($this->container[$offset])) {
             return new static($this->container[$offset]);
         }
+
         return $this->container[$offset];
     }
 
@@ -119,6 +120,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
         if (isset($this->container[$key]) && is_array($this->container[$key])) {
             return new static($this->container[$key]);
         }
+
         return $this->container[$key];
     }
 
@@ -155,6 +157,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
         if (is_array($this->container[$this->position])) {
             return new static($this->container[$this->position]);
         }
+
         return $this->container[$this->position];
     }
 
@@ -258,6 +261,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
         if (!$this->hasErrors()) {
             return;
         }
+
         return isset($this->container['errors']) ? $this->container['errors'] : $this->container['error'];
     }
 }

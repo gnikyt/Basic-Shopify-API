@@ -26,6 +26,7 @@ class UpdateApiLimits extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
+
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             $promise = $handler($request, $options);
 
@@ -36,6 +37,7 @@ class UpdateApiLimits extends AbstractMiddleware
                     } else {
                         $self->updateGraphCosts($response);
                     }
+
                     return $response;
                 }
             );
