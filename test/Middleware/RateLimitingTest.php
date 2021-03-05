@@ -23,8 +23,8 @@ class RateLimitingTest extends BaseTest
         // Create fake times
         $td = $api->getRestClient()->getTimeDeferrer();
         $currentTime = $td->getCurrentTime();
-        $firstTime = $currentTime - 0.200;
-        $lastTime = $currentTime - 0.100;
+        $firstTime = $currentTime - 200;
+        $lastTime = $currentTime - 100;
 
         // Fill fake times
         $ts = $api->getRestClient()->getTimeStore();
@@ -48,8 +48,8 @@ class RateLimitingTest extends BaseTest
         // Create fake times
         $td = $api->getRestClient()->getTimeDeferrer();
         $currentTime = $td->getCurrentTime();
-        $firstTime = $currentTime - 0.200;
-        $lastTime = $currentTime - 0.100;
+        $firstTime = $currentTime - 200;
+        $lastTime = $currentTime - 100;
 
         // Fill fake times
         $ts = $api->getRestClient()->getTimeStore();
@@ -76,7 +76,7 @@ class RateLimitingTest extends BaseTest
         // Create fake times
         $td = $api->getGraphClient()->getTimeDeferrer();
         $currentTime = $td->getCurrentTime();
-        $lastTime = $currentTime - 900000; // -900ms
+        $lastTime = $currentTime - 900000; // 0.9 secs
 
         // Fill fake times
         $ts = $api->getGraphClient()->getTimeStore();
@@ -104,7 +104,7 @@ class RateLimitingTest extends BaseTest
         // Create fake times
         $td = $api->getGraphClient()->getTimeDeferrer();
         $currentTime = $td->getCurrentTime();
-        $lastTime = $currentTime - 1000000; // -1secs
+        $lastTime = $currentTime - 2000000; // -2 secs
 
         // Fill fake times
         $ts = $api->getGraphClient()->getTimeStore();

@@ -408,17 +408,30 @@ $api = new BasicShopifyAPI($options);
 $api->rest('GET', '/admin/api/unstable/shop.json'); // Will ignore "2020-01" version and use "unstable" for this request
 ```
 
-### Rate Limiting
+### Rate limiting
 
-This library comes with a built-in basic rate limiter via `usleep`.
+This library comes with a built-in basic rate limiter which utilizes `usleep` between applicable calls.
 
-For REST, it ensures you do not request more than the default of 2 calls per second.
-
-For GraphQL, it ensures you do not use more than the default of 50 points per second.
+* For REST: it ensures you do not request more than the default of 2 calls per second.
+* For GraphQL: it ensures you do not use more than the default of 50 points per second.
 
 To adjust the default limits, use the option class' `setRestLimit` and `setGraphLimit`.
 
-### page_info / pagination Support
+#### Custom rate limiting
+
+You simply need to disable the built-in rate limiter and push in a custom Guzzle middleware. Example:
+
+```php
+$options = new Options();
+// ...
+$options->disableRateLimiting();
+
+// ...
+$api = new BasicShopifyAPI($options);
+$api->addMiddleware(new CustomRateLimiter($api), 'rate:limiting');
+```
+
+### page_info / pagination support
 
 2019-07 API version introduced a new `Link` header which is used for pagination ([explained here](https://help.shopify.com/en/api/guides/paginated-rest-results)).
 

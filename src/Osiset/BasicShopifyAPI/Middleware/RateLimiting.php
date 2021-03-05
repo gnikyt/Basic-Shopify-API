@@ -23,14 +23,12 @@ class RateLimiting extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
-
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             if ($self->isRestRequest($request->getUri())) {
                 $this->handleRest($self->api);
             } else {
                 $this->handleGraph($self->api);
             }
-
             return $handler($request, $options);
         };
     }
@@ -57,13 +55,12 @@ class RateLimiting extends AbstractMiddleware
 
         // Determine if this call has passed the window
         $firstTime = end($times);
-        $windowTime = $firstTime + 1;
+        $windowTime = $firstTime + 1000000;
         $currentTime = $td->getCurrentTime();
 
         if ($currentTime > $windowTime) {
             // Call is passed the window, reset and allow through without limiting
             $ts->reset($api->getSession());
-
             return false;
         }
 
@@ -71,7 +68,6 @@ class RateLimiting extends AbstractMiddleware
         $sleepTime = $windowTime - $currentTime;
         $td->sleep($sleepTime < 0 ? 0 : $sleepTime);
         $ts->reset($api->getSession());
-
         return true;
     }
 
@@ -99,7 +95,6 @@ class RateLimiting extends AbstractMiddleware
         /** @var int $lastCost */
         $lastCost = $ls->get($api->getSession());
         $lastCost = isset($lastCost[0]) && isset($lastCost[0]['actualCost']) ? $lastCost[0]['actualCost'] : 0;
-
         if ($lastTime === 0 || $lastCost === 0) {
             // This is the first request, nothing to do
             return false;
@@ -108,14 +103,11 @@ class RateLimiting extends AbstractMiddleware
         // How many points can be spent every second and time difference
         $pointsEverySecond = $api->getOptions()->getGraphLimit();
         $timeDiff = $currentTime - $lastTime;
-
         if ($timeDiff < 1000000 && $lastCost > $pointsEverySecond) {
             // Less than a second has passed and the cost is over the limit
             $td->sleep(1000000 - $timeDiff);
-
             return true;
         }
-
         return false;
     }
 }

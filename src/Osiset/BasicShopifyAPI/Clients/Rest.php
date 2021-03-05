@@ -31,7 +31,6 @@ class Rest extends AbstractClient implements RestRequester
             preg_match(str_replace('{type}', $type, $regex), $header, $matches);
             $links[$type] = isset($matches[1]) ? $matches[1] : null;
         }
-
         return new ResponseAccess($links);
     }
 
@@ -63,10 +62,8 @@ class Rest extends AbstractClient implements RestRequester
             );
         } catch (ClientException $e) {
             $body = json_decode($e->getResponse()->getBody()->getContents());
-
             throw new Exception($body->error_description);
         }
-
         return $this->toResponse($response->getBody());
     }
 
@@ -131,14 +128,12 @@ class Rest extends AbstractClient implements RestRequester
          */
         $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
             $fn = $sync ? 'request' : 'requestAsync';
-
             return $this->getClient()->{$fn}($type, $uri, $guzzleParams);
         };
 
         if ($sync === false) {
             // Async request
             $promise = $requestFn();
-
             return $promise->then([$this, 'handleSuccess'], [$this, 'handleFailure']);
         }
 

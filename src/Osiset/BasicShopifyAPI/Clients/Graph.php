@@ -45,14 +45,12 @@ class Graph extends AbstractClient implements GraphRequester
         if ($sync === false) {
             // Async request
             $promise = $requestFn($request);
-
             return $promise->then([$this, 'handleSuccess'], [$this, 'handleFailure']);
         }
 
         // Sync request (default)
         try {
             $response = $requestFn($request);
-
             return $this->handleSuccess($response);
         } catch (RequestException $e) {
             return $this->handleFailure($e);

@@ -122,10 +122,12 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         $this->stack = HandlerStack::create($this->getOptions()->getGuzzleHandler());
         $this
             ->addMiddleware(new AuthRequest($this), 'request:auth')
-            ->addMiddleware(new RateLimiting($this), 'rate:limiting')
             ->addMiddleware(new UpdateApiLimits($this), 'rate:update')
             ->addMiddleware(new UpdateRequestTime($this), 'time:update')
             ->addMiddleware(GuzzleRetryMiddleware::factory(), 'request:retry');
+        if ($this->getOptions()->isRateLimitingEnabled()) {
+            $this->addMiddleware(new RateLimiting($this), 'rate:limiting');
+        }
 
         // Create a default Guzzle client with our stack
         $this->setClient(
@@ -182,7 +184,6 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function setGraphClient(GraphRequester $client): self
     {
         $this->graphClient = $client;
-
         return $this;
     }
 
@@ -206,7 +207,6 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function setRestClient(RestRequester $client): self
     {
         $this->restClient = $client;
-
         return $this;
     }
 
@@ -252,7 +252,6 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
         $clonedApi->setSession($session);
-
         return $closure->call($clonedApi);
     }
 
@@ -267,7 +266,6 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function addMiddleware(callable $callable, string $name = ''): self
     {
         $this->stack->push($callable, $name);
-
         return $this;
     }
 
@@ -281,7 +279,6 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     public function removeMiddleware(string $name = ''): self
     {
         $this->stack->remove($name);
-
         return $this;
     }
 
@@ -356,7 +353,6 @@ class BasicShopifyAPI implements SessionAware, ClientAware
             // Grab the HMAC, remove it from the params, then sort the params for hashing
             $hmac = $params['hmac'];
             unset($params['hmac']);
-
             ksort($params);
 
             // Encode and hash the params (without HMAC), add the API secret, and compare to the HMAC from params

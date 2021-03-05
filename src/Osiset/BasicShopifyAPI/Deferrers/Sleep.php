@@ -15,7 +15,7 @@ class Sleep implements TimeDeferrer
      */
     public function getCurrentTime(): float
     {
-        return microtime(true);
+        return microtime(true) * 1000000;
     }
 
     /**

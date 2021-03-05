@@ -22,7 +22,6 @@ class UpdateRequestTime extends AbstractMiddleware
     public function __invoke(callable $handler): callable
     {
         $self = $this;
-
         return function (RequestInterface $request, array $options) use ($self, $handler) {
             // Get the client
             $api = $self->api;
@@ -34,7 +33,6 @@ class UpdateRequestTime extends AbstractMiddleware
                 $client->getTimeDeferrer()->getCurrentTime(),
                 $api->getSession()
             );
-
             return $handler($request, $options);
         };
     }
