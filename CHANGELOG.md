@@ -3,6 +3,8 @@
 ## 10.0.1
 
 * Fix for Graph API limit calls not accessing the correct index for last call data
+* Update for microtime for rate limiter
+
 ## 10.0.0
 
 * Bump Guzzle to version 8 from 7 (#83)
