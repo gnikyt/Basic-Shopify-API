@@ -42,8 +42,15 @@ class Session
         $this->shop = $shop;
         $this->accessToken = $accessToken;
 
-        if ($user) {
-            $this->user = $user instanceof ResponseAccess ? $user : new ResponseAccess($user);
+        $associated_user = isset($user['associated_user']) ? $user['associated_user'] : null;
+
+        if ($associated_user) {
+            $associated_user['associated_user_scope'] = isset($user['associated_user_scope']) ? $user['associated_user_scope'] : null;
+            $associated_user['expires_in'] = isset($user['expires_in']) ? $user['expires_in'] : null;
+            $associated_user['session'] = isset($user['session']) ? $user['session'] : null;
+            $associated_user['account_number'] = isset($user['account_number']) ? $user['account_number'] : null;
+
+            $this->user = $associated_user instanceof ResponseAccess ? $associated_user : new ResponseAccess($associated_user);
         }
     }
 
