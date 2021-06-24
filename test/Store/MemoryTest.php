@@ -1,9 +1,10 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test;
+namespace Osiset\BasicShopifyAPI\Test\Store;
 
 use Osiset\BasicShopifyAPI\Session;
 use Osiset\BasicShopifyAPI\Store\Memory;
+use Osiset\BasicShopifyAPI\Test\BaseTest;
 
 class MemoryTest extends BaseTest
 {

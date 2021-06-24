@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test\Middleware;
+namespace Osiset\BasicShopifyAPI\Test\Traits;
 
 use Osiset\BasicShopifyAPI\Test\BaseTest;
 use Osiset\BasicShopifyAPI\Traits\IsRequestType;

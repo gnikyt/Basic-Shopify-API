@@ -2,7 +2,6 @@
 
 namespace Osiset\BasicShopifyAPI\Test\Middleware;
 
-use GuzzleHttp\Psr7\Request;
 use Osiset\BasicShopifyAPI\Middleware\RateLimiting;
 use Osiset\BasicShopifyAPI\Session;
 use Osiset\BasicShopifyAPI\Test\BaseTest;

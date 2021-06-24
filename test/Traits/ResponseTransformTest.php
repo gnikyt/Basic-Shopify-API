@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test\Middleware;
+namespace Osiset\BasicShopifyAPI\Test\Traits;
 
 use GuzzleHttp\Psr7\Response;
 use Osiset\BasicShopifyAPI\ResponseAccess;
