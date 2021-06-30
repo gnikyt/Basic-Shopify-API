@@ -11,8 +11,8 @@ class SessionTest extends BaseTest
     {
         $session = new Session('example.myshopify.com', 'abc123', ['id' => 123]);
 
-        $this->assertEquals('example.myshopify.com', $session->getShop());
-        $this->assertEquals('abc123', $session->getAccessToken());
+        $this->assertSame('example.myshopify.com', $session->getShop());
+        $this->assertSame('abc123', $session->getAccessToken());
         $this->assertTrue($session->hasUser());
         $this->assertInstanceOf(ResponseAccess::class, $session->getUser());
     }

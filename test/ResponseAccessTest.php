@@ -22,11 +22,11 @@ class ResponseAccessTest extends BaseTest
 
         // Object access
         $this->assertTrue(isset($resp->c));
-        $this->assertEquals(1, $resp->a);
+        $this->assertSame(1, $resp->a);
         $this->assertInstanceOf(ResponseAccess::class, $resp->c);
 
         // Array access
-        $this->assertTrue(!empty($resp['a']));
+        $this->assertNotEmpty($resp['a']);
         $this->assertTrue(isset($resp['e']));
 
         // Array unset
@@ -44,7 +44,7 @@ class ResponseAccessTest extends BaseTest
         // Error state
         $resp = new ResponseAccess(['error' => 'Not found']);
         $this->assertTrue($resp->hasErrors());
-        $this->assertEquals('Not found', $resp->getErrors());
+        $this->assertSame('Not found', $resp->getErrors());
     }
 
     public function testIteratorAndCount(): void
@@ -64,7 +64,7 @@ class ResponseAccessTest extends BaseTest
             $i += 1;
         }
 
-        $this->assertEquals(count($names), count($resp['names']));
+        $this->assertCount(count($names), $resp['names']);
     }
 
     public function testKeysAndValues(): void

@@ -89,7 +89,7 @@ class RestTest extends BaseTest
         $result = $api->requestAccessToken($code);
         $data = json_decode($api->getOptions()->getGuzzleHandler()->getLastRequest()->getBody(), true);
 
-        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $result);
+        $this->assertSame('f85632530bf277ec9ac6f649fc327f17', $result);
     }
 
     public function testRequestAccessFailure(): void
@@ -190,12 +190,12 @@ class RestTest extends BaseTest
         $tokenHeader = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
         $specialHeader = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getHeader('X-Special')[0];
 
-        $this->assertTrue(is_array($response));
+        $this->assertIsArray($response);
         $this->assertInstanceOf(GuzzleResponse::class, $response['response']);
-        $this->assertEquals(200, $response['response']->getStatusCode());
+        $this->assertSame(200, $response['response']->getStatusCode());
         $this->assertInstanceOf(ResponseAccess::class, $response['body']);
-        $this->assertEquals('limit=1&page=1', $query);
-        $this->assertEquals('!#@', $tokenHeader);
+        $this->assertSame('limit=1&page=1', $query);
+        $this->assertSame('!#@', $tokenHeader);
         $this->assertEquals(true, $specialHeader);
     }
 
@@ -220,7 +220,7 @@ class RestTest extends BaseTest
         $api->request('PUT', '/admin/shop.json', ['query' => ['limit' => 1]]);
         $query = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getUri()->getQuery();
 
-        $this->assertEquals('limit=1', $query);
+        $this->assertSame('limit=1', $query);
     }
 
     public function testRequestFailure(): void
@@ -243,11 +243,11 @@ class RestTest extends BaseTest
         // Fake param just to test it receives it
         $response = $api->rest('GET', '/admin/shop.json');
 
-        $this->assertTrue(is_array($response));
+        $this->assertIsArray($response);
         $this->assertInstanceOf(GuzzleResponse::class, $response['response']);
         $this->assertInstanceOf(RequestException::class, $response['exception']);
-        $this->assertEquals(404, $response['response']->getStatusCode());
-        $this->assertEquals('Not Found', $response['body']);
+        $this->assertSame(404, $response['response']->getStatusCode());
+        $this->assertSame('Not Found', $response['body']);
     }
 
     public function testRequestFailureWithNoBody(): void
@@ -269,7 +269,7 @@ class RestTest extends BaseTest
         // Fake param just to test it receives it
         $response = $api->rest('GET', '/admin/shop.json');
 
-        $this->assertEquals(404, $response['response']->getStatusCode());
+        $this->assertSame(404, $response['response']->getStatusCode());
         $this->assertNull($response['body']);
     }
 

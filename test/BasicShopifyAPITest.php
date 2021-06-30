@@ -64,7 +64,6 @@ class BasicShopifyAPITest extends BaseTest
         $self = $this;
         $api->withSession($session2, function () use ($self, $api): void {
             /** @var BasicShopifyAPI $this */
-            /** @var TestCase $self */
             $self->assertNotEquals($api, $this);
             $self->assertNotEquals($api->getSession(), $this->getSession());
         });
