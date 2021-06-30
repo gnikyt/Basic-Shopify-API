@@ -1,6 +1,6 @@
 name: Package Test
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -9,39 +9,39 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        php-versions: ['7.2', '7.4']
+        php-versions: [ '7.2', '7.3', '7.4', '8.0' ]
 
     name: PHP ${{ matrix.php-versions }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-versions }}
-        coverage: xdebug
-        tools: composer
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: xdebug
+          tools: composer
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Validate composer setup
-      run: composer validate
+      - name: Validate composer setup
+        run: composer validate
 
-    - name: Validate code style
-      run: |
-        composer require "squizlabs/php_codesniffer=*"
-        bin/phpcs --standard="phpcs.xml" .
+      - name: Validate code style
+        run: |
+          composer require "squizlabs/php_codesniffer=*"
+          bin/phpcs --standard="phpcs.xml" .
 
-    - name: Run test suite
-      run: composer run-script test
+      - name: Run test suite
+        run: composer run-script test
 
-    - name: Upload coverage results
-      if: matrix.php-versions == '7.4'
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        composer global require cedx/coveralls
-        ~/.composer/vendor/bin/coveralls build/logs/clover.xml
+      - name: Upload coverage results
+        if: matrix.php-versions == '7.4'
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require cedx/coveralls
+          ~/.composer/vendor/bin/coveralls build/logs/clover.xml
