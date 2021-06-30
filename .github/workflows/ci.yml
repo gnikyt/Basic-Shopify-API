@@ -9,7 +9,7 @@ jobs:
     strategy:
       max-parallel: 2
       matrix:
-        php-versions: [ '7.2', '7.3', '7.4', '8.0' ]
+        php-versions: [ '7.3', '7.4', '8.0' ]
 
     name: PHP ${{ matrix.php-versions }}
 
@@ -29,11 +29,6 @@ jobs:
 
       - name: Validate composer setup
         run: composer validate
-
-      - name: Validate code style
-        run: |
-          composer require "squizlabs/php_codesniffer=*"
-          bin/phpcs --standard="phpcs.xml" .
 
       - name: Run test suite
         run: composer run-script test
