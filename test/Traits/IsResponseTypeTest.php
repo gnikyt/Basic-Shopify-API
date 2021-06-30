@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test\Middleware;
+namespace Osiset\BasicShopifyAPI\Test\Traits;
 
 use GuzzleHttp\Psr7\Response;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
@@ -9,7 +9,7 @@ use Osiset\BasicShopifyAPI\Traits\IsResponseType;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
-class IsResponsTypeTest extends BaseTest
+class IsResponseTypeTest extends BaseTest
 {
     public function test(): void
     {
