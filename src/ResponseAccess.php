@@ -10,7 +10,7 @@ use JsonSerializable;
 /**
  * Response data object for accessing.
  */
-class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializable
+final class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializable
 {
     /**
      * The response data.
