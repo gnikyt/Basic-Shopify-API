@@ -32,6 +32,5 @@
     "psr-4": {
       "Osiset\\BasicShopifyAPI\\Test\\": "test/"
     }
-  },
-  "config": { "bin-dir": "bin" }
+  }
 }
