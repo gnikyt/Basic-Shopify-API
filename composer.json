@@ -16,7 +16,9 @@
     "caseyamcl/guzzle_retry_middleware": "^2.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.2|^9.3"
+    "phpunit/phpunit": "^6.2|^9.3",
+    "phpstan/phpstan": "^0.12",
+    "ergebnis/composer-normalize": "^2.8"
   },
   "scripts": {
     "test": "bin/phpunit"
