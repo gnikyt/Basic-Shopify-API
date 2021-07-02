@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 10.0.2
+
+* Added `final` flag to `ResponseAccess` class
+* CI improvements
+
 ## 10.0.1
 
 * Fix for Graph API limit calls not accessing the correct index for last call data
