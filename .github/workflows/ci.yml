@@ -24,7 +24,7 @@ jobs:
             normalize: true
             validate: true
 
-    name: PHP ${{ matrix.php-versions }}
+    name: PHP ${{ matrix.php }}
 
     steps:
       - name: Checkout
@@ -33,7 +33,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php: ${{ matrix.php-versions }}
+          php: ${{ matrix.php }}
           coverage: ${{ matrix.coverage }}
           extensions: json, mbstring
 
