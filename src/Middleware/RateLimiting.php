@@ -93,7 +93,7 @@ class RateLimiting extends AbstractMiddleware
         // Get current, last request time, and time difference
         $currentTime = $td->getCurrentTime();
         $lastTime = $ts->get($api->getSession());
-        $lastTime = isset($lastTime[0]) ? $lastTime[0] : 0;
+        $lastTime = $lastTime[0] ?? 0;
 
         // Get the last request cost
         /** @var int $lastCost */
