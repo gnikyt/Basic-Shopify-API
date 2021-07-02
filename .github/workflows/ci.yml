@@ -7,9 +7,22 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 2
+      max-parallel: 3
       matrix:
-        php-versions: [ '7.3', '7.4', '8.0' ]
+        php:
+          - '7.3'
+          - '7.4'
+          - '8.0'
+        analysis: [ false ]
+        coverage: [ 'none' ]
+        normalize: [ false ]
+        validate: [ false ]
+        include:
+          - php: '8.0'
+            analysis: true
+            coverage: 'xdebug'
+            normalize: true
+            validate: true
 
     name: PHP ${{ matrix.php-versions }}
 
@@ -20,23 +33,43 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
-          coverage: xdebug
-          tools: composer
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+          php: ${{ matrix.php-versions }}
+          coverage: ${{ matrix.coverage }}
+          extensions: json, mbstring
 
       - name: Validate composer setup
-        run: composer validate
+        if: matrix.validate == true
+        run: composer validate --strict
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: "php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}"
+          restore-keys: "php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}"
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Normalize composer file
+        if: matrix.normalize == true
+        run: composer normalize --dry-run
 
       - name: Run test suite
-        run: composer run-script test
+        run: vendor/bin/phpunit -v
+
+      - name: Run static code analysis
+        if: matrix.analysis == true
+        run: vendor/bin/phpstan --memory-limit 0
 
       - name: Upload coverage results
-        if: matrix.php-versions == '7.4'
+        if: matrix.coverage != 'none'
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          composer global require cedx/coveralls
-          ~/.composer/vendor/bin/coveralls build/logs/clover.xml
+          composer require php-coveralls/php-coveralls --dev
+          vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
