@@ -262,6 +262,6 @@ final class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSeri
             return;
         }
 
-        return isset($this->container['errors']) ? $this->container['errors'] : $this->container['error'];
+        return $this->container['errors'] ?? $this->container['error'];
     }
 }

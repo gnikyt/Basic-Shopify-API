@@ -29,7 +29,7 @@ class Rest extends AbstractClient implements RestRequester
 
         foreach (array_keys($links) as $type) {
             preg_match(str_replace('{type}', $type, $regex), $header, $matches);
-            $links[$type] = isset($matches[1]) ? $matches[1] : null;
+            $links[$type] = $matches[1] ?? null;
         }
 
         return new ResponseAccess($links);
