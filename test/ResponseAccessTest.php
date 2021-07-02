@@ -60,7 +60,7 @@ class ResponseAccessTest extends BaseTest
 
         $i = 0;
         foreach ($resp['names'] as $r) {
-            $this->assertEquals($names[$i], $r);
+            $this->assertSame($names[$i], $r);
             $i += 1;
         }
 
@@ -78,8 +78,8 @@ class ResponseAccessTest extends BaseTest
             'names' => $names,
         ]);
 
-        $this->assertEquals(['names'], $resp->keys());
-        $this->assertEquals(array_values($names), $resp->names->values());
+        $this->assertSame(['names'], $resp->keys());
+        $this->assertSame(array_values($names), $resp->names->values());
     }
 
     public function testJsonSerialize(): void
@@ -93,7 +93,7 @@ class ResponseAccessTest extends BaseTest
             'names' => $names,
         ]);
 
-        $this->assertEquals(json_encode(['names' => $names]), json_encode($resp));
+        $this->assertSame(json_encode(['names' => $names]), json_encode($resp));
     }
 
     public function testToArray(): void
@@ -107,6 +107,6 @@ class ResponseAccessTest extends BaseTest
         ];
         $resp = new ResponseAccess($names);
 
-        $this->assertEquals($names, $resp->toArray());
+        $this->assertSame($names, $resp->toArray());
     }
 }
