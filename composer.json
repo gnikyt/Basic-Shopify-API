@@ -1,42 +1,47 @@
 {
-  "name": "osiset/basic-shopify-api",
-  "type": "library",
-  "description": "A basic Shopify API wrapper with REST and GraphQL support, powered by Guzzle.",
-  "keywords": [
-    "api",
-    "shopify",
-    "rest",
-    "graphql"
-  ],
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Tyler King",
-      "email": "tyler@osiset.com"
+    "name": "osiset/basic-shopify-api",
+    "type": "library",
+    "description": "A basic Shopify API wrapper with REST and GraphQL support, powered by Guzzle.",
+    "keywords": [
+        "api",
+        "graphql",
+        "rest",
+        "shopify",
+        "wrapper"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tyler King",
+            "email": "tyler@osiset.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.3.0",
+        "ext-json": "*",
+        "caseyamcl/guzzle_retry_middleware": "^2.3",
+        "guzzlehttp/guzzle": "^6.5 || ^7.0"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.8",
+        "phpstan/phpstan": "^0.12",
+        "phpunit/phpunit": "^6.2 || ^9.3"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Osiset\\BasicShopifyAPI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Osiset\\BasicShopifyAPI\\Test\\": "test/"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/osiset/basic-shopify-api/issues",
+        "source": "https://github.com/osiset/basic-shopify-api"
     }
-  ],
-  "require": {
-    "php": ">=7.3.0",
-    "ext-json": "*",
-    "caseyamcl/guzzle_retry_middleware": "^2.3",
-    "guzzlehttp/guzzle": "^6.5 || ^7.0"
-  },
-  "require-dev": {
-    "ergebnis/composer-normalize": "^2.8",
-    "phpstan/phpstan": "^0.12",
-    "phpunit/phpunit": "^6.2 || ^9.3"
-  },
-  "autoload": {
-    "psr-4": {
-      "Osiset\\BasicShopifyAPI\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Osiset\\BasicShopifyAPI\\Test\\": "test/"
-    }
-  },
-  "scripts": {
-    "test": "bin/phpunit"
-  }
 }
