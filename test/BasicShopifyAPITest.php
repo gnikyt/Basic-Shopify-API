@@ -19,9 +19,9 @@ class BasicShopifyAPITest extends BaseTest
         $client = new Client();
         $api->setClient($client);
 
-        $this->assertEquals($client, $api->getClient());
-        $this->assertEquals($client, $api->getGraphClient()->getClient());
-        $this->assertEquals($client, $api->getRestClient()->getClient());
+        $this->assertSame($client, $api->getClient());
+        $this->assertSame($client, $api->getGraphClient()->getClient());
+        $this->assertSame($client, $api->getRestClient()->getClient());
     }
 
     public function testSetAndGetOptions(): void
@@ -34,7 +34,7 @@ class BasicShopifyAPITest extends BaseTest
         $opts->setType(false);
         $api->setOptions($opts);
 
-        $this->assertEquals($opts, $api->getOptions());
+        $this->assertSame($opts, $api->getOptions());
     }
 
     public function testSetAndGetSession(): void
@@ -46,7 +46,7 @@ class BasicShopifyAPITest extends BaseTest
         $session = new Session('example.myshopify.com', 'abc123');
         $api->setSession($session);
 
-        $this->assertEquals($session, $api->getSession());
+        $this->assertSame($session, $api->getSession());
     }
 
     public function testWithSession(): void
