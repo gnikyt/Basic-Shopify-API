@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 10.0.3
+
+* Moved `final` flag to the constructor
+
 ## 10.0.2
 
 * Added `final` flag to `ResponseAccess` class

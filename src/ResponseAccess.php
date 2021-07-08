@@ -10,7 +10,7 @@ use JsonSerializable;
 /**
  * Response data object for accessing.
  */
-final class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializable
+class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializable
 {
     /**
      * The response data.
@@ -33,7 +33,7 @@ final class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSeri
      *
      * @return self
      */
-    public function __construct($data)
+    final public function __construct($data)
     {
         $this->container = $data;
     }
