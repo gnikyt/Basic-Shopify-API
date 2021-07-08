@@ -327,8 +327,20 @@ class BasicShopifyAPI implements SessionAware, ClientAware
         // Get the access response data
         $access = $this->requestAccess($code);
 
-        $user = isset($access['associated_user']) ? $access['associated_user'] : null;
-        $session = new Session($this->session->getShop(), $access['access_token'], $user);
+        // Setup the additional user data (if available)
+        $user = [];
+        if (isset($access['associated_user'])) {
+            $keys = ['associated_user', 'associated_user_scope', 'expires_in', 'session', 'account_number'];
+            foreach ($keys as $key) {
+                $user[$key] = $access[$key] ?? null;
+            }
+        }
+
+        $session = new Session(
+            $this->session->getShop(),
+            $access['access_token'],
+            new ResponseAccess($user)
+        );
 
         // Update the session
         $this->setSession($session);
