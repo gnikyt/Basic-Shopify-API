@@ -31,20 +31,17 @@ class Session
     /**
      * Setup a session.
      *
-     * @param string      $shop        The shop domain.
-     * @param string|null $accessToken The access token for the shop.
-     * @param mixed|null  $user        The user for per-user.
+     * @param string              $shop        The shop domain.
+     * @param string|null         $accessToken The access token for the shop.
+     * @param ResponseAccess|null $user        The user for per-user.
      *
      * @return self
      */
-    public function __construct(string $shop, ?string $accessToken = null, $user = null)
+    public function __construct(string $shop, ?string $accessToken = null, ?ResponseAccess $user = null)
     {
         $this->shop = $shop;
         $this->accessToken = $accessToken;
-
-        if ($user) {
-            $this->user = $user instanceof ResponseAccess ? $user : new ResponseAccess($user);
-        }
+        $this->user = $user instanceof ResponseAccess && count($user->keys()) > 0 ? $user : null;
     }
 
     /**
