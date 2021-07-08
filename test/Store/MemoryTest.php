@@ -15,24 +15,24 @@ class MemoryTest extends BaseTest
         $session = new Session('example.myshopify.com');
 
         // Test all
-        $this->assertEquals([], $mem->all());
+        $this->assertSame([], $mem->all());
 
         // Test set and get
         $mem->set(['b', 'a'], $session);
-        $this->assertEquals(
+        $this->assertSame(
             ['b', 'a'],
             $mem->get($session)
         );
 
         // Test push
         $mem->push('c', $session);
-        $this->assertEquals(
+        $this->assertSame(
             ['c', 'b', 'a'],
             $mem->get($session)
         );
 
         // Test reset
         $mem->reset($session);
-        $this->assertEquals([], $mem->get($session));
+        $this->assertSame([], $mem->get($session));
     }
 }

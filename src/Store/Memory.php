@@ -33,7 +33,7 @@ class Memory implements StateStorage
     {
         $shop = $session->getShop();
 
-        return isset($this->container[$shop]) ? $this->container[$shop] : [];
+        return $this->container[$shop] ?? [];
     }
 
     /**
