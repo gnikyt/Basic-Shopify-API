@@ -61,7 +61,7 @@ class RestTest extends BaseTest
         // Run the request
         $result = $api->getRestClient()->request('GET', '/admin/shop.json');
 
-        $this->assertEquals($pageInfo, $result['link']['next']);
+        $this->assertSame($pageInfo, $result['link']['next']);
     }
 
     public function testRequestAccess(): void
@@ -138,7 +138,7 @@ class RestTest extends BaseTest
         });
         $api->setSession(new Session('example.myshopify.com'));
 
-        $this->assertEquals(
+        $this->assertSame(
             'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalapp.local%2F',
             $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/')
         );
@@ -152,7 +152,7 @@ class RestTest extends BaseTest
         });
         $api->setSession(new Session('example.myshopify.com'));
 
-        $this->assertEquals(
+        $this->assertSame(
             'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalapp.local%2F&grant_options%5B%5D=per-user',
             $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/', 'per-user')
         );
@@ -196,7 +196,7 @@ class RestTest extends BaseTest
         $this->assertInstanceOf(ResponseAccess::class, $response['body']);
         $this->assertSame('limit=1&page=1', $query);
         $this->assertSame('!#@', $tokenHeader);
-        $this->assertEquals(true, $specialHeader);
+        $this->assertSame('1', $specialHeader);
     }
 
     public function testRequestForceRequestType(): void

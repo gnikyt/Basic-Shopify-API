@@ -21,7 +21,7 @@ class AuthRequestTest extends BaseTest
         $callMw = call_user_func(
             $this->buildMw($opts),
             function (RequestInterface $request, array $options): void {
-                $this->assertEquals(
+                $this->assertSame(
                     '/admin/api/2020-01/shop.json',
                     (string) $request->getUri()
                 );
@@ -40,7 +40,7 @@ class AuthRequestTest extends BaseTest
         $callMw = call_user_func(
             $this->buildMw($opts),
             function (RequestInterface $request, array $options): void {
-                $this->assertEquals(
+                $this->assertSame(
                     '/admin/api/2020-01/graphql.json',
                     (string) $request->getUri()
                 );
@@ -59,7 +59,7 @@ class AuthRequestTest extends BaseTest
         $callMw = call_user_func(
             $this->buildMw($opts),
             function (RequestInterface $request, array $options): void {
-                $this->assertEquals(
+                $this->assertSame(
                     '/admin/api/2019-04/shop.json',
                     (string) $request->getUri()
                 );
@@ -78,7 +78,7 @@ class AuthRequestTest extends BaseTest
         $callMw = call_user_func(
             $this->buildMw($opts),
             function (RequestInterface $request, array $options): void {
-                $this->assertEquals(
+                $this->assertSame(
                     '/admin/api/2019-04/graphql.json',
                     (string) $request->getUri()
                 );

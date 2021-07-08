@@ -20,7 +20,7 @@ class UpdateRequestTimeTest extends BaseTest
         $mw = new UpdateRequestTime($api);
 
         // Ensure its empty
-        $this->assertEquals(
+        $this->assertSame(
             [],
             $api->getRestClient()->getTimeStore()->get($api->getSession())
         );
