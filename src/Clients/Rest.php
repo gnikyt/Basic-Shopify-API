@@ -22,7 +22,7 @@ class Rest extends AbstractClient implements RestRequester
     protected function extractLinkHeader(string $header): ResponseAccess
     {
         $links = [
-            'next'     => null,
+            'next' => null,
             'previous' => null,
         ];
         $regex = '/<.*page_info=([a-z0-9\-_]+).*>; rel="?{type}"?/i';
@@ -49,9 +49,9 @@ class Rest extends AbstractClient implements RestRequester
         $url = $this->getBaseUri()->withPath('/admin/oauth/access_token');
         $data = [
             'json' => [
-                'client_id'     => $this->getOptions()->getApiKey(),
+                'client_id' => $this->getOptions()->getApiKey(),
                 'client_secret' => $this->getOptions()->getApiSecret(),
-                'code'          => $code,
+                'code' => $code,
             ],
         ];
 
@@ -84,8 +84,8 @@ class Rest extends AbstractClient implements RestRequester
         }
 
         $query = [
-            'client_id'    => $this->getOptions()->getApiKey(),
-            'scope'        => $scopes,
+            'client_id' => $this->getOptions()->getApiKey(),
+            'scope' => $scopes,
             'redirect_uri' => $redirectUri,
         ];
         if ($mode !== null && $mode !== 'offline') {
@@ -167,11 +167,11 @@ class Rest extends AbstractClient implements RestRequester
 
         // Return Guzzle response and JSON-decoded body
         return [
-            'errors'     => false,
-            'response'   => $resp,
-            'status'     => $resp->getStatusCode(),
-            'body'       => $this->toResponse($resp->getBody()),
-            'link'       => $link,
+            'errors' => false,
+            'response' => $resp,
+            'status' => $resp->getStatusCode(),
+            'body' => $this->toResponse($resp->getBody()),
+            'link' => $link,
             'timestamps' => $this->getTimeStore()->get($this->getSession()),
         ];
     }
@@ -203,12 +203,12 @@ class Rest extends AbstractClient implements RestRequester
         }
 
         return [
-            'errors'     => true,
-            'response'   => $resp,
-            'status'     => $status,
-            'body'       => $body,
-            'link'       => null,
-            'exception'  => $e,
+            'errors' => true,
+            'response' => $resp,
+            'status' => $status,
+            'body' => $body,
+            'link' => null,
+            'exception' => $e,
             'timestamps' => $this->getTimeStore()->get($this->getSession()),
         ];
     }

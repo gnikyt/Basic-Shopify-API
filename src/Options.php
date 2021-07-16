@@ -78,14 +78,14 @@ class Options
      * @var array
      */
     protected $guzzleOptions = [
-        'headers'                  => [
-            'Accept'       => 'application/json',
+        'headers' => [
+            'Accept' => 'application/json',
             'Content-Type' => 'application/json',
         ],
-        'timeout'                  => 10.0,
-        'max_retry_attempts'       => 2,
+        'timeout' => 10.0,
+        'max_retry_attempts' => 2,
         'default_retry_multiplier' => 2.0,
-        'retry_on_status'          => [429, 503, 500],
+        'retry_on_status' => [429, 503, 500],
     ];
 
     /**

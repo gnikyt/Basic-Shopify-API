@@ -14,7 +14,7 @@ class SessionTest extends BaseTest
             'abc123',
             new ResponseAccess([
                 'associated_user' => ['first_name' => 'Tom'],
-                'account_number'  => 123,
+                'account_number' => 123,
             ])
         );
 
