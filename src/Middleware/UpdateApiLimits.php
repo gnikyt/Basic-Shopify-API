@@ -66,17 +66,17 @@ class UpdateApiLimits extends AbstractMiddleware
         $cost = $body['extensions']['cost'];
         $client->getLimitStore()->push(
             [
-                'left'          => (int)
+                'left' => (int)
                     $cost['throttleStatus']['currentlyAvailable'],
-                'made'          => (int)
+                'made' => (int)
                     ($cost['throttleStatus']['maximumAvailable'] - $cost['throttleStatus']['currentlyAvailable']),
-                'limit'         => (int)
+                'limit' => (int)
                     $cost['throttleStatus']['maximumAvailable'],
-                'restoreRate'   => (int)
+                'restoreRate' => (int)
                     $cost['throttleStatus']['restoreRate'],
                 'requestedCost' => (int)
                     $cost['requestedQueryCost'],
-                'actualCost'    => (int)
+                'actualCost' => (int)
                     $cost['actualQueryCost'],
             ],
             $this->api->getSession()
@@ -104,8 +104,8 @@ class UpdateApiLimits extends AbstractMiddleware
         $client = $this->api->getRestClient();
         $client->getLimitStore()->push(
             [
-                'left'  => (int) $calls[1] - $calls[0],
-                'made'  => (int) $calls[0],
+                'left' => (int) $calls[1] - $calls[0],
+                'made' => (int) $calls[0],
                 'limit' => (int) $calls[1],
             ],
             $this->api->getSession()

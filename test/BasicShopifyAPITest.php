@@ -63,7 +63,7 @@ class BasicShopifyAPITest extends BaseTest
 
         $self = $this;
         $api->withSession($session2, function () use ($self, $api): void {
-            /** @var BasicShopifyAPI $this */
+            /* @var BasicShopifyAPI $this */
             $self->assertNotEquals($api, $this);
             $self->assertNotEquals($api->getSession(), $this->getSession());
         });
@@ -92,9 +92,9 @@ class BasicShopifyAPITest extends BaseTest
     {
         $hmac = '4712bf92ffc2917d15a2f5a273e39f0116667419aa4b6ac0b3baaf26fa3c4d20';
         $params = [
-            'code'      => '0907a61c0c8d55e99db179b68161bc00',
-            'hmac'      => $hmac,
-            'shop'      => 'some-shop.myshopify.com',
+            'code' => '0907a61c0c8d55e99db179b68161bc00',
+            'hmac' => $hmac,
+            'shop' => 'some-shop.myshopify.com',
             'timestamp' => '1337178173',
         ];
 

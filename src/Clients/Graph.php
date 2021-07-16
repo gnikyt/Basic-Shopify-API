@@ -73,10 +73,10 @@ class Graph extends AbstractClient implements GraphRequester
 
         // Return Guzzle response and JSON-decoded body
         return [
-            'errors'     => $body->hasErrors() ? $body->getErrors() : false,
-            'response'   => $resp,
-            'status'     => $resp->getStatusCode(),
-            'body'       => $body,
+            'errors' => $body->hasErrors() ? $body->getErrors() : false,
+            'response' => $resp,
+            'status' => $resp->getStatusCode(),
+            'body' => $body,
             'timestamps' => $this->getTimeStore()->get($this->getSession()),
         ];
     }
@@ -108,11 +108,11 @@ class Graph extends AbstractClient implements GraphRequester
         }
 
         return [
-            'errors'     => true,
-            'response'   => $resp,
-            'status'     => $status,
-            'body'       => $body,
-            'exception'  => $e,
+            'errors' => true,
+            'response' => $resp,
+            'status' => $status,
+            'body' => $body,
+            'exception' => $e,
             'timestamps' => $this->getTimeStore()->get($this->getSession()),
         ];
     }

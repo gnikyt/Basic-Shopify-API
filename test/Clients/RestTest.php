@@ -44,7 +44,7 @@ class RestTest extends BaseTest
                 200,
                 [
                     'http_x_shopify_shop_api_call_limit' => '1/80',
-                    'link'                               => '<https://example.myshopify.com/admin/api/unstable/products.json?page_info='.$pageInfo.'>; rel="next"',
+                    'link' => '<https://example.myshopify.com/admin/api/unstable/products.json?page_info='.$pageInfo.'>; rel="next"',
                 ],
                 file_get_contents(__DIR__.'/../fixtures/rest/admin__shop.json')
             ),
