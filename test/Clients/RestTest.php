@@ -87,7 +87,9 @@ class RestTest extends BaseTest
         // Request access
         $code = '!@#';
         $result = $api->requestAccessToken($code);
-        $data = json_decode($api->getOptions()->getGuzzleHandler()->getLastRequest()->getBody(), true);
+        /** @var \GuzzleHttp\Handler\MockHandler $handler */
+        $handler = $api->getOptions()->getGuzzleHandler();
+        $data = json_decode($handler->getLastRequest()->getBody(), true);
 
         $this->assertSame('f85632530bf277ec9ac6f649fc327f17', $result);
     }
@@ -125,7 +127,7 @@ class RestTest extends BaseTest
         $api->setSession($session);
 
         // Request and set access
-        $result = $api->requestAndSetAccess('!@#');
+        $api->requestAndSetAccess('!@#');
 
         $this->assertNotEquals($session, $api->getSession());
     }
@@ -186,9 +188,11 @@ class RestTest extends BaseTest
 
         // Fake param just to test it receives it
         $response = $api->request('GET', '/admin/shop.json', ['limit' => 1, 'page' => 1], ['X-Special' => true]);
-        $query = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getUri()->getQuery();
-        $tokenHeader = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
-        $specialHeader = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getHeader('X-Special')[0];
+        /** @var \GuzzleHttp\Handler\MockHandler $handler */
+        $handler = $api->getOptions()->getGuzzleHandler();
+        $query = $handler->getLastRequest()->getUri()->getQuery();
+        $tokenHeader = $handler->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
+        $specialHeader = $handler->getLastRequest()->getHeader('X-Special')[0];
 
         $this->assertIsArray($response);
         $this->assertInstanceOf(GuzzleResponse::class, $response['response']);
@@ -218,7 +222,9 @@ class RestTest extends BaseTest
 
         // Fake param just to test it receives it
         $api->request('PUT', '/admin/shop.json', ['query' => ['limit' => 1]]);
-        $query = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getUri()->getQuery();
+        /** @var \GuzzleHttp\Handler\MockHandler $handler */
+        $handler = $api->getOptions()->getGuzzleHandler();
+        $query = $handler->getLastRequest()->getUri()->getQuery();
 
         $this->assertSame('limit=1', $query);
     }

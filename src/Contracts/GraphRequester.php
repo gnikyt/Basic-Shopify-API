@@ -24,7 +24,7 @@ interface GraphRequester extends LimitAccesser, TimeAccesser, SessionAware, Clie
     /**
      * Returns the base URI to use.
      *
-     * @throws Exception For missing shop domain.
+     * @throws \Exception For missing shop domain.
      *
      * @return Uri
      */

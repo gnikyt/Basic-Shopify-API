@@ -53,9 +53,9 @@ interface RestRequester extends LimitAccesser, TimeAccesser, SessionAware, Clien
      * @param string|array $scopes      The API scopes as a comma seperated string or array.
      * @param string       $redirectUri The valid redirect URI for after acceptance of the permissions.
      *                                  It must match the redirect_uri in your app settings.
-     * @param string|null  $mode        The API access mode, offline or per-user.
+     * @param string       $mode        The API access mode, offline or per-user.
      *
-     * @throws Exception For missing API key.
+     * @throws \Exception For missing API key.
      *
      * @return string Formatted URL.
      */

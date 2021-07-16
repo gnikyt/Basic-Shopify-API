@@ -104,7 +104,7 @@ class UpdateApiLimits extends AbstractMiddleware
         $client = $this->api->getRestClient();
         $client->getLimitStore()->push(
             [
-                'left' => (int) $calls[1] - $calls[0],
+                'left' => (int) $calls[1] - (int) $calls[0],
                 'made' => (int) $calls[0],
                 'limit' => (int) $calls[1],
             ],

@@ -55,7 +55,9 @@ class GraphTest extends BaseTest
 
         // Fake param just to test it receives it
         $response = $api->graph($this->query[0], $this->variables[0]);
-        $tokenHeader = $api->getOptions()->getGuzzleHandler()->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
+        /** @var \GuzzleHttp\Handler\MockHandler $handler */
+        $handler = $api->getOptions()->getGuzzleHandler();
+        $tokenHeader = $handler->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
 
         $this->assertIsArray($response);
         $this->assertInstanceOf(GuzzleResponse::class, $response['response']);

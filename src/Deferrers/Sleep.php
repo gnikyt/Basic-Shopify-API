@@ -23,6 +23,6 @@ class Sleep implements TimeDeferrer
      */
     public function sleep(float $microseconds): void
     {
-        usleep($microseconds);
+        usleep((int) $microseconds);
     }
 }
