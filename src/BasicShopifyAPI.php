@@ -49,7 +49,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     /**
      * The Guzzle client.
      *
-     * @var Client
+     * @var ClientInterface
      */
     protected $client;
 

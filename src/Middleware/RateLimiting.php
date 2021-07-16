@@ -96,9 +96,9 @@ class RateLimiting extends AbstractMiddleware
         $lastTime = $lastTime[0] ?? 0;
 
         // Get the last request cost
-        /** @var int $lastCost */
         $lastCost = $ls->get($api->getSession());
-        $lastCost = isset($lastCost[0]) && isset($lastCost[0]['actualCost']) ? $lastCost[0]['actualCost'] : 0;
+        /** @var int $lastCost */
+        $lastCost = $lastCost[0]['actualCost'] ?? 0;
         if ($lastTime === 0 || $lastCost === 0) {
             // This is the first request, nothing to do
             return false;

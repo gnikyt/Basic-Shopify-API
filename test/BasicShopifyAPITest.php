@@ -65,6 +65,7 @@ class BasicShopifyAPITest extends BaseTest
         $api->withSession($session2, function () use ($self, $api): void {
             /* @var BasicShopifyAPI $this */
             $self->assertNotEquals($api, $this);
+            /* @phpstan-ignore-next-line */
             $self->assertNotEquals($api->getSession(), $this->getSession());
         });
     }
