@@ -2,7 +2,6 @@
 
 ![Tests](https://github.com/osiset/Basic-Shopify-API/workflows/Package%20Test/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/osiset/Basic-Shopify-API/branch/master/graph/badge.svg?token=qqUuLItqJj)](https://codecov.io/gh/osiset/Basic-Shopify-API)
-[![StyleCI](https://styleci.io/repos/61004776/shield?style=flat)](https://github.styleci.io/repos/61004776)
 [![License](https://poser.pugx.org/osiset/basic-shopify-api/license)](https://packagist.org/packages/osiset/basic-shopify-api)
 
 A simple, tested, API wrapper for Shopify using Guzzle.
