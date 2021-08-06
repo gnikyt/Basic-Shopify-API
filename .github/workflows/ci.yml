@@ -13,16 +13,23 @@ jobs:
           - '7.3'
           - '7.4'
           - '8.0'
+          - '8.1'
         analysis: [ false ]
         coverage: [ 'none' ]
+        fast-fail: [ false ]
         normalize: [ false ]
         validate: [ false ]
+        exclude:
+          - php: '8.0'
+          - php: '8.1'
         include:
           - php: '8.0'
             analysis: true
             coverage: 'xdebug'
             normalize: true
             validate: true
+          - php: '8.1'
+            fast-fail: true
 
     name: PHP ${{ matrix.php }}
 
@@ -36,6 +43,8 @@ jobs:
           php: ${{ matrix.php }}
           coverage: ${{ matrix.coverage }}
           extensions: json, mbstring
+        env:
+          fail-fast: ${{ matrix.fast-fail }}
 
       - name: Validate composer setup
         if: matrix.validate == true
