@@ -50,7 +50,7 @@ class RateLimiting extends AbstractMiddleware
         $ts = $client->getTimeStore();
 
         $times = $ts->get($api->getSession());
-        if (count($times) !== $api->getOptions()->getRestLimit()) {
+        if (count($times) <= $api->getOptions()->getRestLimit()) {
             // Not at our limit yet, allow through without limiting
             return false;
         }
