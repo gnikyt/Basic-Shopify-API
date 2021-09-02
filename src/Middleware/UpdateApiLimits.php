@@ -107,6 +107,7 @@ class UpdateApiLimits extends AbstractMiddleware
                 'left' => (int) $calls[1] - (int) $calls[0],
                 'made' => (int) $calls[0],
                 'limit' => (int) $calls[1],
+                'time' => $client->getTimeDeferrer()->getCurrentTime(),
             ],
             $this->api->getSession()
         );

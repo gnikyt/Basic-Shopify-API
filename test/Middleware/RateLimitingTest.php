@@ -22,12 +22,25 @@ class RateLimitingTest extends BaseTest
         // Create fake times
         $td = $api->getRestClient()->getTimeDeferrer();
         $currentTime = $td->getCurrentTime();
-        $firstTime = $currentTime - 200;
-        $lastTime = $currentTime - 100;
+        $firstTime = $currentTime - 500;
+        $secondTime = $currentTime - 300;
 
         // Fill fake times
         $ts = $api->getRestClient()->getTimeStore();
-        $ts->set([$lastTime, $firstTime], $api->getSession());
+        $ts->set([
+            [
+                'left' => 38,
+                'made' => 2,
+                'limit' => 40,
+                'time' => $secondTime,
+            ],
+            [
+                'left' => 39,
+                'made' => 1,
+                'limit' => 40,
+                'time' => $firstTime,
+            ]
+        ], $api->getSession());
 
         // Given we have 2 previous calls within 1 second window, sleep should trigger
         $result = $method->invoke(new RateLimiting($api), $api);
@@ -47,12 +60,25 @@ class RateLimitingTest extends BaseTest
         // Create fake times
         $td = $api->getRestClient()->getTimeDeferrer();
         $currentTime = $td->getCurrentTime();
-        $firstTime = $currentTime - 200;
-        $lastTime = $currentTime - 100;
+        $firstTime = $currentTime - 500;
+        $secondTime = $currentTime - 300;
 
         // Fill fake times
         $ts = $api->getRestClient()->getTimeStore();
-        $ts->set([$lastTime, $firstTime], $api->getSession());
+        $ts->set([
+            [
+                'left' => 38,
+                'made' => 2,
+                'limit' => 40,
+                'time' => $secondTime,
+            ],
+            [
+                'left' => 39,
+                'made' => 1,
+                'limit' => 40,
+                'time' => $firstTime,
+            ]
+        ], $api->getSession());
 
         // Even though two requests happened within 1 second window,
         // If we do the "next" call after the window time, it should
