@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 10.0.4
+
+* Bugfix to rate limiter (#120)
+
 ## 10.0.3
 
 * Moved `final` flag to the constructor
