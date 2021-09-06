@@ -55,8 +55,7 @@ class RateLimiting extends AbstractMiddleware
             return false;
         }
 
-        // Determine if this call has passed the window
-        $firstTime = end($times)['time'];
+        $firstTime = $times[ count($times) - 1 ];
         $windowTime = $firstTime + 1000000;
         $currentTime = $td->getCurrentTime();
 
