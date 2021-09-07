@@ -39,7 +39,7 @@ class RateLimitingTest extends BaseTest
                 'made' => 1,
                 'limit' => 40,
                 'time' => $firstTime,
-            ]
+            ],
         ], $api->getSession());
 
         // Given we have 2 previous calls within 1 second window, sleep should trigger
@@ -77,7 +77,7 @@ class RateLimitingTest extends BaseTest
                 'made' => 1,
                 'limit' => 40,
                 'time' => $firstTime,
-            ]
+            ],
         ], $api->getSession());
 
         // Even though two requests happened within 1 second window,
