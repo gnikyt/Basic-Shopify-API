@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 10.0.5
+
+* Bugfix to rate limiter (#123)
+
 ## 10.0.4
 
 * Bugfix to rate limiter (#120)
