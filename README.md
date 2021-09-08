@@ -524,9 +524,10 @@ For storing the current request times, API limits, request costs, etc. A basic i
 If you would like to implement a more advananced store such as one with Redis, simply implement `Osiset\BasicShopifyAPI\Contracts\StateStorage` and set the client to use it, example:
 
 ```php
-$redisStore = new RedisStore($connection);
+$timeStore = new RedisStore();
+$limitStore = new RedisStore();
 
-$api = new BasicShopifyAPI($options, $redisStore, $redisStore, $redisStore);
+$api = new BasicShopifyAPI($options, $timeStore, $limitStore);
 ```
 
 ## Documentation

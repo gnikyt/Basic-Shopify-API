@@ -27,20 +27,7 @@ class RateLimitingTest extends BaseTest
 
         // Fill fake times
         $ts = $api->getRestClient()->getTimeStore();
-        $ts->set([
-            [
-                'left' => 38,
-                'made' => 2,
-                'limit' => 40,
-                'time' => $secondTime,
-            ],
-            [
-                'left' => 39,
-                'made' => 1,
-                'limit' => 40,
-                'time' => $firstTime,
-            ],
-        ], $api->getSession());
+        $ts->set([$secondTime, $firstTime], $api->getSession());
 
         // Given we have 2 previous calls within 1 second window, sleep should trigger
         $result = $method->invoke(new RateLimiting($api), $api);
@@ -65,20 +52,7 @@ class RateLimitingTest extends BaseTest
 
         // Fill fake times
         $ts = $api->getRestClient()->getTimeStore();
-        $ts->set([
-            [
-                'left' => 38,
-                'made' => 2,
-                'limit' => 40,
-                'time' => $secondTime,
-            ],
-            [
-                'left' => 39,
-                'made' => 1,
-                'limit' => 40,
-                'time' => $firstTime,
-            ],
-        ], $api->getSession());
+        $ts->set([$secondTime, $firstTime], $api->getSession());
 
         // Even though two requests happened within 1 second window,
         // If we do the "next" call after the window time, it should
