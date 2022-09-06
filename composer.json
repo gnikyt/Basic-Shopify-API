@@ -29,7 +29,10 @@
         "phpunit/phpunit": "^6.2 || ^9.3"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        }
     },
     "autoload": {
         "psr-4": {
