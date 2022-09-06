@@ -257,6 +257,7 @@ For GraphQL calls, shop domain and API password are required.
 ```php
 // Create options for the API
 $options = new Options();
+$options->setType(true); // Makes it private
 $options->setVersion('2020-01');
 $options->setApiPassword(env('SHOPIFY_API_PASSWORD'));
 
