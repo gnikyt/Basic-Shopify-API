@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 10.0.6
+
+* Changes return type of iterable to match signature of iterable for PHP 8.1 (#129)
+
 ## 10.0.5
 
 * Bugfix to rate limiter (#123)
