@@ -57,7 +57,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
      *
      * @return mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         if ($offset === 'container') {
             return $this->container;
@@ -152,7 +152,7 @@ class ResponseAccess implements ArrayAccess, Iterator, Countable, JsonSerializab
      *
      * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         if (is_array($this->container[$this->position])) {
             return new static($this->container[$this->position]);
