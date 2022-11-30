@@ -1,8 +1,8 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Deferrers;
+namespace Gnikyt\BasicShopifyAPI\Deferrers;
 
-use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
+use Gnikyt\BasicShopifyAPI\Contracts\TimeDeferrer;
 
 /**
  * Base time deferrer implementation.

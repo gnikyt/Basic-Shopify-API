@@ -1,12 +1,12 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test;
+namespace Gnikyt\BasicShopifyAPI\Test;
 
 use Exception;
 use GuzzleHttp\Client;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\Session;
+use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
+use Gnikyt\BasicShopifyAPI\Options;
+use Gnikyt\BasicShopifyAPI\Session;
 
 class BasicShopifyAPITest extends BaseTest
 {

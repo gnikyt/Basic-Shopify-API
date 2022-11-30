@@ -1,9 +1,9 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test;
+namespace Gnikyt\BasicShopifyAPI\Test;
 
-use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Session;
+use Gnikyt\BasicShopifyAPI\ResponseAccess;
+use Gnikyt\BasicShopifyAPI\Session;
 
 class SessionTest extends BaseTest
 {

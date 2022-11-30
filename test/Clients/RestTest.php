@@ -1,15 +1,15 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test\Clients;
+namespace Gnikyt\BasicShopifyAPI\Test\Clients;
 
 use Exception;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use GuzzleHttp\Psr7\Uri;
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
+use Gnikyt\BasicShopifyAPI\Options;
+use Gnikyt\BasicShopifyAPI\ResponseAccess;
+use Gnikyt\BasicShopifyAPI\Session;
+use Gnikyt\BasicShopifyAPI\Test\BaseTest;
 
 class RestTest extends BaseTest
 {

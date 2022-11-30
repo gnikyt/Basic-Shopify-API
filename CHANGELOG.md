@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 11.0.0
+
+* Changes namespace to Gnikyt
+
 ## 10.0.6
 
 * Changes return type of iterable to match signature of iterable for PHP 8.1 (#129)
@@ -185,8 +189,8 @@ To better the library, it has been reverted back to its original single-class fo
 *Contains breaking changes*
 
 * No longer a single file, it now namespaced under `OhmyBrew\ShopifyAPI`
-* GraphQL is now introduced under `Osiset\ShopifyAPI\GraphAPI`
-* REST is moved to `Osiset\ShopifyAPI\RestAPI`
+* GraphQL is now introduced under `Gnikyt\ShopifyAPI\GraphAPI`
+* REST is moved to `Gnikyt\ShopifyAPI\RestAPI`
 
 ## 1.0.1
 

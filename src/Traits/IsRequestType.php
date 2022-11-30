@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Traits;
+namespace Gnikyt\BasicShopifyAPI\Traits;
 
 /**
  * Determine GraphQL or REST request type.

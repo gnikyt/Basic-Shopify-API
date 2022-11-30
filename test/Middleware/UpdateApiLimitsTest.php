@@ -1,14 +1,14 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test\Middleware;
+namespace Gnikyt\BasicShopifyAPI\Test\Middleware;
 
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\BasicShopifyAPI\Middleware\UpdateApiLimits;
-use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
+use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
+use Gnikyt\BasicShopifyAPI\Middleware\UpdateApiLimits;
+use Gnikyt\BasicShopifyAPI\Session;
+use Gnikyt\BasicShopifyAPI\Test\BaseTest;
 use Psr\Http\Message\RequestInterface;
 
 class UpdateApiLimitsTest extends BaseTest

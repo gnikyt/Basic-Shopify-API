@@ -1,20 +1,20 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Clients;
+namespace Gnikyt\BasicShopifyAPI\Clients;
 
 use Exception;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Uri;
-use Osiset\BasicShopifyAPI\Contracts\ClientAware;
-use Osiset\BasicShopifyAPI\Contracts\LimitAccesser;
-use Osiset\BasicShopifyAPI\Contracts\Respondable;
-use Osiset\BasicShopifyAPI\Contracts\SessionAware;
-use Osiset\BasicShopifyAPI\Contracts\StateStorage;
-use Osiset\BasicShopifyAPI\Contracts\TimeAccesser;
-use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
+use Gnikyt\BasicShopifyAPI\Contracts\ClientAware;
+use Gnikyt\BasicShopifyAPI\Contracts\LimitAccesser;
+use Gnikyt\BasicShopifyAPI\Contracts\Respondable;
+use Gnikyt\BasicShopifyAPI\Contracts\SessionAware;
+use Gnikyt\BasicShopifyAPI\Contracts\StateStorage;
+use Gnikyt\BasicShopifyAPI\Contracts\TimeAccesser;
+use Gnikyt\BasicShopifyAPI\Contracts\TimeDeferrer;
+use Gnikyt\BasicShopifyAPI\Options;
+use Gnikyt\BasicShopifyAPI\Session;
+use Gnikyt\BasicShopifyAPI\Traits\ResponseTransform;
 
 /**
  * Base client class.

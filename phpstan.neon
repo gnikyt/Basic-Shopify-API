@@ -4,6 +4,6 @@ parameters:
 		- src
 		- test
 	ignoreErrors:
-		- '#Access to an undefined property Osiset\\BasicShopifyAPI\\ResponseAccess::\$.*\.#'
+		- '#Access to an undefined property Gnikyt\\BasicShopifyAPI\\ResponseAccess::\$.*\.#'
 	parallel:
 		maximumNumberOfProcesses: 2

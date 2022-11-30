@@ -1,11 +1,11 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test\Traits;
+namespace Gnikyt\BasicShopifyAPI\Test\Traits;
 
 use GuzzleHttp\Psr7\Response;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
-use Osiset\BasicShopifyAPI\Traits\IsResponseType;
+use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
+use Gnikyt\BasicShopifyAPI\Test\BaseTest;
+use Gnikyt\BasicShopifyAPI\Traits\IsResponseType;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 

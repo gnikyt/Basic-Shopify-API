@@ -1,11 +1,11 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Contracts;
+namespace Gnikyt\BasicShopifyAPI\Contracts;
 
 use Exception;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Uri;
-use Osiset\BasicShopifyAPI\ResponseAccess;
+use Gnikyt\BasicShopifyAPI\ResponseAccess;
 
 /**
  * Reprecents REST client.

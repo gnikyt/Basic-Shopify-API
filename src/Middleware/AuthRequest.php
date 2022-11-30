@@ -1,11 +1,11 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Middleware;
+namespace Gnikyt\BasicShopifyAPI\Middleware;
 
 use Exception;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\Traits\IsRequestType;
+use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
+use Gnikyt\BasicShopifyAPI\Options;
+use Gnikyt\BasicShopifyAPI\Traits\IsRequestType;
 use Psr\Http\Message\RequestInterface;
 
 /**

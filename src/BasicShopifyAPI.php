@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI;
+namespace Gnikyt\BasicShopifyAPI;
 
 use Closure;
 use Exception;
@@ -9,21 +9,21 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\Promise;
 use GuzzleRetry\GuzzleRetryMiddleware;
-use Osiset\BasicShopifyAPI\Clients\Graph;
-use Osiset\BasicShopifyAPI\Clients\Rest;
-use Osiset\BasicShopifyAPI\Contracts\ClientAware;
-use Osiset\BasicShopifyAPI\Contracts\GraphRequester;
-use Osiset\BasicShopifyAPI\Contracts\RestRequester;
-use Osiset\BasicShopifyAPI\Contracts\SessionAware;
-use Osiset\BasicShopifyAPI\Contracts\StateStorage;
-use Osiset\BasicShopifyAPI\Contracts\TimeDeferrer;
-use Osiset\BasicShopifyAPI\Deferrers\Sleep;
-use Osiset\BasicShopifyAPI\Middleware\AuthRequest;
-use Osiset\BasicShopifyAPI\Middleware\RateLimiting;
-use Osiset\BasicShopifyAPI\Middleware\UpdateApiLimits;
-use Osiset\BasicShopifyAPI\Middleware\UpdateRequestTime;
-use Osiset\BasicShopifyAPI\Store\Memory;
-use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
+use Gnikyt\BasicShopifyAPI\Clients\Graph;
+use Gnikyt\BasicShopifyAPI\Clients\Rest;
+use Gnikyt\BasicShopifyAPI\Contracts\ClientAware;
+use Gnikyt\BasicShopifyAPI\Contracts\GraphRequester;
+use Gnikyt\BasicShopifyAPI\Contracts\RestRequester;
+use Gnikyt\BasicShopifyAPI\Contracts\SessionAware;
+use Gnikyt\BasicShopifyAPI\Contracts\StateStorage;
+use Gnikyt\BasicShopifyAPI\Contracts\TimeDeferrer;
+use Gnikyt\BasicShopifyAPI\Deferrers\Sleep;
+use Gnikyt\BasicShopifyAPI\Middleware\AuthRequest;
+use Gnikyt\BasicShopifyAPI\Middleware\RateLimiting;
+use Gnikyt\BasicShopifyAPI\Middleware\UpdateApiLimits;
+use Gnikyt\BasicShopifyAPI\Middleware\UpdateRequestTime;
+use Gnikyt\BasicShopifyAPI\Store\Memory;
+use Gnikyt\BasicShopifyAPI\Traits\ResponseTransform;
 
 /**
  * Basic Shopify API for REST & GraphQL.

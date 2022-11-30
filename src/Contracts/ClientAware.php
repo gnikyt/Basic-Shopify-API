@@ -1,9 +1,9 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Contracts;
+namespace Gnikyt\BasicShopifyAPI\Contracts;
 
 use GuzzleHttp\ClientInterface;
-use Osiset\BasicShopifyAPI\Options;
+use Gnikyt\BasicShopifyAPI\Options;
 
 /**
  * Reprecents Guzzle client awareness.

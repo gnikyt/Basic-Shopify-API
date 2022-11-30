@@ -1,8 +1,8 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test;
+namespace Gnikyt\BasicShopifyAPI\Test;
 
-use Osiset\BasicShopifyAPI\ResponseAccess;
+use Gnikyt\BasicShopifyAPI\ResponseAccess;
 
 class ResponseAccessTest extends BaseTest
 {

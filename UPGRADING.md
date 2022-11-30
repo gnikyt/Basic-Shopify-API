@@ -11,7 +11,7 @@ While the requesting functions and responses are more-less the same, there's a c
 Before:
 
 ```php
-use Osiset\BasicShopifyAPI;
+use Gnikyt\BasicShopifyAPI;
 
 $api = new BasicShopifyAPI([true/false], $options);
 $api->set...();
@@ -20,8 +20,8 @@ $api->set...();
 Now:
 
 ```php
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\BasicShopifyAPI\Options;
+use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
+use Gnikyt\BasicShopifyAPI\Options;
 
 $options = new Options();
 $options->set...();
@@ -33,7 +33,7 @@ $api = new BasicShopifyAPI($options);
 
 Responses previously was a `stdClass`, it is now an `array`.
 
-`body` value of the response is now also an instance of `Osiset\BasicShopifyAPI\ResponseAccess` which allows for accessing the decoded JSON as an array or stdClass.
+`body` value of the response is now also an instance of `Gnikyt\BasicShopifyAPI\ResponseAccess` which allows for accessing the decoded JSON as an array or stdClass.
 
 Example:
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Middleware;
+namespace Gnikyt\BasicShopifyAPI\Middleware;
 
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\BasicShopifyAPI\Traits\IsResponseType;
-use Osiset\BasicShopifyAPI\Traits\ResponseTransform;
+use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
+use Gnikyt\BasicShopifyAPI\Traits\IsResponseType;
+use Gnikyt\BasicShopifyAPI\Traits\ResponseTransform;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 

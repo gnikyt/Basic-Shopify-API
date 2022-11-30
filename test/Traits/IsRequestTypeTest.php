@@ -1,9 +1,9 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test\Traits;
+namespace Gnikyt\BasicShopifyAPI\Test\Traits;
 
-use Osiset\BasicShopifyAPI\Test\BaseTest;
-use Osiset\BasicShopifyAPI\Traits\IsRequestType;
+use Gnikyt\BasicShopifyAPI\Test\BaseTest;
+use Gnikyt\BasicShopifyAPI\Traits\IsRequestType;
 use PHPUnit\Framework\TestCase;
 
 class IsRequestTypeTest extends BaseTest

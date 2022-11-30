@@ -1,11 +1,11 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Test\Middleware;
+namespace Gnikyt\BasicShopifyAPI\Test\Middleware;
 
 use GuzzleHttp\Psr7\Request;
-use Osiset\BasicShopifyAPI\Middleware\UpdateRequestTime;
-use Osiset\BasicShopifyAPI\Session;
-use Osiset\BasicShopifyAPI\Test\BaseTest;
+use Gnikyt\BasicShopifyAPI\Middleware\UpdateRequestTime;
+use Gnikyt\BasicShopifyAPI\Session;
+use Gnikyt\BasicShopifyAPI\Test\BaseTest;
 use Psr\Http\Message\RequestInterface;
 
 class UpdateRequestTimeTest extends BaseTest

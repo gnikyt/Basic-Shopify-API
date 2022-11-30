@@ -1,8 +1,8 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Traits;
+namespace Gnikyt\BasicShopifyAPI\Traits;
 
-use Osiset\BasicShopifyAPI\ResponseAccess;
+use Gnikyt\BasicShopifyAPI\ResponseAccess;
 use Psr\Http\Message\StreamInterface;
 
 /**

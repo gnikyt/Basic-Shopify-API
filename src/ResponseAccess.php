@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI;
+namespace Gnikyt\BasicShopifyAPI;
 
 use ArrayAccess;
 use Countable;

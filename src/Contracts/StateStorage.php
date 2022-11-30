@@ -1,8 +1,8 @@
 <?php
 
-namespace Osiset\BasicShopifyAPI\Contracts;
+namespace Gnikyt\BasicShopifyAPI\Contracts;
 
-use Osiset\BasicShopifyAPI\Session;
+use Gnikyt\BasicShopifyAPI\Session;
 
 /**
  * Reprecents basic state storage.
