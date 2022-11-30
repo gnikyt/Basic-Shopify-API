@@ -15,7 +15,7 @@ class ResponseTransformTest extends BaseTest
         $response = new Response(200, [], file_get_contents(__DIR__.'/../fixtures/rest/admin__shop.json'));
 
         // Create a anon class
-        $kclass = new class () {
+        $kclass = new class() {
             use ResponseTransform;
         };
         $result = $kclass->toResponse($response->getBody());

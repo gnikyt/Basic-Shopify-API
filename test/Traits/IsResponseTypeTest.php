@@ -14,7 +14,7 @@ class IsResponseTypeTest extends BaseTest
     public function test(): void
     {
         // Create anon class
-        $klass = new class () {
+        $klass = new class() {
             use IsResponseType;
 
             private $self;
