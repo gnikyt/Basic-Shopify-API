@@ -2,10 +2,10 @@
 
 namespace Gnikyt\BasicShopifyAPI\Test\Traits;
 
-use GuzzleHttp\Psr7\Response;
 use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
 use Gnikyt\BasicShopifyAPI\Test\BaseTest;
 use Gnikyt\BasicShopifyAPI\Traits\IsResponseType;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -14,7 +14,7 @@ class IsResponseTypeTest extends BaseTest
     public function test(): void
     {
         // Create anon class
-        $klass = new class() {
+        $klass = new class () {
             use IsResponseType;
 
             private $self;

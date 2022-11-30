@@ -3,9 +3,9 @@
 namespace Gnikyt\BasicShopifyAPI\Test;
 
 use Closure;
-use GuzzleHttp\Handler\MockHandler;
 use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
 use Gnikyt\BasicShopifyAPI\Options;
+use GuzzleHttp\Handler\MockHandler;
 use PHPUnit\Framework\TestCase;
 
 abstract class BaseTest extends TestCase

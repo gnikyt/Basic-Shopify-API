@@ -3,13 +3,13 @@
 namespace Gnikyt\BasicShopifyAPI\Test\Clients;
 
 use Exception;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use GuzzleHttp\Psr7\Uri;
 use Gnikyt\BasicShopifyAPI\Options;
 use Gnikyt\BasicShopifyAPI\ResponseAccess;
 use Gnikyt\BasicShopifyAPI\Session;
 use Gnikyt\BasicShopifyAPI\Test\BaseTest;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use GuzzleHttp\Psr7\Uri;
 
 class RestTest extends BaseTest
 {

@@ -2,10 +2,10 @@
 
 namespace Gnikyt\BasicShopifyAPI\Test\Middleware;
 
-use GuzzleHttp\Psr7\Request;
 use Gnikyt\BasicShopifyAPI\Middleware\UpdateRequestTime;
 use Gnikyt\BasicShopifyAPI\Session;
 use Gnikyt\BasicShopifyAPI\Test\BaseTest;
+use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 
 class UpdateRequestTimeTest extends BaseTest

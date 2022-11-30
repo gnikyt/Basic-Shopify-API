@@ -2,13 +2,13 @@
 
 namespace Gnikyt\BasicShopifyAPI\Test\Middleware;
 
-use GuzzleHttp\Promise\Promise;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
 use Gnikyt\BasicShopifyAPI\Middleware\UpdateApiLimits;
 use Gnikyt\BasicShopifyAPI\Session;
 use Gnikyt\BasicShopifyAPI\Test\BaseTest;
+use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 
 class UpdateApiLimitsTest extends BaseTest

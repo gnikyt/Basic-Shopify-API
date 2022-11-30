@@ -2,12 +2,12 @@
 
 namespace Gnikyt\BasicShopifyAPI\Test\Clients;
 
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Gnikyt\BasicShopifyAPI\Options;
 use Gnikyt\BasicShopifyAPI\ResponseAccess;
 use Gnikyt\BasicShopifyAPI\Session;
 use Gnikyt\BasicShopifyAPI\Test\BaseTest;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
 class GraphTest extends BaseTest
 {

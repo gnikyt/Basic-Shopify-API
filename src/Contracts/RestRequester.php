@@ -3,9 +3,9 @@
 namespace Gnikyt\BasicShopifyAPI\Contracts;
 
 use Exception;
+use Gnikyt\BasicShopifyAPI\ResponseAccess;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Uri;
-use Gnikyt\BasicShopifyAPI\ResponseAccess;
 
 /**
  * Reprecents REST client.

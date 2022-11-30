@@ -3,8 +3,6 @@
 namespace Gnikyt\BasicShopifyAPI\Clients;
 
 use Exception;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Uri;
 use Gnikyt\BasicShopifyAPI\Contracts\ClientAware;
 use Gnikyt\BasicShopifyAPI\Contracts\LimitAccesser;
 use Gnikyt\BasicShopifyAPI\Contracts\Respondable;
@@ -15,6 +13,8 @@ use Gnikyt\BasicShopifyAPI\Contracts\TimeDeferrer;
 use Gnikyt\BasicShopifyAPI\Options;
 use Gnikyt\BasicShopifyAPI\Session;
 use Gnikyt\BasicShopifyAPI\Traits\ResponseTransform;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Uri;
 
 /**
  * Base client class.

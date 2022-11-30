@@ -11,7 +11,7 @@ class IsRequestTypeTest extends BaseTest
     public function test(): void
     {
         // Create anon class
-        $klass = new class() {
+        $klass = new class () {
             use IsRequestType;
 
             private $self;

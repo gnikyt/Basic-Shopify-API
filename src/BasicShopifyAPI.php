@@ -4,11 +4,6 @@ namespace Gnikyt\BasicShopifyAPI;
 
 use Closure;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Promise\Promise;
-use GuzzleRetry\GuzzleRetryMiddleware;
 use Gnikyt\BasicShopifyAPI\Clients\Graph;
 use Gnikyt\BasicShopifyAPI\Clients\Rest;
 use Gnikyt\BasicShopifyAPI\Contracts\ClientAware;
@@ -24,6 +19,11 @@ use Gnikyt\BasicShopifyAPI\Middleware\UpdateApiLimits;
 use Gnikyt\BasicShopifyAPI\Middleware\UpdateRequestTime;
 use Gnikyt\BasicShopifyAPI\Store\Memory;
 use Gnikyt\BasicShopifyAPI\Traits\ResponseTransform;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Promise\Promise;
+use GuzzleRetry\GuzzleRetryMiddleware;
 
 /**
  * Basic Shopify API for REST & GraphQL.

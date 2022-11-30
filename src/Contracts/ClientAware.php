@@ -2,8 +2,8 @@
 
 namespace Gnikyt\BasicShopifyAPI\Contracts;
 
-use GuzzleHttp\ClientInterface;
 use Gnikyt\BasicShopifyAPI\Options;
+use GuzzleHttp\ClientInterface;
 
 /**
  * Reprecents Guzzle client awareness.

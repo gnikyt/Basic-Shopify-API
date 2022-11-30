@@ -2,12 +2,12 @@
 
 namespace Gnikyt\BasicShopifyAPI\Test\Middleware;
 
-use GuzzleHttp\Psr7\Request;
 use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
 use Gnikyt\BasicShopifyAPI\Middleware\AuthRequest;
 use Gnikyt\BasicShopifyAPI\Options;
 use Gnikyt\BasicShopifyAPI\Session;
 use Gnikyt\BasicShopifyAPI\Test\BaseTest;
+use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 
 class AuthRequestTest extends BaseTest

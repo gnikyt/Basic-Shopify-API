@@ -3,10 +3,10 @@
 namespace Gnikyt\BasicShopifyAPI\Test;
 
 use Exception;
-use GuzzleHttp\Client;
 use Gnikyt\BasicShopifyAPI\BasicShopifyAPI;
 use Gnikyt\BasicShopifyAPI\Options;
 use Gnikyt\BasicShopifyAPI\Session;
+use GuzzleHttp\Client;
 
 class BasicShopifyAPITest extends BaseTest
 {

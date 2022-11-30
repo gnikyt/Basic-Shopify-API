@@ -2,8 +2,8 @@
 
 namespace Gnikyt\BasicShopifyAPI\Clients;
 
-use GuzzleHttp\Exception\RequestException;
 use Gnikyt\BasicShopifyAPI\Contracts\GraphRequester;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 
 /**

@@ -3,10 +3,10 @@
 namespace Gnikyt\BasicShopifyAPI\Clients;
 
 use Exception;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
 use Gnikyt\BasicShopifyAPI\Contracts\RestRequester;
 use Gnikyt\BasicShopifyAPI\ResponseAccess;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
