@@ -372,11 +372,12 @@ class BasicShopifyAPI implements SessionAware, ClientAware
             unset($params['hmac']);
 
             // Convert array values in the params to a string
-            foreach($params as $key => &$value) {
+            foreach ($params as &$value) {
                 if (is_array($value)) {
-                    $value = '["' . implode('", "', $value) . '"]';
+                    $value = '["'.implode('", "', $value).'"]';
                 }
             }
+            
             ksort($params);
 
             // Encode and hash the params (without HMAC), add the API secret, and compare to the HMAC from params
