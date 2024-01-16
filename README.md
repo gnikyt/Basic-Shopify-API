@@ -469,7 +469,7 @@ $api->withSession(new Session('someshop.myshopify.com', 'some-token'), function 
 
 This library utilizes `caseyamcl/guzzle_retry_middleware` middleware package.
 
-By default, `429`, '500` and `503` errors will be retried twice.
+By default, `429`, `500` and `503` errors will be retried twice.
 
 For REST calls, it will utilize Shopify's `X-Retry-After` header to wait *x* seconds before retrying the call.
 
