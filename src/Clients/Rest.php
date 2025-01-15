@@ -103,7 +103,7 @@ class Rest extends AbstractClient implements RestRequester
     /**
      * {@inheritdoc}
      */
-    public function request(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
+    public function request(string $type, string $path, ?array $params = null, array $headers = [], bool $sync = true)
     {
         // Build URI
         $uri = $this->getBaseUri()->withPath($path);

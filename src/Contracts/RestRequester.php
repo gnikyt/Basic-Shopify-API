@@ -25,7 +25,7 @@ interface RestRequester extends LimitAccesser, TimeAccesser, SessionAware, Clien
      *
      * @return array|Promise
      */
-    public function request(string $type, string $path, array $params = null, array $headers = [], bool $sync = true);
+    public function request(string $type, string $path, ?array $params = null, array $headers = [], bool $sync = true);
 
     /**
      * Gets the access object from a "code" supplied by Shopify request after successfull auth (for public apps).

@@ -426,7 +426,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
     /**
      * @see Rest::request
      */
-    public function rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
+    public function rest(string $type, string $path, ?array $params = null, array $headers = [], bool $sync = true)
     {
         return $this->getRestClient()->request($type, $path, $params, $headers, $sync);
     }
@@ -437,7 +437,7 @@ class BasicShopifyAPI implements SessionAware, ClientAware
      *
      * @see rest
      */
-    public function restAsync(string $type, string $path, array $params = null, array $headers = []): Promise
+    public function restAsync(string $type, string $path, ?array $params = null, array $headers = []): Promise
     {
         return $this->rest($type, $path, $params, $headers, false);
     }
