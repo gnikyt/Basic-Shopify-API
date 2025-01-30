@@ -276,7 +276,7 @@ $result = $api->graph(...);
 Requests are made using Guzzle.
 
 ```php
-$api->rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true);
+$api->rest(string $type, string $path, ?array $params = null, array $headers = [], bool $sync = true);
 // or $api->getRestClient()->request(....);
 ```
 
